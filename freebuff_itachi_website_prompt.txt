@@ -1,0 +1,602 @@
+Build a premium, cinematic, animation-heavy portfolio/creative website inspired by the interaction quality and visual storytelling of https://manndamani.com/ — but DO NOT copy its branding, text, assets, layout pixel-for-pixel, or source code.
+
+The website should feel like an interactive anime cinematic experience centered around ITACHI UCHIHA from Naruto. The main focus is the hero animation and scroll experience.
+
+IMPORTANT:
+This is NOT a normal portfolio template. Motion, depth, image transitions, parallax and cinematic storytelling are the core of the website.
+
+========================
+1. OVERALL VISUAL DIRECTION
+========================
+
+Create a dark cinematic visual language:
+
+- Near-black background
+- Deep crimson/red accent lighting
+- Dark maroon gradients
+- Subtle off-white typography
+- Very subtle film grain/noise
+- Soft atmospheric fog/smoke
+- Red particles/embers
+- High contrast imagery
+- Premium editorial typography
+- Lots of intentional negative space
+- No cheap neon cyberpunk look
+- No excessive glowing UI
+- No generic anime dashboard/card design
+
+The website should feel like a high-end creative studio website combined with an anime film sequence.
+
+Use smooth animation throughout the entire page.
+
+Preferred technologies if supported:
+- GSAP
+- ScrollTrigger
+- Lenis or another smooth-scroll system
+- CSS transforms
+- requestAnimationFrame where appropriate
+- WebGL/Three.js only where it genuinely improves the effect
+
+Keep performance high and avoid unnecessary libraries.
+
+========================
+2. HERO — ITACHI CINEMATIC EFFECT
+========================
+
+THIS IS THE MOST IMPORTANT SECTION.
+
+Create a full-screen 100vh cinematic hero.
+
+Background:
+- Almost completely black
+- Very subtle dark-red atmospheric gradient
+- Moving smoke/fog
+- Tiny floating red particles
+- Very subtle film grain
+- No distracting background UI
+
+Main visual:
+Place a high-quality Itachi Uchiha image/render in the center/right area.
+
+The Itachi image must NOT simply sit as a normal static PNG.
+
+Create multiple visual layers:
+
+1. Background atmosphere
+2. Large blurred Itachi silhouette/shadow
+3. Main Itachi figure
+4. Foreground particles
+5. Red light effects
+6. Optional subtle feather/crow particles
+7. Depth layers
+
+Create a convincing 3D/parallax effect.
+
+When the mouse moves:
+- Itachi subtly moves in the opposite/related direction
+- Background moves slower
+- Foreground particles move slightly faster
+- The character has subtle depth
+- Do NOT overdo the movement
+
+On mobile:
+Use device orientation if available, otherwise use gentle touch movement.
+Do not create an annoying movement effect.
+
+========================
+3. SHARINGAN / EYE EFFECT
+========================
+
+Create a subtle cinematic Sharingan-inspired effect around/behind Itachi.
+
+Do NOT make it look like a cheap glowing circle.
+
+It should appear gradually as the user interacts with the hero.
+
+Possible sequence:
+
+- Initially almost invisible
+- Small red glow appears
+- Circular pattern slowly forms
+- Subtle rotation
+- Red light pulse
+- Very subtle particles move around it
+- Effect fades into the background
+
+Keep it elegant and cinematic.
+
+When the user moves the cursor toward the hero, slightly increase the intensity.
+
+Do not use excessive red bloom.
+
+========================
+4. ITACHI EYES / MANGEKYO EFFECT
+========================
+
+Add a subtle eye-light animation when the hero becomes active.
+
+The effect should feel like Itachi's Mangekyo Sharingan activating.
+
+Animation:
+
+idle:
+almost invisible
+
+hover/interact:
+very subtle red eye glow
+
+scroll:
+brief cinematic activation
+
+Do NOT constantly flash the user's screen.
+
+Use smooth opacity and blur transitions.
+
+========================
+5. HERO TYPOGRAPHY
+========================
+
+Use large editorial typography.
+
+Possible content:
+
+"ITACHI"
+
+Small supporting text:
+
+"THE ART OF SILENCE"
+
+or
+
+"DISCIPLINE • SACRIFICE • SHADOW"
+
+Typography should be minimal.
+
+Do not fill the screen with text.
+
+Place the typography partially behind/in front of the character to create depth.
+
+Some letters can subtly move at a different parallax speed.
+
+Add a small:
+
+"SCROLL TO EXPLORE ↓"
+
+at the bottom.
+
+Animate this indicator subtly.
+
+========================
+6. HERO SCROLL EXPERIENCE
+========================
+
+When the user begins scrolling:
+
+DO NOT immediately jump to the next section.
+
+Create a cinematic transition.
+
+As scroll progresses:
+
+- Hero zooms slightly
+- Itachi becomes larger
+- Background darkens
+- Red particles increase
+- Character slowly moves
+- Typography moves independently
+- Sharingan effect briefly becomes stronger
+- Smoke passes across the screen
+- Hero gradually transitions into the next section
+
+Use GSAP ScrollTrigger or equivalent.
+
+The animation must be tied to scroll progress rather than simply playing once.
+
+Make the transition smooth and reversible when the user scrolls upward.
+
+========================
+7. TRANSITION INTO CONTENT
+========================
+
+After the hero, transition into a clean dark section.
+
+Use large typography:
+
+"THE STORY"
+
+or
+
+"BEYOND THE SHADOW"
+
+The section should have a cinematic image/video on one side and text on the other.
+
+Use scroll reveal:
+
+- image clips/reveals
+- text slides upward
+- opacity changes
+- subtle parallax
+
+No standard bootstrap-style cards.
+
+========================
+8. FEATURED WORK / PROJECTS
+========================
+
+Create a "Featured" section inspired by high-end creative portfolios.
+
+Large project previews.
+
+Each project should occupy significant screen space.
+
+Example:
+
+01 — THE SHINOBI
+02 — THE UCHIHA
+03 — THE AKATSUKI
+04 — THE LEGACY
+
+Each project can contain:
+
+- large image/video
+- project number
+- title
+- short description
+- category
+
+Hover interaction:
+
+- image slightly zooms
+- cursor-following movement
+- title shifts subtly
+- red accent appears
+- transition remains smooth
+
+Do not use small generic cards.
+
+========================
+9. HORIZONTAL SCROLL SECTION
+========================
+
+Create at least one horizontal scrolling gallery controlled by vertical scrolling.
+
+The user scrolls vertically while the project images move horizontally.
+
+Use GSAP ScrollTrigger pinning if appropriate.
+
+Images should have different sizes and subtle depth.
+
+Some images can overlap.
+
+Make it feel like an art-direction portfolio rather than a normal gallery.
+
+========================
+10. IMAGE REVEAL EFFECTS
+========================
+
+Use premium image reveal animations throughout the website.
+
+Examples:
+
+- clip-path reveal
+- scale from 1.1 to 1
+- mask reveal
+- blur-to-sharp
+- opacity + transform
+- image slides underneath text
+
+Do not animate everything at once.
+
+Animation should feel intentional.
+
+========================
+11. "CROWS" / PARTICLE TRANSITION
+========================
+
+Create a special transition using black/red crow-like particles or abstract feather particles.
+
+When moving between selected sections:
+
+- small particles appear
+- drift across the screen
+- disappear into darkness
+
+Keep this subtle.
+
+If actual 3D crow models would hurt performance, use lightweight 2D/particle sprites instead.
+
+========================
+12. ABOUT SECTION
+========================
+
+Create a cinematic about section.
+
+Large heading:
+
+"THE MIND BEHIND THE SHADOW"
+
+Use a large portrait/Itachi visual with layered typography.
+
+Content should be editable from the code.
+
+Do not hard-code unnecessary fake information.
+
+========================
+13. GALLERY
+========================
+
+Create a premium gallery section.
+
+Use asymmetric layouts rather than a boring 3-column grid.
+
+Images should reveal as the user scrolls.
+
+Some images can:
+
+- overlap
+- rotate by 1–2 degrees
+- move at different speeds
+- expand when entering viewport
+
+Clicking an image should open a fullscreen lightbox.
+
+Lightbox:
+- dark background
+- large image
+- close button
+- smooth opening/closing animation
+- keyboard escape support
+- mobile support
+
+========================
+14. FINAL CTA
+========================
+
+Create a dramatic final section.
+
+Large text:
+
+"ENTER THE SHADOW"
+
+or
+
+"LET THE WORK SPEAK"
+
+Use a large background image/video.
+
+On hover over the CTA:
+- subtle red light follows cursor
+- button expands slightly
+- surrounding particles react
+
+Make this section visually memorable.
+
+========================
+15. FOOTER
+========================
+
+Minimal premium footer.
+
+Include:
+
+- navigation
+- About
+- Work
+- Gallery
+- Contact
+- Social links
+- copyright
+
+Do not make the footer visually crowded.
+
+========================
+16. CURSOR
+========================
+
+On desktop create a custom cursor.
+
+Normal:
+small circle
+
+Hovering interactive elements:
+circle expands
+
+Hovering images:
+cursor can display:
+
+"VIEW"
+
+or
+
+"EXPLORE"
+
+Use smooth interpolation.
+
+Disable the custom cursor on touch devices.
+
+Do not break normal browser cursor functionality on mobile.
+
+========================
+17. NAVIGATION
+========================
+
+Create a minimal fixed navigation.
+
+Logo/name on left.
+
+Navigation on right:
+
+HOME
+ABOUT
+WORK
+GALLERY
+CONTACT
+
+The navigation should be transparent over the hero.
+
+As the user scrolls:
+- background can become slightly darker
+- subtle blur
+- smooth transition
+
+Mobile:
+Use a clean animated menu.
+
+========================
+18. SOUND
+========================
+
+Do NOT autoplay music with sound.
+
+If ambient audio is included:
+- muted by default
+- provide a clear sound toggle
+- remember user's preference
+- never force sound
+
+Any sound effects must be subtle.
+
+========================
+19. RESPONSIVENESS
+========================
+
+Desktop:
+1920px
+1440px
+1280px
+
+Tablet:
+1024px
+768px
+
+Mobile:
+430px
+390px
+375px
+
+The mobile version must be intentionally designed, not simply a compressed desktop layout.
+
+On mobile:
+
+- Keep Itachi visually dominant
+- reduce particle count
+- simplify heavy effects
+- maintain smooth scrolling
+- prevent horizontal overflow
+- make typography responsive
+- ensure buttons are touch-friendly
+- maintain cinematic transitions
+
+========================
+20. PERFORMANCE
+========================
+
+This is extremely important.
+
+Do not sacrifice performance for effects.
+
+Use:
+
+- lazy-loaded images
+- optimized WebP/AVIF assets where possible
+- compressed video
+- transform/opacity animations
+- GPU-friendly animation
+- reduced particle count on mobile
+- no unnecessary re-renders
+- no huge unoptimized image files
+- respect prefers-reduced-motion
+
+If WebGL is used, provide a fallback for unsupported devices.
+
+The website must remain usable on mid-range Android phones.
+
+========================
+21. ACCESSIBILITY
+========================
+
+Maintain:
+
+- keyboard navigation
+- readable contrast
+- alt text
+- focus states
+- reduced-motion support
+- accessible buttons
+- proper semantic HTML
+
+Animations should never prevent navigation.
+
+========================
+22. IMPORTANT ASSET RULE
+========================
+
+Do NOT use random low-quality Itachi images.
+
+Create a dedicated assets structure so I can replace the character image later.
+
+For example:
+
+/assets/itachi-main.webp
+/assets/itachi-shadow.webp
+/assets/background.webp
+/assets/gallery/
+/assets/videos/
+
+If suitable assets are unavailable, use clearly marked placeholders rather than permanently embedding random copyrighted images.
+
+Make it extremely easy for me to replace the Itachi artwork.
+
+========================
+23. CODE QUALITY
+========================
+
+Keep the project organized.
+
+Separate:
+
+- components
+- animation logic
+- styles
+- assets
+- data
+
+Do not put the entire website into one giant HTML file if the platform supports components.
+
+Create reusable animation components.
+
+Avoid unnecessary dependencies.
+
+========================
+24. FINAL EXPERIENCE
+========================
+
+The finished website should feel like:
+
+"an interactive anime film sequence that happens to be a website."
+
+It should NOT feel like:
+
+- a normal anime fan page
+- a gaming website
+- a generic portfolio template
+- a neon cyberpunk landing page
+- a collection of random animations
+
+The hierarchy should be:
+
+1. Cinematic Itachi hero
+2. Depth/parallax
+3. Scroll-controlled storytelling
+4. High-quality imagery/video
+5. Typography
+6. Subtle red/black visual effects
+7. Smooth transitions
+8. Content
+
+The animations must support the experience rather than overwhelm it.
+
+Most importantly, recreate the QUALITY and INTERACTION STYLE of a premium motion-design portfolio like the reference site, while creating an original Itachi/Uchiha visual identity.
+
+Make the website fully functional, responsive and production-ready.
+Do not leave broken buttons, placeholder navigation, fake interactions, console errors, or unfinished sections.
