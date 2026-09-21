@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   THEME TOKENS  —  ITACHI / The Art of Silence
+   Dark cinematic language: near-black, deep crimson, bone type.
+   ============================================================ */
+:root {
+  --ink-950: #050304;
+  --ink-900: #0a0709;
+  --ink-800: #120d10;
+  --blood-500: #d61f26;
+  --blood-600: #b31115;
+  --blood-800: #5e070b;
+  --bone: #ece7e1;
+  --bone-muted: #a9a29b;
+
+  --edge: rgba(236, 231, 225, 0.1);
+  --glow: rgba(214, 31, 38, 0.5);
+
+  --cursor-size: 14px;
+
+  color-scheme: dark;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: var(--ink-950);
+}
+
+body {
+  margin: 0;
+  color: var(--bone);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+}
+
+::selection {
+  background: rgba(214, 31, 38, 0.32);
+  color: #fff;
+}
+
+/* Focus states — always visible, never removed by animation */
+:focus-visible {
+  outline: 2px solid var(--blood-500);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Reduced motion: kill non-essential animation globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   LAYOUT PRIMITIVES
+   ============================================================ */
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-14;
+  }
+
+  .eyebrow {
+    @apply font-body text-[11px] font-medium uppercase tracking-cinematic text-bone-dim;
+  }
+
+  .display {
+    @apply font-display uppercase leading-[0.86] tracking-[0.02em];
+  }
+
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-bone/15 to-transparent;
+  }
+
+  /* Text that sits behind the character — outlined, hollow */
+  .text-hollow {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(236, 231, 225, 0.28);
+  }
+
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-3 overflow-hidden
+           border border-bone/20 px-8 py-4 font-body text-[12px] font-medium uppercase
+           tracking-wide2 text-bone transition-colors duration-500 ease-silk
+           hover:border-blood-500/70;
+  }
+}
+
+/* ============================================================
+   FILM GRAIN + VIGNETTE (fixed overlays, GPU-cheap)
+   ============================================================ */
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.grain {
+  opacity: 0.05;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  animation: grain-shift 0.7s steps(5) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-4%, 3%, 0); }
+  40% { transform: translate3d(3%, -2%, 0); }
+  60% { transform: translate3d(-2%, 4%, 0); }
+  80% { transform: translate3d(4%, -3%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.vignette {
+  z-index: 59;
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(5, 3, 4, 0.55) 100%);
+}
+
+/* ============================================================
+   CUSTOM CURSOR — only on precise-pointer devices
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* ============================================================
+   MARQUEE / SCROLL HINTS
+   ============================================================ */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 32s linear infinite;
+}
+
+/* Utility: hidden native scrollbar for Lenis-driven pages */
+.no-bar::-webkit-scrollbar { width: 0; height: 0; }
+.no-bar { scrollbar-width: none; }

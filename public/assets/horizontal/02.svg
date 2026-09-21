@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1400" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Horizontal 02. Replace /assets/horizontal/02.webp -->
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="0.5" y2="1"><stop offset="0%" stop-color="#2c0507"/><stop offset="60%" stop-color="#0d0203"/><stop offset="100%" stop-color="#050304"/></linearGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1600" height="1400" fill="url(#a)"/>
+  <g fill="#0a0709">
+    <path d="M420 620 c40 -34 100 -28 124 10 l92 -10 c-8 26 -40 42 -68 36 l-52 10 c-10 30 -44 52 -74 38 c-28 -12 -38 -52 -22 -84 Z"/>
+    <path d="M900 420 c48 -40 118 -32 146 12 l108 -12 c-10 30 -46 50 -80 42 l-60 12 c-12 34 -52 60 -86 44 c-32 -14 -44 -60 -28 -98 Z"/>
+    <path d="M1180 840 c34 -28 84 -24 104 8 l76 -8 c-6 22 -34 36 -58 30 l-44 8 c-8 26 -38 44 -64 32 c-24 -10 -32 -44 -18 -70 Z"/>
+  </g>
+  <rect width="1600" height="1400" filter="url(#n)" opacity="0.6"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMax meet">
+  <!--
+    PLACEHOLDER ARTWORK — used for the large blurred silhouette behind the
+    main figure. Replace with /assets/itachi-shadow.webp (a dark, soft
+    silhouette works best). Path is updated in src/data/content.ts.
+  -->
+  <defs>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b31115" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#5e070b" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#050304" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g filter="url(#blur)" fill="url(#fade)">
+    <path d="M518 232 C612 206 680 266 650 360 L596 356 C622 300 576 248 520 260 Z"/>
+    <path d="M450 356 C332 356 250 430 210 542 C150 704 118 952 88 1180
+             C 300 1212 600 1212 812 1180 C 782 952 750 704 690 542 C650 430 568 356 450 356 Z"/>
+    <ellipse cx="450" cy="282" rx="80" ry="94"/>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Featured 01 "THE SHINOBI". Replace /assets/featured/01.webp -->
+  <defs>
+    <radialGradient id="a" cx="70%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#5e070b" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#230305" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#050304"/>
+    </radialGradient>
+    <radialGradient id="m" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6a6a" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#b31115" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#b31115" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="#050304"/>
+  <rect width="1600" height="1000" fill="url(#a)"/>
+  <circle cx="1120" cy="360" r="260" fill="url(#m)"/>
+  <circle cx="1120" cy="360" r="130" fill="#e0171c" opacity="0.12"/>
+  <path d="M0 860 L1600 820 L1600 1000 L0 1000 Z" fill="#050304"/>
+  <path d="M470 860 C486 560 530 430 610 430 C690 430 724 560 740 860 Z" fill="#08060700"/>
+  <path d="M540 860 C552 620 580 520 610 520 C640 520 664 620 676 860 Z" fill="#0a0709"/>
+  <ellipse cx="610" cy="470" rx="42" ry="50" fill="#161115"/>
+  <g stroke="#c0161c" stroke-width="3" fill="none" opacity="0.8"><circle cx="610" cy="470" r="14"/><line x1="610" y1="470" x2="610" y2="456"/></g>
+  <rect width="1600" height="1000" filter="url(#n)" opacity="0.6"/>
+</svg>
