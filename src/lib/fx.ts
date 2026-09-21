@@ -1,4 +1,4 @@
-export const CROWS_EVENT = "itachi:crows";
+export const CROWS_EVENT = "portfolio:crows";
 
 /** Fling a flock of crow particles across the screen. */
 export function triggerCrows(count = 14): void {

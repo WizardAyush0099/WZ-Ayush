@@ -42,19 +42,19 @@ export default function AboutSection() {
               aria-hidden="true"
               className="display text-hollow pointer-events-none absolute -left-6 top-[8%] z-0 select-none text-[34vw] leading-none opacity-70 md:-left-10 md:text-[15rem]"
             >
-              {about.kanji}
+              {about.accent}
             </span>
             <div className="relative z-10">
               <RevealImage
                 src={assets.portrait}
-                alt="Portrait of Itachi Uchiha lit by a low red glow"
+                alt="Portrait lit by a low red glow"
                 variant="mask"
                 className="aspect-[4/5] w-full"
               />
             </div>
             <div className="relative z-10 mt-5 flex items-center gap-3 font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
               <span className="h-px w-8 bg-blood-500/60" />
-              <span>Portrait — placeholder, swap anytime</span>
+              <span>Placeholder image — swap in your own portrait</span>
             </div>
           </div>
 

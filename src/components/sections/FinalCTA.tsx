@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { assets, cta, footer } from "../../data/content";
+import { assets, contactHref, cta } from "../../data/content";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 import { useCrowCue } from "../../lib/useCrowCue";
@@ -106,13 +106,13 @@ export default function FinalCTA() {
           <h2 id="cta-title" className="display text-[15vw] leading-[0.9] text-bone sm:text-[10vw] lg:text-[8rem]">
             {cta.title}
           </h2>
-          <span className="font-jp text-sm tracking-[0.5em] text-blood-500/70">{cta.kanji}</span>
+          <span className="font-accent text-sm tracking-[0.5em] text-blood-500/70">{cta.accent}</span>
           <p className="max-w-[42ch] font-body text-base leading-relaxed text-bone-muted">{cta.body}</p>
         </RevealText>
 
         <div className="mt-12 flex justify-center">
           <a
-            href={`mailto:${footer.email}`}
+            href={contactHref}
             data-cursor="hover"
             onMouseEnter={() => {
               setHover(true);

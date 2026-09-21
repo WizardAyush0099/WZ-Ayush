@@ -1,18 +1,18 @@
 # Assets
 
-Every file in this folder is a **clearly-marked placeholder** (each SVG has a
-`PLACEHOLDER` comment inside it). Nothing here is copyrighted artwork — they are
-original vector stand-ins so the site looks complete and cinematic out of the box.
+Every file in this folder is a **clearly-marked placeholder** (each SVG contains a
+`PLACEHOLDER` comment). They are original vector stand-ins so the site looks
+complete and cinematic out of the box — nothing here is third-party artwork.
 
-## Replacing the Itachi artwork (recommended)
+## Replacing the hero artwork (recommended)
 
-1. Drop your render into this folder, e.g. `itachi-main.webp`.
-   - Use a **transparent PNG/WebP**, ideally ~1600px tall, figure anchored to the
+1. Drop your image into this folder, e.g. `hero-figure.webp`.
+   - Use a **transparent PNG/WebP**, ideally ~1600px tall, subject anchored to the
      **bottom-centre** with breathing room on the right.
-2. Compress it (WebP/AVIF, quality ~80) before shipping.
-3. Open `src/data/content.ts` and point `assets.itachiMain` (and optionally
-   `assets.itachiShadow`, `assets.background`, `assets.portrait`, `assets.cta`) to
-   the new file, e.g. `"/assets/itachi-main.webp"`.
+   - Compress it (WebP/AVIF, quality ~80) before shipping.
+2. Open `src/data/content.ts` and point `assets.heroFigure` (and optionally
+   `assets.heroShadow`, `assets.background`, `assets.portrait`, `assets.cta`) at
+   the new file, e.g. `\`${base}assets/hero-figure.webp\``.
 
 That's it — no component changes needed.
 
@@ -20,17 +20,17 @@ That's it — no component changes needed.
 
 | File | Used by | Notes |
 | --- | --- | --- |
-| `itachi-main.svg` | Hero main figure | Cut-out character, bottom-centred |
-| `itachi-shadow.svg` | Hero blurred silhouette | Dark soft silhouette |
+| `hero-figure.svg` | Hero main figure | Cut-out subject, bottom-centred |
+| `hero-shadow.svg` | Hero blurred silhouette | Dark soft silhouette behind the figure |
 | `background.svg` | Atmosphere / backdrops | Replace with a wide still |
-| `portrait.svg` | About section | Portrait crop |
+| `portrait.svg` | About section | Portrait crop (4:5 reads best) |
 | `cta.svg` | Final CTA backdrop | Wide cinematic still |
 | `featured/01..04.svg` | Featured work | 16:10 landscape stills |
 | `gallery/01..06.svg` | Gallery + lightbox | Mixed portrait/landscape |
-| `horizontal/01..05.svg` | Horizontal scroll gallery | Tall/wide art-direction stills |
+| `horizontal/01..05.svg` | Horizontal reel | Tall/wide art-direction stills |
 
 ## Optional video
 
-If you want motion backgrounds, add `/assets/videos/` with compressed MP4/WebM
-files and reference them in `src/data/content.ts`. Keep clips short (< 6s),
-muted, `playsinline`, and lazy-loaded.
+For motion backgrounds, add `/assets/videos/` with compressed MP4/WebM files and
+reference them in `src/data/content.ts`. Keep clips short (< 6s), muted,
+`playsinline` and lazy-loaded.

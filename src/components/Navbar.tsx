@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { nav, meta } from "../data/content";
+import { hero, nav, meta } from "../data/content";
 import { getLenis, scrollToId } from "../lib/scroll";
 import SoundToggle from "./SoundToggle";
 
@@ -80,12 +80,12 @@ export default function Navbar({ ready }: { ready: boolean }) {
               go("home");
             }}
             className="group flex items-baseline gap-2"
-            aria-label="Itachi — home"
+            aria-label={`${hero.title} — home`}
           >
             <span className="display text-lg tracking-[0.28em] text-bone transition-colors duration-300 group-hover:text-blood-400">
-              ITACHI
+              {hero.title}
             </span>
-            <span className="font-jp text-[10px] tracking-[0.3em] text-blood-500/70">うちは</span>
+            <span className="font-accent text-[10px] tracking-[0.3em] text-blood-500/70">{hero.accent}</span>
           </a>
 
           <nav className="hidden items-center gap-9 md:flex" aria-label="Primary">

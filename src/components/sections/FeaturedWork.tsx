@@ -56,6 +56,12 @@ export default function FeaturedWork() {
   }, [hasFine, reduced]);
 
   const openProject = (i: number) => {
+    const project = projects[i];
+    // Projects with a link open the real thing; the rest open the image viewer.
+    if (project.href) {
+      window.open(project.href, "_blank", "noopener,noreferrer");
+      return;
+    }
     open(
       projects.map((p) => ({ src: p.image, alt: `${p.title} — ${p.category}`, caption: `${p.index} · ${p.title}` })),
       i,
@@ -91,9 +97,9 @@ export default function FeaturedWork() {
                 onFocus={() => setActive(i)}
                 onBlur={() => setActive(null)}
                 data-cursor="media"
-                data-cursor-label="View"
+                data-cursor-label={p.href ? "Open" : "View"}
                 className="group block w-full py-8 text-left md:py-12"
-                aria-label={`View ${p.title} project image`}
+                aria-label={p.href ? `Open ${p.title} (opens in a new tab)` : `View ${p.title} project image`}
               >
                 <div className="grid items-center gap-6 md:grid-cols-12 md:gap-8">
                   <span className="col-span-1 font-body text-xs tracking-cinematic text-blood-500/70">
@@ -104,8 +110,8 @@ export default function FeaturedWork() {
                     <h3 className="display text-[8vw] leading-[0.95] text-bone transition-transform duration-700 ease-silk group-hover:translate-x-2 sm:text-4xl lg:text-5xl">
                       {p.title}
                     </h3>
-                    <span className="mt-2 inline-block font-jp text-xs tracking-[0.4em] text-blood-500/60">
-                      {p.kanji}
+                    <span className="mt-2 inline-block font-accent text-xs tracking-[0.4em] text-blood-500/60">
+                      {p.accent}
                     </span>
                   </div>
 
@@ -116,8 +122,13 @@ export default function FeaturedWork() {
                   </div>
 
                   <div className="flex items-center justify-between gap-4 md:col-span-2 md:justify-end">
-                    <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
+                    <span className="flex items-center gap-2 font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
                       {p.category}
+                      {p.href && (
+                        <span aria-hidden="true" className="text-blood-500/80">
+                          ↗
+                        </span>
+                      )}
                     </span>
                     <span className="h-px w-0 bg-blood-500 transition-all duration-700 ease-silk group-hover:w-10" />
                   </div>
@@ -139,9 +150,9 @@ export default function FeaturedWork() {
                     type="button"
                     onClick={() => openProject(i)}
                     data-cursor="media"
-                    data-cursor-label="View"
+                    data-cursor-label={p.href ? "Open" : "View"}
                     className="absolute inset-0 z-10"
-                    aria-label={`Open ${p.title} image`}
+                    aria-label={p.href ? `Open ${p.title} (opens in a new tab)` : `View ${p.title} project image`}
                   />
                 </div>
               )}

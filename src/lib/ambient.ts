@@ -5,7 +5,7 @@
  * remembered in localStorage.
  */
 
-const PREF_KEY = "itachi:sound";
+const PREF_KEY = "portfolio:sound";
 
 export function getSoundPref(): boolean {
   try {

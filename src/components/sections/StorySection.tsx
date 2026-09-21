@@ -45,7 +45,7 @@ export default function StorySection() {
               <h2 id="story-title" className="display text-[11vw] leading-[0.92] sm:text-5xl lg:text-6xl">
                 {story.title}
               </h2>
-              <span className="font-jp text-sm tracking-[0.45em] text-blood-500/70">{story.kanji}</span>
+              <span className="font-accent text-sm tracking-[0.45em] text-blood-500/70">{story.accent}</span>
               {story.body.map((p) => (
                 <p key={p.slice(0, 18)} className="max-w-[46ch] font-body text-base leading-relaxed text-bone-muted">
                   {p}

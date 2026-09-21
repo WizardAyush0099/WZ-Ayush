@@ -33,7 +33,7 @@ export default {
       fontFamily: {
         display: ['"Cinzel"', "Georgia", "serif"],
         body: ['"Inter"', "system-ui", "sans-serif"],
-        jp: ['"Noto Serif JP"', "serif"],
+        accent: ['"Cinzel"', "Georgia", "serif"],
       },
       letterSpacing: {
         cinematic: "0.42em",

@@ -1,10 +1,11 @@
-# ITACHI — The Art of Silence
+# Ayush — Portfolio
 
-A premium, cinematic, animation-heavy tribute site inspired by the interaction
-quality of high-end motion-design portfolios — built as an original
-Itachi/Uchiha visual identity.
+A premium, cinematic, animation-heavy personal portfolio with the interaction
+quality of a high-end motion-design site. Currently features **Study Hub**.
 
-> The brief this implements lives in `freebuff_itachi_website_prompt.txt`.
+> The original cinematic brief this design implements lives in
+> `freebuff_itachi_website_prompt.txt`. All copy and projects are now
+> portfolio content — see `src/data/content.ts`.
 
 ## Stack
 
@@ -22,7 +23,8 @@ No other runtime dependencies were added where CSS/canvas could do the job.
 | --- | --- |
 | `bun install` | install dependencies |
 | `bun run dev` | dev server on `0.0.0.0` (Vite, port 5173 or `$PORT`) |
-| `bun run build` | production build to `dist/` |
+| `bun run build` | production build to `dist/` (root-relative URLs) |
+| `VITE_BASE=./ bun run build` | build for sub-path hosting (GitHub Pages) |
 | `bun run typecheck` | `tsc -b --noEmit` |
 
 ## Structure
@@ -59,8 +61,8 @@ gallery frames and asset paths are all there — no component edits required.
 **Artwork.** Every file under `public/assets/` is an original, clearly-marked
 SVG placeholder. To swap in your own render:
 
-1. Add `public/assets/itachi-main.webp` (transparent, figure bottom-centred).
-2. Point `assets.itachiMain` in `src/data/content.ts` at it.
+1. Add `public/assets/hero-figure.webp` (transparent, subject bottom-centred).
+2. Point `assets.heroFigure` in `src/data/content.ts` at it.
 
 Details and the full asset table are in `public/assets/README.md`.
 

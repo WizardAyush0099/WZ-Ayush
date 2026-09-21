@@ -1,10 +1,16 @@
-import { footer, meta, nav } from "../../data/content";
+import { contact, contactHref, footer, meta, nav } from "../../data/content";
 import { scrollToId } from "../../lib/scroll";
 
-function resolveHref(label: string): { href: string; external: boolean; id?: string } {
-  const match = nav.find((n) => n.label.toLowerCase() === label.toLowerCase());
-  if (match) return { href: `#${match.id}`, external: false, id: match.id };
-  return { href: `mailto:${footer.email}?subject=${encodeURIComponent(label)}`, external: false };
+type Resolved = { href: string; external: boolean; id?: string };
+
+function resolveHref(label: string): Resolved {
+  const page = nav.find((n) => n.label.toLowerCase() === label.toLowerCase());
+  if (page) return { href: `#${page.id}`, external: false, id: page.id };
+
+  const social = footer.social.find((s) => s.label.toLowerCase() === label.toLowerCase());
+  if (social) return { href: social.href, external: true };
+
+  return { href: contactHref, external: !contact.email };
 }
 
 export default function Footer() {
@@ -13,16 +19,20 @@ export default function Footer() {
       <div className="shell">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <span className="display block text-4xl tracking-[0.1em] text-bone sm:text-5xl">ITACHI</span>
+            <span className="display block text-4xl tracking-[0.1em] text-bone sm:text-5xl">
+              {meta.studio}
+            </span>
             <span className="mt-3 block font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
               {footer.tagline}
             </span>
             <a
-              href={`mailto:${footer.email}`}
+              href={contactHref}
+              target={contact.email ? undefined : "_blank"}
+              rel={contact.email ? undefined : "noopener noreferrer"}
               data-cursor="hover"
               className="mt-8 inline-block font-body text-sm text-bone-muted underline decoration-bone/20 underline-offset-4 transition-colors duration-300 hover:text-bone hover:decoration-blood-500/70"
             >
-              {footer.email}
+              {contact.email || "@WizardAyush0099"}
             </a>
           </div>
 
@@ -31,11 +41,13 @@ export default function Footer() {
               <h3 className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">{col.title}</h3>
               <ul className="mt-5 flex flex-col gap-3">
                 {col.links.map((label) => {
-                  const { href, id } = resolveHref(label);
+                  const { href, external, id } = resolveHref(label);
                   return (
                     <li key={label}>
                       <a
                         href={href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noopener noreferrer" : undefined}
                         onClick={(e) => {
                           if (id) {
                             e.preventDefault();

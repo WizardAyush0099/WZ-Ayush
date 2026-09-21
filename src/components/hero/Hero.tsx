@@ -237,7 +237,7 @@ export default function Hero({ ready }: { ready: boolean }) {
       {/* 3 — blurred silhouette */}
       <div ref={shadowRef} className="absolute bottom-[-4%] right-[-4%] z-[6] w-[86%] max-w-[900px] opacity-55 sm:w-[70%]">
         <img
-          src={assets.itachiShadow}
+          src={assets.heroShadow}
           alt=""
           aria-hidden="true"
           className="h-auto w-full object-contain"
@@ -261,8 +261,8 @@ export default function Hero({ ready }: { ready: boolean }) {
         <div ref={figureWrapRef} className="relative h-full w-full" style={{ willChange: "transform" }}>
           <img
             ref={figureRef}
-            src={assets.itachiMain}
-            alt="Itachi Uchiha, cloaked in shadow with a faint red rim light"
+            src={assets.heroFigure}
+            alt="Hero figure cloaked in shadow with a faint red rim light"
             className="h-full w-full object-contain object-bottom"
             fetchPriority="high"
             decoding="async"
@@ -339,12 +339,12 @@ export default function Hero({ ready }: { ready: boolean }) {
             >
               Enter the Story
             </button>
-            <span className="font-jp text-sm tracking-[0.4em] text-blood-500/70">静けさ</span>
+            <span className="font-accent text-sm tracking-[0.4em] text-blood-500/70">{heroContent.accent}</span>
           </div>
         </div>
         {/* Screen-reader heading keeps semantics intact */}
         <h1 className="sr-only">
-          Itachi Uchiha — {heroContent.tagline}
+          {heroContent.title} — {heroContent.tagline}
         </h1>
       </div>
 

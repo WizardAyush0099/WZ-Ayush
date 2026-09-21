@@ -2,23 +2,28 @@
  * ============================================================================
  *  SITE CONTENT — single source of truth
  * ============================================================================
- *  Everything editable lives here: copy, nav, projects, gallery and the
- *  asset paths. To swap artwork, see public/assets/README.md and update the
- *  `assets` map below — no component changes required.
+ *  Everything editable lives here: copy, nav, projects, gallery and asset
+ *  paths. Change the values below and the whole site follows — no component
+ *  edits required.
+ *
+ *  Asset paths are prefixed with `import.meta.env.BASE_URL` so the same build
+ *  works at the domain root (Vercel) and under a sub-path (GitHub Pages).
  * ============================================================================
  */
 
+const base = import.meta.env.BASE_URL;
+
 export const assets = {
   /** Main hero figure — transparent cut-out, bottom-centred. */
-  itachiMain: "/assets/itachi-main.svg",
+  heroFigure: `${base}assets/hero-figure.svg`,
   /** Large blurred silhouette behind the figure. */
-  itachiShadow: "/assets/itachi-shadow.svg",
+  heroShadow: `${base}assets/hero-shadow.svg`,
   /** Wide atmospheric backdrop. */
-  background: "/assets/background.svg",
+  background: `${base}assets/background.svg`,
   /** About section portrait. */
-  portrait: "/assets/portrait.svg",
+  portrait: `${base}assets/portrait.svg`,
   /** Final CTA backdrop. */
-  cta: "/assets/cta.svg",
+  cta: `${base}assets/cta.svg`,
 } as const;
 
 export type NavItem = { id: string; label: string };
@@ -32,74 +37,97 @@ export const nav: NavItem[] = [
 ];
 
 export const hero = {
-  title: "ITACHI",
-  kanji: "うちは",
-  tagline: "The Art of Silence",
-  traits: "Discipline • Sacrifice • Shadow",
+  /** Primary wordmark — swap for your name or studio name. */
+  title: "AYUSH",
+  /** Short mono mark shown beside the wordmark. */
+  accent: "WZ",
+  tagline: "The Art of Building",
+  traits: "Developer • Designer • Builder",
   scrollHint: "Scroll to explore",
 };
 
+/** How I work — the section right after the hero. */
 export const story = {
-  eyebrow: "Chapter I",
-  title: "Beyond the Shadow",
-  kanji: "静けさ",
+  eyebrow: "01 — Approach",
+  title: "How I Work",
+  accent: "WZ",
   body: [
-    "Some stories are not spoken — they are endured. A life measured not in victories, but in the quiet weight of every choice made in the dark.",
-    "This is a study of restraint: of power held back, of kindness disguised as distance, and of a legacy written in silence rather than glory.",
+    "I build focused digital products with an emphasis on motion, clarity and craft — interfaces that feel considered rather than decorated.",
+    "Every project starts with the problem, not the pixels. What follows is iteration, restraint, and a lot of small details that add up.",
   ],
+  // Edit these three to whatever facts you want to lead with.
   stats: [
-    { value: "12", label: "Years of Shadow" },
-    { value: "∞", label: "Unspoken Words" },
-    { value: "01", label: "Path Chosen" },
+    { value: "01", label: "Featured Project" },
+    { value: "React", label: "Primary Stack" },
+    { value: "2026", label: "Portfolio" },
   ],
-  image: "/assets/featured/02.svg",
+  image: `${base}assets/featured/02.svg`,
 };
 
 export type Project = {
   index: string;
   title: string;
-  kanji: string;
+  accent: string;
   category: string;
   description: string;
   image: string;
+  /** When set, clicking the row opens this link instead of the image viewer. */
+  href?: string;
 };
 
+/**
+ * Featured work. Each array entry renders as one large row (number, title,
+ * category, description). Add `href` to make the row open a live site/repo
+ * instead of the image viewer.
+ *
+ * The entries after Study Hub are derived from the projects in the GitHub
+ * account — rewrite these descriptions so they say what the work actually does.
+ */
 export const projects: Project[] = [
   {
     index: "01",
-    title: "The Shinobi",
-    kanji: "忍",
-    category: "Character Study",
+    title: "Study Hub",
+    accent: "Focus",
+    category: "Web App",
     description:
-      "A blade honed in silence. Movement stripped to its essence — the discipline beneath the myth.",
-    image: "/assets/featured/01.svg",
+      "A study workspace that brings notes, resources and revision into one place — built to cut the friction out of focused learning.",
+    image: `${base}assets/featured/02.svg`,
   },
   {
     index: "02",
-    title: "The Uchiha",
-    kanji: "写輪眼",
-    category: "Visual Identity",
-    description:
-      "The eye that remembers everything. Legacy as inheritance, and inheritance as a weight carried alone.",
-    image: "/assets/featured/02.svg",
+    title: "Wizard XO",
+    accent: "Play",
+    category: "Web Game",
+    description: "A browser tic-tac-toe build with a fast, clean round loop and instant rematches.",
+    image: `${base}assets/featured/01.svg`,
+    href: "https://github.com/WizardAyush0099/Wizard-XO-",
   },
   {
     index: "03",
-    title: "The Akatsuki",
-    kanji: "暁",
-    category: "World Building",
-    description:
-      "Red clouds on black cloth. A brotherhood of exiles bound by a purpose no one is allowed to name.",
-    image: "/assets/featured/03.svg",
+    title: "Truth or Dare",
+    accent: "Social",
+    category: "Web Game",
+    description: "A party game for groups — open it, pass the device round and play.",
+    image: `${base}assets/featured/03.svg`,
+    href: "https://github.com/WizardAyush0099/Truth-or-Dare-Game",
   },
   {
     index: "04",
-    title: "The Legacy",
-    kanji: "遺志",
-    category: "Narrative",
-    description:
-      "What remains when the mask falls. Truth passed on to the one person willing to see it clearly.",
-    image: "/assets/featured/04.svg",
+    title: "Anime Watcher",
+    accent: "Discover",
+    category: "Web App",
+    description: "A discovery app for finding and keeping track of what to watch next.",
+    image: `${base}assets/featured/04.svg`,
+    href: "https://github.com/WizardAyush0099/Anime-Watcher",
+  },
+  {
+    index: "05",
+    title: "Wizard Web",
+    accent: "Archive",
+    category: "Web Project",
+    description: "An earlier web build, kept as part of the archive.",
+    image: `${base}assets/horizontal/04.svg`,
+    href: "https://github.com/WizardAyush0099/Wizard-Web",
   },
 ];
 
@@ -113,12 +141,12 @@ export type GalleryFrame = {
 };
 
 export const gallery: GalleryFrame[] = [
-  { src: "/assets/gallery/01.svg", alt: "Crimson moon rising over a ridge", caption: "Moonrise", span: "tall", rotate: -1.4 },
-  { src: "/assets/horizontal/02.svg", alt: "Crows scattering through smoke", caption: "Murmuration", span: "wide", rotate: 1.1 },
-  { src: "/assets/gallery/03.svg", alt: "A dead forest in low red light", caption: "Deadwood", span: "square", rotate: -0.8 },
-  { src: "/assets/gallery/04.svg", alt: "Embers drifting upward in darkness", caption: "Embers", span: "wide", rotate: 1.6 },
-  { src: "/assets/gallery/05.svg", alt: "Rain falling through a dark frame", caption: "Rainfall", span: "tall", rotate: 0.9 },
-  { src: "/assets/gallery/06.svg", alt: "A lone figure on a cliff edge", caption: "Vantage", span: "square", rotate: -1.2 },
+  { src: `${base}assets/gallery/01.svg`, alt: "Crimson moon rising over a ridge", caption: "Moonrise", span: "tall", rotate: -1.4 },
+  { src: `${base}assets/horizontal/02.svg`, alt: "Crows scattering through smoke", caption: "Murmuration", span: "wide", rotate: 1.1 },
+  { src: `${base}assets/gallery/03.svg`, alt: "A dead forest in low red light", caption: "Deadwood", span: "square", rotate: -0.8 },
+  { src: `${base}assets/gallery/04.svg`, alt: "Embers drifting upward in darkness", caption: "Embers", span: "wide", rotate: 1.6 },
+  { src: `${base}assets/gallery/05.svg`, alt: "Rain falling through a dark frame", caption: "Rainfall", span: "tall", rotate: 0.9 },
+  { src: `${base}assets/gallery/06.svg`, alt: "A lone figure on a cliff edge", caption: "Vantage", span: "square", rotate: -1.2 },
 ];
 
 export type HorizontalFrame = {
@@ -131,53 +159,63 @@ export type HorizontalFrame = {
 };
 
 export const horizontal: HorizontalFrame[] = [
-  { src: "/assets/horizontal/01.svg", alt: "Sharingan rings glowing in the dark", index: "I", title: "Perception", scale: "lg" },
-  { src: "/assets/horizontal/02.svg", alt: "Crows drifting through red mist", index: "II", title: "Flight", scale: "md" },
-  { src: "/assets/horizontal/03.svg", alt: "A torii gate at night", index: "III", title: "Gate", scale: "sm" },
-  { src: "/assets/horizontal/04.svg", alt: "A cloaked figure lit from behind", index: "IV", title: "Cloak", scale: "lg" },
-  { src: "/assets/horizontal/05.svg", alt: "Feathers dissolving into shadow", index: "V", title: "Feather", scale: "md" },
+  { src: `${base}assets/horizontal/01.svg`, alt: "Concentric rings glowing in the dark", index: "I", title: "Perception", scale: "lg" },
+  { src: `${base}assets/horizontal/02.svg`, alt: "Crows drifting through red mist", index: "II", title: "Flight", scale: "md" },
+  { src: `${base}assets/horizontal/03.svg`, alt: "A torii gate at night", index: "III", title: "Gate", scale: "sm" },
+  { src: `${base}assets/horizontal/04.svg`, alt: "A cloaked figure lit from behind", index: "IV", title: "Cloak", scale: "lg" },
+  { src: `${base}assets/horizontal/05.svg`, alt: "Shapes dissolving into shadow", index: "V", title: "Feather", scale: "md" },
 ];
 
 export const about = {
-  eyebrow: "Chapter II",
-  title: "The Mind Behind the Shadow",
-  kanji: "影",
+  eyebrow: "02 — About",
+  title: "Behind the Work",
+  accent: "AY",
   body: [
-    "I build dark, motion-led experiences where atmosphere carries the story. Every scroll, every transition is deliberate — restraint over spectacle.",
-    "This piece is a tribute: an interactive film sequence disguised as a website, engineered to stay smooth even on a mid-range phone.",
+    "I design and build dark, motion-led web experiences where atmosphere carries the story. Every scroll and transition is deliberate — restraint over spectacle.",
+    "This portfolio is itself a build: a cinematic, interaction-heavy site engineered to stay smooth even on a mid-range phone.",
   ],
   facts: [
-    { label: "Craft", value: "Motion & Interaction" },
-    { label: "Stack", value: "React · GSAP · WebGL" },
-    { label: "Focus", value: "Cinematic Narrative" },
+    { label: "Focus", value: "Web Applications" },
+    { label: "Stack", value: "React · TypeScript" },
+    { label: "Based", value: "Remote" },
   ],
 };
 
 export const cta = {
-  eyebrow: "Chapter III",
-  title: "Enter the Shadow",
-  kanji: "闇",
-  body: "The work speaks for itself — step inside and let it unfold.",
-  action: "Start a Project",
+  eyebrow: "03 — Contact",
+  title: "Let's Work Together",
+  accent: "WZ",
+  body: "Have a project, a role or an idea worth building? I'd like to hear about it.",
+  action: "Get in Touch",
+};
+
+/**
+ * Contact details.
+ * `email` is intentionally empty — set it and the CTA + footer will use a
+ * mailto link automatically; until then they point at GitHub.
+ */
+export const contact = {
+  email: "",
+  github: "https://github.com/WizardAyush0099",
 };
 
 export const footer = {
-  tagline: "The Art of Silence",
+  tagline: "Portfolio",
   columns: [
     { title: "Explore", links: ["Home", "About", "Work", "Gallery"] },
-    { title: "Connect", links: ["Contact", "Newsletter", "Press"] },
+    { title: "Connect", links: ["Contact", "GitHub"] },
   ],
-  social: [
-    { label: "Instagram", href: "https://instagram.com" },
-    { label: "X", href: "https://x.com" },
-    { label: "Behance", href: "https://behance.net" },
-    { label: "GitHub", href: "https://github.com" },
-  ],
-  email: "shadow@itachi.studio",
+  social: [{ label: "GitHub", href: contact.github }],
+  email: contact.email,
 };
 
 export const meta = {
-  studio: "SHADOW STUDIO",
-  location: "Konoha · Remote",
+  studio: "AYUSH",
+  location: "Remote",
   year: new Date().getFullYear(),
 };
+
+/** Canonical contact target — mailto when an address exists, else GitHub. */
+export const contactHref = contact.email
+  ? `mailto:${contact.email}`
+  : contact.github;
