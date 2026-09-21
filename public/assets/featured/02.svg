@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Featured 02 "THE UCHIHA". Replace /assets/featured/02.webp -->
+  <defs>
+    <radialGradient id="a" cx="30%" cy="50%" r="85%">
+      <stop offset="0%" stop-color="#3a0407" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#1c0204" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#050304"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff8a8a" stop-opacity="1"/>
+      <stop offset="45%" stop-color="#d61f26" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#8c0b10" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="#050304"/>
+  <rect width="1600" height="1000" fill="url(#a)"/>
+  <g transform="translate(430,500)">
+    <circle r="330" fill="url(#g2)" opacity="0.5"/>
+    <circle r="300" fill="none" stroke="#8c0b10" stroke-width="2"/>
+    <circle r="230" fill="none" stroke="#b31115" stroke-width="2" opacity="0.8"/>
+    <circle r="150" fill="none" stroke="#c0161c" stroke-width="2" opacity="0.7"/>
+    <circle r="60" fill="#e0171c"/>
+    <g stroke="#e0171c" stroke-width="12" stroke-linecap="round">
+      <line x1="0" y1="0" x2="0" y2="-150"/>
+      <line x1="0" y1="0" x2="140" y2="80"/>
+      <line x1="0" y1="0" x2="-140" y2="80"/>
+    </g>
+  </g>
+  <rect width="1600" height="1000" filter="url(#n)" opacity="0.6"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1800" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Horizontal 05. Replace /assets/horizontal/05.webp -->
+  <defs>
+    <radialGradient id="a" cx="50%" cy="60%" r="80%"><stop offset="0%" stop-color="#3a0407" stop-opacity="0.8"/><stop offset="50%" stop-color="#120203" stop-opacity="0.8"/><stop offset="100%" stop-color="#050304"/></radialGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1400" height="1800" fill="#050304"/>
+  <rect width="1400" height="1800" fill="url(#a)"/>
+  <g fill="#0a0709" opacity="0.9">
+    <path d="M700 400 C820 460 900 560 880 700 C940 760 940 900 860 980 C820 1080 720 1120 640 1060 C560 1000 540 880 600 800 C560 700 610 500 700 400 Z"/>
+  </g>
+  <g fill="#c0161c" opacity="0.35">
+    <path d="M700 420 C800 470 870 560 856 680 L820 660 C830 570 780 500 700 462 Z"/>
+  </g>
+  <rect width="1400" height="1800" filter="url(#n)" opacity="0.6"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Featured 03 "THE AKATSUKI". Replace /assets/featured/03.webp -->
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#1c0204"/>
+      <stop offset="55%" stop-color="#0d0203"/>
+      <stop offset="100%" stop-color="#050304"/>
+    </linearGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#a)"/>
+  <g fill="#0a0709" stroke="#c0161c" stroke-width="4" stroke-linejoin="round" opacity="0.95">
+    <g transform="translate(180,180) scale(2.2)"><path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/></g>
+    <g transform="translate(760,320) scale(3)"><path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/></g>
+    <g transform="translate(240,640) scale(2.6)"><path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/></g>
+    <g transform="translate(1180,700) scale(2.4)"><path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/></g>
+  </g>
+  <rect width="1600" height="1000" filter="url(#n)" opacity="0.6"/>
+</svg>

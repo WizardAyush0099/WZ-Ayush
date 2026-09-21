@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1800" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Horizontal 03. Replace /assets/horizontal/03.webp -->
+  <defs>
+    <radialGradient id="a" cx="60%" cy="25%" r="80%"><stop offset="0%" stop-color="#4a0609" stop-opacity="0.85"/><stop offset="50%" stop-color="#160203" stop-opacity="0.8"/><stop offset="100%" stop-color="#050304"/></radialGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1400" height="1800" fill="#050304"/>
+  <rect width="1400" height="1800" fill="url(#a)"/>
+  <g fill="#0a0709">
+    <rect x="260" y="360" width="880" height="46" rx="6"/><rect x="236" y="300" width="928" height="42" rx="6"/>
+    <rect x="340" y="406" width="66" height="900"/><rect x="994" y="406" width="66" height="900"/>
+  </g>
+  <g fill="#c0161c" opacity="0.5"><rect x="260" y="360" width="880" height="10" rx="5"/><rect x="236" y="300" width="928" height="9" rx="4"/></g>
+  <rect width="1400" height="1800" filter="url(#n)" opacity="0.6"/>
+</svg>

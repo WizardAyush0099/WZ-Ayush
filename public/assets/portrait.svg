@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER ARTWORK — about portrait. Replace with /assets/portrait.webp -->
+  <defs>
+    <linearGradient id="p" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#241a1f"/>
+      <stop offset="45%" stop-color="#100b0e"/>
+      <stop offset="100%" stop-color="#050304"/>
+    </linearGradient>
+    <radialGradient id="rim" cx="72%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ff4d4d" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#8c0b10" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#050304" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eyeg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe4e4"/>
+      <stop offset="35%" stop-color="#ff3b3b"/>
+      <stop offset="100%" stop-color="#b31115" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="glow2" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1000" height="1250" fill="#07050600"/>
+  <rect width="1000" height="1250" fill="#050304"/>
+  <rect width="1000" height="1250" fill="url(#rim)"/>
+  <g filter="url(#soft2)"><path d="M500 250 C760 250 860 560 880 1250 L120 1250 C140 560 240 250 500 250 Z" fill="#8c0b10" opacity="0.4"/></g>
+  <path d="M262 1250 C280 720 340 470 500 470 C660 470 720 720 738 1250 Z" fill="url(#p)"/>
+  <path d="M500 430 C600 430 660 500 660 560 C700 610 736 820 738 1250 L600 1250 C600 900 560 700 500 620 C440 700 400 900 400 1250 L262 1250 C264 820 300 610 340 560 C340 500 400 430 500 430 Z" fill="#0d090c"/>
+  <ellipse cx="500" cy="360" rx="118" ry="140" fill="#161115"/>
+  <path d="M382 330 C392 210 452 160 500 160 C580 160 612 236 610 330 C590 286 552 268 512 292 C548 332 584 380 600 430 C552 386 486 380 436 428 C452 372 424 348 382 330 Z" fill="#0b080a"/>
+  <path d="M372 240 L628 240 L628 290 L372 290 Z" fill="#0d0a0c"/>
+  <path d="M392 246 L608 246 L608 284 L392 284 Z" fill="#2c3237"/>
+  <path d="M392 288 L608 270" stroke="#0a0709" stroke-width="7" stroke-linecap="round"/>
+  <g filter="url(#glow2)">
+    <ellipse cx="452" cy="346" rx="30" ry="18" fill="url(#eyeg)"/>
+    <ellipse cx="548" cy="346" rx="30" ry="18" fill="url(#eyeg)"/>
+    <ellipse cx="452" cy="346" rx="6" ry="9" fill="#ffd9d9"/>
+    <ellipse cx="548" cy="346" rx="6" ry="9" fill="#ffd9d9"/>
+  </g>
+  <rect y="980" width="1000" height="270" fill="#050304" opacity="0.75"/>
+</svg>

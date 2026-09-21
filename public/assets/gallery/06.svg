@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" preserveAspectRatio="xMidYMid slice">
+  <!-- PLACEHOLDER — Gallery 06. Replace /assets/gallery/06.webp -->
+  <defs>
+    <radialGradient id="a" cx="30%" cy="25%" r="85%"><stop offset="0%" stop-color="#4a0609" stop-opacity="0.85"/><stop offset="50%" stop-color="#180203" stop-opacity="0.8"/><stop offset="100%" stop-color="#050304"/></radialGradient>
+    <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+  <rect width="1200" height="1500" fill="#050304"/>
+  <rect width="1200" height="1500" fill="url(#a)"/>
+  <path d="M0 1180 C300 1120 900 1120 1200 1180 L1200 1500 L0 1500 Z" fill="#0a0709"/>
+  <path d="M540 1180 C560 940 580 860 600 860 C620 860 640 940 660 1180 Z" fill="#0a0709"/>
+  <ellipse cx="600" cy="820" rx="34" ry="42" fill="#161115"/>
+  <g stroke="#c0161c" stroke-width="3" fill="none" opacity="0.85"><circle cx="600" cy="820" r="12"/></g>
+  <rect width="1200" height="1500" filter="url(#n)" opacity="0.6"/>
+</svg>
