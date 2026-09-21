@@ -41,20 +41,43 @@ export function initSmoothScroll(enabled: boolean): () => void {
   };
 }
 
+/**
+ * Force smooth scrolling back on. Safe to call repeatedly — used by the menu
+ * and lightbox teardown so a scroll-lock can never be left behind, which
+ * would make the whole page unscrollable.
+ */
+export function resumeSmoothScroll(): void {
+  if (lenis) {
+    lenis.start();
+    return;
+  }
+  // Lenis absent (reduced motion) — clear any stale stop class from a
+  // previous session so the document can always scroll.
+  document.documentElement.classList.remove("lenis-stopped");
+}
+
 type ScrollTarget = string | number | HTMLElement;
+
+function resolveEl(target: ScrollTarget): HTMLElement | null {
+  if (typeof target === "string") return document.querySelector<HTMLElement>(target);
+  if (typeof target === "number") return null;
+  return target;
+}
 
 /** Smooth-scroll to a selector, pixel offset or element. Falls back to native. */
 export function scrollTo(target: ScrollTarget, offsetY = 0): void {
+  const el = resolveEl(target);
+  if (typeof target !== "number" && !el) return;
+
   if (lenis) {
-    lenis.scrollTo(target, { offset: offsetY, duration: 1.3, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    // Passing the resolved element (rather than a selector string) is more
+    // reliable and avoids a silent no-op if the node isn't found in time.
+    const opts = { offset: offsetY, duration: 1.3, easing: (t: number) => 1 - Math.pow(1 - t, 3) };
+    if (el) lenis.scrollTo(el, opts);
+    else if (typeof target === "number") lenis.scrollTo(target + offsetY, opts);
     return;
   }
-  const el =
-    typeof target === "string"
-      ? (document.querySelector(target) as HTMLElement | null)
-      : typeof target === "number"
-        ? null
-        : target;
+
   if (typeof target === "number") {
     window.scrollTo({ top: target + offsetY, behavior: "smooth" });
   } else if (el) {

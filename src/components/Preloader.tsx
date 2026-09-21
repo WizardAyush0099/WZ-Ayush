@@ -15,7 +15,11 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
     if (reduced) {
       setProgress(100);
       const t = window.setTimeout(() => finish(), 200);
-      return () => window.clearTimeout(t);
+      return () => {
+        window.clearTimeout(t);
+        // Never leave the page scroll-locked if this unmounts mid-flight.
+        document.body.style.overflow = "";
+      };
     }
 
     let raf = 0;
@@ -34,7 +38,11 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
       }
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      // Safety net: release the scroll lock even if the reveal never finished.
+      document.body.style.overflow = "";
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced]);
 

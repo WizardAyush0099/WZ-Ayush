@@ -29,10 +29,18 @@ html {
   scroll-behavior: auto;
 }
 
+/*
+ * `overflow-x: clip` (not `hidden`) — `hidden` would implicitly make the
+ * computed overflow-y `auto` and turn <body> into a scroll container, which
+ * breaks ScrollTrigger pinning and smooth-scroll measurements. `clip` clips
+ * without creating a scroll container. `hidden` is kept first as a fallback
+ * for older engines; supporting browsers use the later declaration.
+ */
 html,
 body {
   max-width: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
   background-color: var(--ink-950);
 }
 

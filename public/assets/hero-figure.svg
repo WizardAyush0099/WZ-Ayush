@@ -1,106 +1,146 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" preserveAspectRatio="xMidYMax meet">
   <!--
-    PLACEHOLDER ARTWORK — replace this file with your own Itachi render.
-    Drop a transparent PNG/WebP here as /assets/itachi-main.webp and update
-    the path in src/data/content.ts (assets.itachiMain). Keep the figure
-    anchored to the bottom-centre and leave breathing room on the right.
+    PLACEHOLDER ARTWORK — replace with your own photo/render.
+    Drop a transparent PNG/WebP at /assets/hero-figure.webp (subject anchored
+    to the bottom-centre, ~1600px tall, breathing room on the right) and point
+    `assets.heroFigure` in src/data/content.ts at it.
   -->
   <defs>
-    <linearGradient id="cloak" x1="0" y1="0" x2="0.35" y2="1">
-      <stop offset="0%" stop-color="#201a1f"/>
-      <stop offset="42%" stop-color="#0f0b0e"/>
+    <!-- Cloth: deep at the outside, lifted in the middle so the form reads -->
+    <linearGradient id="cloth" x1="0.15" y1="0" x2="0.95" y2="1">
+      <stop offset="0%" stop-color="#0b080a"/>
+      <stop offset="34%" stop-color="#191316"/>
+      <stop offset="62%" stop-color="#0e0a0c"/>
+      <stop offset="100%" stop-color="#040303"/>
+    </linearGradient>
+    <linearGradient id="clothLower" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d090b" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#050304" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#050304" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0.2" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#241a1d"/>
+      <stop offset="55%" stop-color="#171114"/>
+      <stop offset="100%" stop-color="#0a0709"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0.3" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#161014"/>
+      <stop offset="60%" stop-color="#0b080a"/>
       <stop offset="100%" stop-color="#050304"/>
     </linearGradient>
-    <linearGradient id="cloakRim" x1="1" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ff4d4d" stop-opacity="0.9"/>
-      <stop offset="45%" stop-color="#8c0b10" stop-opacity="0.35"/>
+
+    <!-- Rim light sweeping down the right contour -->
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff8f8f" stop-opacity="0"/>
+      <stop offset="14%" stop-color="#ff6a6a" stop-opacity="0.95"/>
+      <stop offset="46%" stop-color="#d61f26" stop-opacity="0.75"/>
+      <stop offset="78%" stop-color="#8c0b10" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#5e070b" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rimSoft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff4d4d" stop-opacity="0"/>
+      <stop offset="22%" stop-color="#ff4d4d" stop-opacity="0.5"/>
+      <stop offset="70%" stop-color="#8c0b10" stop-opacity="0.22"/>
       <stop offset="100%" stop-color="#8c0b10" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#5b646b"/>
-      <stop offset="50%" stop-color="#2c3237"/>
-      <stop offset="100%" stop-color="#171b1f"/>
-    </linearGradient>
-    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffe4e4"/>
-      <stop offset="30%" stop-color="#ff3b3b"/>
-      <stop offset="70%" stop-color="#b31115" stop-opacity="0.6"/>
+
+    <radialGradient id="eye" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff2f2"/>
+      <stop offset="26%" stop-color="#ff4a4a"/>
+      <stop offset="64%" stop-color="#b31115" stop-opacity="0.55"/>
       <stop offset="100%" stop-color="#b31115" stop-opacity="0"/>
     </radialGradient>
-    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="16"/>
+
+    <!-- Key light spilling from the upper right onto the shoulder/face -->
+    <radialGradient id="keylight" cx="78%" cy="20%" r="62%">
+      <stop offset="0%" stop-color="#ff9a9a" stop-opacity="0.30"/>
+      <stop offset="42%" stop-color="#b31115" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#b31115" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="soften" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
     </filter>
-    <filter id="glow" x="-120%" y="-120%" width="340%" height="340%">
-      <feGaussianBlur stdDeviation="9" result="b"/>
+    <filter id="halo" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="eyeGlow" x="-160%" y="-160%" width="420%" height="420%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
       <feMerge>
         <feMergeNode in="b"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <clipPath id="bodyClip">
+      <path d="M450 352 C334 352 254 424 214 538 C154 700 122 950 92 1180
+               C 300 1214 600 1214 808 1180
+               C 778 950 746 700 686 538 C646 424 566 352 450 352 Z"/>
+    </clipPath>
   </defs>
 
-  <!-- Red rim light behind the figure -->
-  <path d="M450 360 C330 360 250 430 210 540 C150 700 120 950 90 1180 L810 1180 C780 950 750 700 690 540 C650 430 570 360 450 360 Z"
-        fill="#8c0b10" opacity="0.5" filter="url(#soft)"/>
+  <!-- Atmospheric halo behind the subject -->
+  <ellipse cx="470" cy="620" rx="330" ry="470" fill="#8c0b10" opacity="0.30" filter="url(#halo)"/>
 
-  <!-- Ponytail / hair mass behind head -->
-  <path d="M520 236 C612 210 678 268 650 360 L596 356 C622 300 578 250 522 262 Z" fill="#0a0709"/>
+  <!-- Hair mass behind the head -->
+  <path d="M520 232 C616 204 684 266 652 362 L592 356 C620 298 574 244 522 258 Z" fill="url(#hair)"/>
 
-  <!-- Cloak / body -->
-  <path d="M450 358 C332 358 250 430 210 542 C150 704 118 952 88 1180
-           C 300 1210 600 1210 812 1180
-           C 782 952 750 704 690 542 C650 430 568 358 450 358 Z"
-        fill="url(#cloak)"/>
+  <!-- Coat / body -->
+  <path d="M450 352 C334 352 254 424 214 538 C154 700 122 950 92 1180
+           C 300 1214 600 1214 808 1180
+           C 778 950 746 700 686 538 C646 424 566 352 450 352 Z"
+        fill="url(#cloth)"/>
 
-  <!-- Rim light on the cloak edge -->
-  <path d="M692 540 C752 700 784 952 812 1180"
-        fill="none" stroke="url(#cloakRim)" stroke-width="7" stroke-linecap="round"/>
-  <path d="M636 404 C680 452 700 500 704 548"
-        fill="none" stroke="url(#cloakRim)" stroke-width="5" stroke-linecap="round"/>
+  <!-- Fabric folds, clipped to the coat so they read as volume, not lines -->
+  <g clip-path="url(#bodyClip)" fill="none" stroke-linecap="round">
+    <path d="M392 380 C372 560 356 860 348 1180" stroke="#050304" stroke-width="16" opacity="0.85"/>
+    <path d="M520 384 C548 560 566 870 572 1180" stroke="#050304" stroke-width="20" opacity="0.8"/>
+    <path d="M300 470 C292 640 286 900 300 1176" stroke="#050304" stroke-width="13" opacity="0.6"/>
+    <path d="M636 470 C648 650 654 910 640 1176" stroke="#050304" stroke-width="13" opacity="0.6"/>
+    <path d="M450 420 C446 620 444 900 450 1180" stroke="#1d1519" stroke-width="9" opacity="0.45"/>
+  </g>
 
-  <!-- High popped collar -->
-  <path d="M366 372 C352 300 372 262 402 250 L450 352 L498 250 C528 262 548 300 534 372 C500 396 400 396 366 372 Z"
-        fill="#100c0f"/>
+  <!-- Shoulder plane catching the key light -->
+  <g clip-path="url(#bodyClip)">
+    <path d="M520 356 C640 396 704 486 724 566 C660 512 588 468 512 448 Z" fill="url(#keylight)"/>
+  </g>
+
+  <!-- Bottom fade into darkness -->
+  <path d="M92 1000 C 300 1060 600 1060 808 1000 L808 1200 L92 1200 Z" fill="url(#clothLower)"/>
+
+  <!-- Rim light: soft pass, then the crisp contour -->
+  <path d="M688 540 C748 700 780 950 808 1180"
+        fill="none" stroke="url(#rimSoft)" stroke-width="26" stroke-linecap="round" opacity="0.85"/>
+  <path d="M688 540 C748 700 780 950 808 1180"
+        fill="none" stroke="url(#rim)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M640 402 C684 448 704 496 708 546"
+        fill="none" stroke="url(#rim)" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Popped collar -->
+  <path d="M362 372 C348 296 372 254 404 244 L450 350 L496 244 C528 254 552 296 538 372
+           C500 398 400 398 362 372 Z" fill="#100c0f"/>
+  <path d="M404 244 L450 350 L496 244 C468 286 430 288 404 244 Z" fill="#060405" opacity="0.9"/>
 
   <!-- Neck -->
-  <path d="M420 322 L480 322 L480 372 L420 372 Z" fill="#141014"/>
+  <path d="M418 318 L482 318 L482 374 L418 374 Z" fill="#0d090b"/>
 
-  <!-- Head -->
-  <ellipse cx="450" cy="284" rx="76" ry="90" fill="#161115"/>
+  <!-- Head, shaded from the back-left -->
+  <ellipse cx="452" cy="284" rx="76" ry="90" fill="url(#skin)"/>
 
-  <!-- Hair bangs -->
-  <path d="M376 268 C384 196 424 162 452 162 C506 162 528 210 526 262
-           C512 236 486 226 462 240 C484 268 508 296 520 326
-           C486 300 440 296 410 320 C420 292 402 278 376 268 Z" fill="#0b080a"/>
+  <!-- Hair -->
+  <path d="M376 266 C384 194 424 160 452 160 C508 160 530 208 528 262
+           C514 234 486 224 462 238 C484 266 508 294 520 324
+           C486 298 440 294 410 318 C420 290 402 276 376 266 Z" fill="url(#hair)"/>
+  <path d="M470 182 C510 196 526 236 524 268 C512 240 492 218 464 208 Z" fill="#1e161a" opacity="0.55"/>
 
-  <!-- Headband with scratched hidden-leaf mark -->
-  <path d="M372 236 L528 236 L528 268 L372 268 Z" fill="#0d0a0c"/>
-  <path d="M384 240 L516 240 L516 264 L384 264 Z" fill="url(#metal)"/>
-  <circle cx="418" cy="252" r="8" fill="#0d0a0c"/>
-  <path d="M406 244 L430 260 M466 244 L490 260" stroke="#0d0a0c" stroke-width="3" stroke-linecap="round"/>
-  <path d="M384 270 L516 258" stroke="#0a0709" stroke-width="5" stroke-linecap="round"/>
-
-  <!-- Eyes (Mangekyo glow) -->
-  <g filter="url(#glow)">
-    <ellipse cx="420" cy="308" rx="22" ry="14" fill="url(#eyeGlow)"/>
-    <ellipse cx="480" cy="308" rx="22" ry="14" fill="url(#eyeGlow)"/>
-    <ellipse cx="420" cy="308" rx="5" ry="7" fill="#ffd9d9"/>
-    <ellipse cx="480" cy="308" rx="5" ry="7" fill="#ffd9d9"/>
+  <!-- Eyes: the single warm point in the frame -->
+  <g filter="url(#eyeGlow)">
+    <ellipse cx="420" cy="304" rx="21" ry="12" fill="url(#eye)"/>
+    <ellipse cx="482" cy="304" rx="21" ry="12" fill="url(#eye)"/>
+    <ellipse cx="420" cy="304" rx="4" ry="6" fill="#ffe9e9"/>
+    <ellipse cx="482" cy="304" rx="4" ry="6" fill="#ffe9e9"/>
   </g>
 
-  <!-- Akatsuki red clouds -->
-  <g fill="#0a0709" stroke="#c0161c" stroke-width="3" stroke-linejoin="round" opacity="0.92">
-    <g transform="translate(238,650) scale(1.15)">
-      <path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/>
-    </g>
-    <g transform="translate(508,812) scale(1.4)">
-      <path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/>
-    </g>
-    <g transform="translate(288,972) scale(1.25)">
-      <path d="M0 20 C0 9 13 4 22 9 C27 -2 47 -2 51 9 C64 4 74 12 71 25 C73 34 61 41 50 36 C44 47 24 47 18 36 C7 41 -3 33 0 20 Z"/>
-    </g>
-  </g>
-
-  <!-- Ground shadow fade -->
-  <rect x="60" y="1080" width="780" height="120" fill="#050304" opacity="0.85"/>
+  <!-- Ground contact shadow -->
+  <ellipse cx="450" cy="1178" rx="300" ry="42" fill="#050304" opacity="0.9" filter="url(#soften)"/>
 </svg>

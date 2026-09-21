@@ -5,9 +5,11 @@ import { useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
 import { scrollToId } from "../../lib/scroll";
 import { triggerCrows } from "../../lib/fx";
 import Sharingan from "./Sharingan";
+import FogCanvas from "../fx/FogCanvas";
 
 export default function Hero({ ready }: { ready: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -34,19 +36,25 @@ export default function Hero({ ready }: { ready: boolean }) {
     const section = sectionRef.current;
     if (!section || reduced) return;
 
-    const rawLayers: Array<{ el: HTMLElement | null; depth: number }> = [
-      { el: bgRef.current, depth: 6 },
-      { el: glowRef.current, depth: 14 },
-      { el: titleRef.current, depth: 16 },
-      { el: shadowRef.current, depth: 22 },
-      { el: sharinganRef.current, depth: 30 },
-      { el: figureWrapRef.current, depth: 40 },
-      { el: orbsRef.current, depth: 64 },
-      { el: copyRef.current, depth: 10 },
+    // `z` places each layer on a real 3D plane inside the stage's perspective,
+    // so far layers shrink and drift less while near layers sweep past — the
+    // parallax then reads as depth rather than flat offsets.
+    const rawLayers: Array<{ el: HTMLElement | null; depth: number; z: number }> = [
+      { el: bgRef.current, depth: 6, z: -90 },
+      { el: glowRef.current, depth: 14, z: -70 },
+      { el: titleRef.current, depth: 16, z: -60 },
+      { el: shadowRef.current, depth: 22, z: -45 },
+      { el: sharinganRef.current, depth: 30, z: -35 },
+      { el: figureWrapRef.current, depth: 40, z: 0 },
+      { el: orbsRef.current, depth: 64, z: 40 },
+      { el: smokeRef.current, depth: 48, z: 25 },
+      { el: copyRef.current, depth: 10, z: 0 },
     ];
     const layers = rawLayers.filter(
-      (l): l is { el: HTMLElement; depth: number } => l.el !== null,
+      (l): l is { el: HTMLElement; depth: number; z: number } => l.el !== null,
     );
+
+    layers.forEach((l) => gsap.set(l.el, { z: l.z }));
 
     const movers = layers.map((l) => ({
       depth: l.depth,
@@ -202,6 +210,16 @@ export default function Hero({ ready }: { ready: boolean }) {
       className="relative isolate h-[100svh] min-h-[640px] w-full overflow-hidden"
       aria-label="Hero"
     >
+      {/*
+        3D stage — every atmospheric layer shares one perspective, so the
+        pointer parallax produces genuine depth (near layers sweep, far ones
+        barely move) instead of flat 2D offsets.
+      */}
+      <div
+        ref={stageRef}
+        className="absolute inset-0 z-0"
+        style={{ perspective: "1200px", perspectiveOrigin: "55% 45%" }}
+      >
       {/* 1 — background atmosphere */}
       <div
         ref={bgRef}
@@ -218,6 +236,9 @@ export default function Hero({ ready }: { ready: boolean }) {
         style={{ background: "radial-gradient(circle, rgba(140,11,16,0.6), transparent 70%)", willChange: "transform" }}
         aria-hidden="true"
       />
+
+      {/* 1b — volumetric haze / lit smoke */}
+      <FogCanvas className="z-[3] opacity-90" />
 
       {/* 2 — giant hollow wordmark behind the figure */}
       <div
@@ -318,6 +339,7 @@ export default function Hero({ ready }: { ready: boolean }) {
               "linear-gradient(90deg, transparent, rgba(120,100,100,0.22) 40%, rgba(160,140,140,0.16) 55%, transparent)",
           }}
         />
+      </div>
       </div>
 
       {/* 8 — copy */}

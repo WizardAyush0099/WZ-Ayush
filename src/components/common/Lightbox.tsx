@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { getLenis } from "../../lib/scroll";
+import { getLenis, resumeSmoothScroll } from "../../lib/scroll";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 
 export type LightboxItem = { src: string; alt: string; caption?: string };
@@ -73,7 +73,8 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
       window.clearTimeout(t);
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
-      getLenis()?.start();
+      // Always release the scroll lock, even if the lightbox closed abruptly.
+      resumeSmoothScroll();
     };
   }, [visible, close, step]);
 
