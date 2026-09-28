@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { about, assets } from "../../data/content";
+import { about, assets, meta } from "../../data/content";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 import { RevealImage, RevealText } from "../common/Reveal";
@@ -54,7 +54,7 @@ export default function AboutSection() {
             </div>
             <div className="relative z-10 mt-5 flex items-center gap-3 font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
               <span className="h-px w-8 bg-blood-500/60" />
-              <span>Placeholder image — swap in your own portrait</span>
+              <span>{about.accent} · {meta.location}</span>
             </div>
           </div>
 

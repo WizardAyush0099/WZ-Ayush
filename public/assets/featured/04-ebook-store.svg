@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="E-book store storefront interface">
+  <defs>
+    <linearGradient id="eb-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0708"/>
+      <stop offset="0.55" stop-color="#060304"/>
+      <stop offset="1" stop-color="#030202"/>
+    </linearGradient>
+    <radialGradient id="eb-glow" cx="0.2" cy="0.9" r="0.9">
+      <stop offset="0" stop-color="#8c0b10" stop-opacity="0.34"/>
+      <stop offset="0.6" stop-color="#5e070b" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#5e070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="eb-card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.014"/>
+    </linearGradient>
+    <linearGradient id="eb-cover1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d61f26"/>
+      <stop offset="1" stop-color="#3a0407"/>
+    </linearGradient>
+    <linearGradient id="eb-cover2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1f26"/>
+      <stop offset="1" stop-color="#0a0709"/>
+    </linearGradient>
+    <linearGradient id="eb-cover3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5e070b"/>
+      <stop offset="1" stop-color="#120d10"/>
+    </linearGradient>
+    <linearGradient id="eb-cover4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b1418"/>
+      <stop offset="1" stop-color="#050304"/>
+    </linearGradient>
+    <filter id="eb-blur"><feGaussianBlur stdDeviation="32"/></filter>
+    <filter id="eb-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#eb-bg)"/>
+  <rect width="1600" height="1000" fill="url(#eb-glow)"/>
+  <ellipse cx="380" cy="820" rx="460" ry="220" fill="#d61f26" opacity="0.12" filter="url(#eb-blur)"/>
+
+  <!-- header -->
+  <g transform="translate(120 120)">
+    <rect x="0" y="0" width="1040" height="14" rx="7" fill="#ece7e1" fill-opacity="0.14"/>
+    <g transform="translate(1180 0)">
+      <rect x="0" y="-6" width="90" height="30" rx="4" fill="none" stroke="#ece7e1" stroke-opacity="0.2"/>
+      <rect x="112" y="-6" width="70" height="30" rx="4" fill="#d61f26" fill-opacity="0.22" stroke="#d61f26" stroke-opacity="0.45"/>
+    </g>
+  </g>
+
+  <!-- featured book -->
+  <g transform="translate(120 220)">
+    <rect x="0" y="0" width="700" height="580" rx="14" fill="url(#eb-card)" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <g transform="translate(58 66)">
+      <rect x="0" y="0" width="240" height="360" rx="6" fill="url(#eb-cover1)"/>
+      <rect x="14" y="0" width="10" height="360" fill="#050304" opacity="0.35"/>
+      <rect x="44" y="46" width="120" height="14" rx="4" fill="#fff" fill-opacity="0.55"/>
+      <rect x="44" y="72" width="80" height="10" rx="4" fill="#fff" fill-opacity="0.3"/>
+      <circle cx="120" cy="230" r="46" fill="none" stroke="#fff" stroke-opacity="0.4" stroke-width="2"/>
+      <circle cx="120" cy="230" r="12" fill="#fff" fill-opacity="0.7"/>
+      <rect x="44" y="316" width="60" height="8" rx="4" fill="#fff" fill-opacity="0.3"/>
+    </g>
+    <g transform="translate(348 66)">
+      <rect x="0" y="0" width="300" height="16" rx="8" fill="#ece7e1" fill-opacity="0.22"/>
+      <rect x="0" y="34" width="220" height="16" rx="8" fill="#ece7e1" fill-opacity="0.16"/>
+      <g fill="#ece7e1" fill-opacity="0.08">
+        <rect x="0" y="88" width="300" height="9" rx="4.5"/>
+        <rect x="0" y="112" width="270" height="9" rx="4.5"/>
+        <rect x="0" y="136" width="290" height="9" rx="4.5"/>
+        <rect x="0" y="160" width="230" height="9" rx="4.5"/>
+      </g>
+      <rect x="0" y="210" width="110" height="34" rx="4" fill="#ece7e1" fill-opacity="0.08" stroke="#ece7e1" stroke-opacity="0.16"/>
+      <rect x="0" y="272" width="196" height="44" rx="4" fill="#b31115"/>
+      <rect x="18" y="290" width="120" height="10" rx="5" fill="#fff" fill-opacity="0.65"/>
+    </g>
+    <g transform="translate(58 462)">
+      <rect x="0" y="0" width="584" height="76" rx="10" fill="#ece7e1" fill-opacity="0.035"/>
+      <rect x="24" y="22" width="180" height="12" rx="6" fill="#ece7e1" fill-opacity="0.16"/>
+      <rect x="24" y="46" width="300" height="9" rx="4.5" fill="#ece7e1" fill-opacity="0.08"/>
+    </g>
+  </g>
+
+  <!-- shelf -->
+  <g transform="translate(880 220)">
+    <rect x="0" y="0" width="600" height="580" rx="14" fill="url(#eb-card)" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <rect x="30" y="30" width="150" height="14" rx="7" fill="#ece7e1" fill-opacity="0.18"/>
+    <g transform="translate(30 84)">
+      <rect x="0" y="0" width="170" height="220" rx="5" fill="url(#eb-cover2)"/>
+      <rect x="10" y="0" width="8" height="220" fill="#050304" opacity="0.4"/>
+      <rect x="30" y="32" width="100" height="10" rx="4" fill="#ece7e1" fill-opacity="0.42"/>
+      <rect x="30" y="52" width="70" height="7" rx="3.5" fill="#ece7e1" fill-opacity="0.2"/>
+      <rect x="30" y="180" width="52" height="7" rx="3.5" fill="#f24b4b" fill-opacity="0.7"/>
+    </g>
+    <g transform="translate(216 84)">
+      <rect x="0" y="0" width="170" height="220" rx="5" fill="url(#eb-cover3)"/>
+      <rect x="10" y="0" width="8" height="220" fill="#050304" opacity="0.4"/>
+      <rect x="30" y="32" width="86" height="10" rx="4" fill="#ece7e1" fill-opacity="0.42"/>
+      <rect x="30" y="52" width="110" height="7" rx="3.5" fill="#ece7e1" fill-opacity="0.2"/>
+      <rect x="30" y="180" width="52" height="7" rx="3.5" fill="#f24b4b" fill-opacity="0.7"/>
+    </g>
+    <g transform="translate(402 84)">
+      <rect x="0" y="0" width="170" height="220" rx="5" fill="url(#eb-cover4)"/>
+      <rect x="10" y="0" width="8" height="220" fill="#050304" opacity="0.4"/>
+      <rect x="30" y="32" width="104" height="10" rx="4" fill="#ece7e1" fill-opacity="0.42"/>
+      <rect x="30" y="52" width="64" height="7" rx="3.5" fill="#ece7e1" fill-opacity="0.2"/>
+      <rect x="30" y="180" width="52" height="7" rx="3.5" fill="#f24b4b" fill-opacity="0.7"/>
+    </g>
+
+    <g transform="translate(30 342)">
+      <rect x="0" y="0" width="170" height="200" rx="5" fill="url(#eb-cover4)"/>
+      <rect x="30" y="28" width="96" height="10" rx="4" fill="#ece7e1" fill-opacity="0.36"/>
+      <rect x="30" y="48" width="120" height="7" rx="3.5" fill="#ece7e1" fill-opacity="0.16"/>
+    </g>
+    <g transform="translate(216 342)">
+      <rect x="0" y="0" width="170" height="200" rx="5" fill="url(#eb-cover1)" opacity="0.85"/>
+      <rect x="30" y="28" width="80" height="10" rx="4" fill="#fff" fill-opacity="0.5"/>
+      <rect x="30" y="48" width="104" height="7" rx="3.5" fill="#fff" fill-opacity="0.28"/>
+    </g>
+    <g transform="translate(402 342)">
+      <rect x="0" y="0" width="170" height="200" rx="5" fill="url(#eb-cover2)"/>
+      <rect x="30" y="28" width="110" height="10" rx="4" fill="#ece7e1" fill-opacity="0.36"/>
+      <rect x="30" y="48" width="86" height="7" rx="3.5" fill="#ece7e1" fill-opacity="0.16"/>
+    </g>
+  </g>
+
+  <rect width="1600" height="1000" filter="url(#eb-grain)" opacity="0.035" style="mix-blend-mode:soft-light"/>
+</svg>

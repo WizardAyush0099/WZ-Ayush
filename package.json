@@ -10,14 +10,20 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
+    "@clerk/clerk-react": "5.22.5",
+    "@neon/config": "^1.8.2",
+    "@neon/env": "^1.4.7",
+    "@react-three/fiber": "8.17.10",
     "gsap": "^3.12.5",
     "lenis": "^1.1.18",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "three": "0.169.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/three": "0.169.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="FitLife Blueprint training plan interface">
+  <defs>
+    <linearGradient id="fl-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0708"/>
+      <stop offset="0.6" stop-color="#060304"/>
+      <stop offset="1" stop-color="#040203"/>
+    </linearGradient>
+    <radialGradient id="fl-glow" cx="0.18" cy="0.12" r="0.8">
+      <stop offset="0" stop-color="#f24b4b" stop-opacity="0.3"/>
+      <stop offset="0.55" stop-color="#8c0b10" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#8c0b10" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fl-card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.015"/>
+    </linearGradient>
+    <linearGradient id="fl-bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f24b4b"/>
+      <stop offset="1" stop-color="#8c0b10" stop-opacity="0.6"/>
+    </linearGradient>
+    <filter id="fl-blur"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="fl-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#fl-bg)"/>
+  <rect width="1600" height="1000" fill="url(#fl-glow)"/>
+  <ellipse cx="300" cy="900" rx="440" ry="200" fill="#d61f26" opacity="0.12" filter="url(#fl-blur)"/>
+
+  <!-- phase timeline -->
+  <g transform="translate(120 130)">
+    <rect x="0" y="0" width="1360" height="148" rx="12" fill="url(#fl-card)" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <line x1="70" y1="74" x2="1290" y2="74" stroke="#ece7e1" stroke-opacity="0.12"/>
+    <line x1="70" y1="74" x2="700" y2="74" stroke="url(#fl-bar)" stroke-width="2"/>
+    <g>
+      <circle cx="70" cy="74" r="13" fill="#d61f26"/>
+      <circle cx="70" cy="74" r="5" fill="#05030400" stroke="#fff" stroke-opacity="0.55"/>
+      <circle cx="380" cy="74" r="13" fill="#d61f26"/>
+      <circle cx="380" cy="74" r="5" fill="#05030400" stroke="#fff" stroke-opacity="0.55"/>
+      <circle cx="700" cy="74" r="14" fill="#0a0709" stroke="#f24b4b" stroke-width="2.5"/>
+      <circle cx="1030" cy="74" r="10" fill="#0a0709" stroke="#ece7e1" stroke-opacity="0.3"/>
+      <circle cx="1290" cy="74" r="10" fill="#0a0709" stroke="#ece7e1" stroke-opacity="0.3"/>
+    </g>
+    <g fill="#ece7e1">
+      <rect x="42" y="106" width="58" height="10" rx="5" fill-opacity="0.22"/>
+      <rect x="352" y="106" width="58" height="10" rx="5" fill-opacity="0.22"/>
+      <rect x="672" y="106" width="58" height="10" rx="5" fill-opacity="0.5"/>
+      <rect x="1002" y="106" width="58" height="10" rx="5" fill-opacity="0.12"/>
+      <rect x="1262" y="106" width="58" height="10" rx="5" fill-opacity="0.12"/>
+    </g>
+    <rect x="26" y="28" width="150" height="14" rx="7" fill="#ece7e1" fill-opacity="0.16"/>
+  </g>
+
+  <!-- macro donut -->
+  <g transform="translate(120 330)">
+    <rect x="0" y="0" width="430" height="520" rx="12" fill="url(#fl-card)" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <rect x="28" y="30" width="130" height="12" rx="6" fill="#ece7e1" fill-opacity="0.16"/>
+    <g transform="translate(215 210)">
+      <circle r="112" fill="none" stroke="#ece7e1" stroke-opacity="0.08" stroke-width="26"/>
+      <circle r="112" fill="none" stroke="#f24b4b" stroke-width="26" stroke-linecap="butt"
+              stroke-dasharray="352 352" transform="rotate(-90)"/>
+      <circle r="112" fill="none" stroke="#b31115" stroke-width="26" stroke-linecap="butt"
+              stroke-dasharray="176 528" transform="rotate(90)"/>
+      <circle r="112" fill="none" stroke="#5e070b" stroke-width="26" stroke-linecap="butt"
+              stroke-dasharray="120 584" transform="rotate(180)"/>
+      <rect x="-42" y="-16" width="84" height="20" rx="6" fill="#ece7e1" fill-opacity="0.22"/>
+      <rect x="-30" y="14" width="60" height="10" rx="5" fill="#ece7e1" fill-opacity="0.1"/>
+    </g>
+    <g transform="translate(60 420)">
+      <g>
+        <circle cx="5" cy="5" r="5" fill="#f24b4b"/>
+        <rect x="22" y="0" width="120" height="10" rx="5" fill="#ece7e1" fill-opacity="0.14"/>
+        <rect x="300" y="0" width="40" height="10" rx="5" fill="#ece7e1" fill-opacity="0.3"/>
+      </g>
+      <g transform="translate(0 34)">
+        <circle cx="5" cy="5" r="5" fill="#b31115"/>
+        <rect x="22" y="0" width="90" height="10" rx="5" fill="#ece7e1" fill-opacity="0.14"/>
+        <rect x="300" y="0" width="40" height="10" rx="5" fill="#ece7e1" fill-opacity="0.3"/>
+      </g>
+      <g transform="translate(0 68)">
+        <circle cx="5" cy="5" r="5" fill="#5e070b"/>
+        <rect x="22" y="0" width="140" height="10" rx="5" fill="#ece7e1" fill-opacity="0.14"/>
+        <rect x="300" y="0" width="40" height="10" rx="5" fill="#ece7e1" fill-opacity="0.3"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- weekly volume bars -->
+  <g transform="translate(590 330)">
+    <rect x="0" y="0" width="890" height="300" rx="12" fill="url(#fl-card)" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <rect x="28" y="30" width="150" height="12" rx="6" fill="#ece7e1" fill-opacity="0.16"/>
+    <rect x="760" y="28" width="102" height="20" rx="4" fill="#d61f26" fill-opacity="0.18" stroke="#d61f26" stroke-opacity="0.4"/>
+    <g transform="translate(60 250)">
+      <g>
+        <rect x="0" y="-120" width="52" height="120" rx="4" fill="url(#fl-bar)"/>
+        <rect x="90" y="-180" width="52" height="180" rx="4" fill="url(#fl-bar)"/>
+        <rect x="180" y="-96" width="52" height="96" rx="4" fill="#ece7e1" fill-opacity="0.1"/>
+        <rect x="270" y="-210" width="52" height="210" rx="4" fill="url(#fl-bar)"/>
+        <rect x="360" y="-150" width="52" height="150" rx="4" fill="#ece7e1" fill-opacity="0.1"/>
+        <rect x="450" y="-70" width="52" height="70" rx="4" fill="#ece7e1" fill-opacity="0.1"/>
+        <rect x="540" y="-244" width="52" height="244" rx="4" fill="url(#fl-bar)"/>
+        <rect x="630" y="-168" width="52" height="168" rx="4" fill="url(#fl-bar)"/>
+        <rect x="720" y="-52" width="52" height="52" rx="4" fill="#ece7e1" fill-opacity="0.1"/>
+      </g>
+    </g>
+    <line x1="40" y1="250" x2="850" y2="250" stroke="#ece7e1" stroke-opacity="0.12"/>
+  </g>
+
+  <!-- today's plan -->
+  <g transform="translate(590 670)">
+    <rect x="0" y="0" width="890" height="180" rx="12" fill="url(#fl-card)" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <g transform="translate(30 34)">
+      <rect x="0" y="0" width="380" height="112" rx="8" fill="#ece7e1" fill-opacity="0.035"/>
+      <rect x="20" y="24" width="180" height="12" rx="6" fill="#ece7e1" fill-opacity="0.2"/>
+      <rect x="20" y="52" width="260" height="9" rx="4.5" fill="#ece7e1" fill-opacity="0.09"/>
+      <rect x="20" y="74" width="120" height="9" rx="4.5" fill="#f24b4b" fill-opacity="0.5"/>
+      <rect x="820" y="44" width="0" height="0"/>
+    </g>
+    <g transform="translate(440 34)">
+      <rect x="0" y="0" width="420" height="112" rx="8" fill="#ece7e1" fill-opacity="0.035"/>
+      <rect x="20" y="24" width="150" height="12" rx="6" fill="#ece7e1" fill-opacity="0.2"/>
+      <rect x="20" y="52" width="300" height="9" rx="4.5" fill="#ece7e1" fill-opacity="0.09"/>
+      <rect x="20" y="74" width="200" height="9" rx="4.5" fill="#ece7e1" fill-opacity="0.14"/>
+    </g>
+  </g>
+
+  <rect width="1600" height="1000" filter="url(#fl-grain)" opacity="0.035" style="mix-blend-mode:soft-light"/>
+</svg>

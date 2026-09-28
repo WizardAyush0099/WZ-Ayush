@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="Study Hub dashboard interface">
+  <defs>
+    <linearGradient id="sh-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0809"/>
+      <stop offset="0.55" stop-color="#070405"/>
+      <stop offset="1" stop-color="#040203"/>
+    </linearGradient>
+    <radialGradient id="sh-glow" cx="0.78" cy="0.16" r="0.75">
+      <stop offset="0" stop-color="#d61f26" stop-opacity="0.34"/>
+      <stop offset="0.5" stop-color="#8c0b10" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#8c0b10" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sh-panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.055"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.015"/>
+    </linearGradient>
+    <linearGradient id="sh-accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f24b4b"/>
+      <stop offset="1" stop-color="#8c0b10"/>
+    </linearGradient>
+    <filter id="sh-blur"><feGaussianBlur stdDeviation="26"/></filter>
+    <filter id="sh-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#sh-bg)"/>
+  <rect width="1600" height="1000" fill="url(#sh-glow)"/>
+  <ellipse cx="1210" cy="880" rx="420" ry="180" fill="#8c0b10" opacity="0.16" filter="url(#sh-blur)"/>
+
+  <!-- window -->
+  <g transform="translate(150 120)">
+    <rect x="0" y="0" width="1300" height="760" rx="14" fill="#0a0709" stroke="#ece7e1" stroke-opacity="0.12"/>
+    <rect x="0" y="0" width="1300" height="52" rx="14" fill="#ece7e1" fill-opacity="0.04"/>
+    <circle cx="30" cy="26" r="5" fill="#f24b4b" opacity="0.75"/>
+    <circle cx="50" cy="26" r="5" fill="#ece7e1" opacity="0.22"/>
+    <circle cx="70" cy="26" r="5" fill="#ece7e1" opacity="0.22"/>
+    <rect x="560" y="17" width="180" height="18" rx="9" fill="#ece7e1" fill-opacity="0.06"/>
+
+    <!-- sidebar -->
+    <rect x="0" y="52" width="250" height="708" fill="#ece7e1" fill-opacity="0.022"/>
+    <line x1="250" y1="52" x2="250" y2="760" stroke="#ece7e1" stroke-opacity="0.1"/>
+    <rect x="32" y="96" width="86" height="12" rx="6" fill="url(#sh-accent)"/>
+    <g fill="#ece7e1" fill-opacity="0.16">
+      <rect x="32" y="152" width="150" height="10" rx="5"/>
+      <rect x="32" y="196" width="120" height="10" rx="5"/>
+      <rect x="32" y="240" width="164" height="10" rx="5"/>
+      <rect x="32" y="284" width="104" height="10" rx="5"/>
+      <rect x="32" y="328" width="136" height="10" rx="5"/>
+    </g>
+    <rect x="20" y="132" width="210" height="42" rx="6" fill="#d61f26" fill-opacity="0.12" stroke="#d61f26" stroke-opacity="0.35"/>
+
+    <!-- header -->
+    <rect x="292" y="96" width="300" height="26" rx="6" fill="#ece7e1" fill-opacity="0.14"/>
+    <rect x="292" y="140" width="190" height="12" rx="6" fill="#ece7e1" fill-opacity="0.07"/>
+
+    <!-- focus timer card -->
+    <g transform="translate(292 190)">
+      <rect width="420" height="250" rx="10" fill="url(#sh-panel)" stroke="#ece7e1" stroke-opacity="0.1"/>
+      <circle cx="120" cy="125" r="74" fill="none" stroke="#ece7e1" stroke-opacity="0.1" stroke-width="10"/>
+      <circle cx="120" cy="125" r="74" fill="none" stroke="url(#sh-accent)" stroke-width="10"
+              stroke-linecap="round" stroke-dasharray="330 465" transform="rotate(-90 120 125)"/>
+      <circle cx="120" cy="125" r="8" fill="#f24b4b"/>
+      <rect x="232" y="72" width="140" height="14" rx="7" fill="#ece7e1" fill-opacity="0.2"/>
+      <rect x="232" y="106" width="96" height="10" rx="5" fill="#ece7e1" fill-opacity="0.09"/>
+      <rect x="232" y="132" width="120" height="10" rx="5" fill="#ece7e1" fill-opacity="0.09"/>
+      <rect x="232" y="176" width="88" height="26" rx="4" fill="#d61f26" fill-opacity="0.2" stroke="#d61f26" stroke-opacity="0.4"/>
+    </g>
+
+    <!-- subject cards -->
+    <g transform="translate(738 190)">
+      <rect width="532" height="116" rx="10" fill="url(#sh-panel)" stroke="#ece7e1" stroke-opacity="0.09"/>
+      <rect x="22" y="26" width="64" height="64" rx="8" fill="#d61f26" fill-opacity="0.16" stroke="#d61f26" stroke-opacity="0.3"/>
+      <rect x="104" y="38" width="200" height="14" rx="7" fill="#ece7e1" fill-opacity="0.18"/>
+      <rect x="104" y="64" width="270" height="10" rx="5" fill="#ece7e1" fill-opacity="0.08"/>
+      <rect x="420" y="46" width="88" height="10" rx="5" fill="#f24b4b" fill-opacity="0.5"/>
+    </g>
+    <g transform="translate(738 330)">
+      <rect width="532" height="116" rx="10" fill="url(#sh-panel)" stroke="#ece7e1" stroke-opacity="0.09"/>
+      <rect x="22" y="26" width="64" height="64" rx="8" fill="#ece7e1" fill-opacity="0.05"/>
+      <rect x="104" y="38" width="164" height="14" rx="7" fill="#ece7e1" fill-opacity="0.14"/>
+      <rect x="104" y="64" width="238" height="10" rx="5" fill="#ece7e1" fill-opacity="0.08"/>
+      <rect x="420" y="46" width="60" height="10" rx="5" fill="#ece7e1" fill-opacity="0.2"/>
+    </g>
+    <g transform="translate(738 470)">
+      <rect width="532" height="116" rx="10" fill="url(#sh-panel)" stroke="#ece7e1" stroke-opacity="0.09"/>
+      <rect x="22" y="26" width="64" height="64" rx="8" fill="#ece7e1" fill-opacity="0.05"/>
+      <rect x="104" y="38" width="212" height="14" rx="7" fill="#ece7e1" fill-opacity="0.14"/>
+      <rect x="104" y="64" width="196" height="10" rx="5" fill="#ece7e1" fill-opacity="0.08"/>
+      <rect x="420" y="46" width="72" height="10" rx="5" fill="#ece7e1" fill-opacity="0.2"/>
+    </g>
+
+    <!-- study notes area -->
+    <g transform="translate(292 476)">
+      <rect width="420" height="234" rx="10" fill="url(#sh-panel)" stroke="#ece7e1" stroke-opacity="0.09"/>
+      <rect x="24" y="26" width="112" height="12" rx="6" fill="#ece7e1" fill-opacity="0.18"/>
+      <g fill="#ece7e1" fill-opacity="0.08">
+        <rect x="24" y="66" width="368" height="10" rx="5"/>
+        <rect x="24" y="94" width="330" height="10" rx="5"/>
+        <rect x="24" y="122" width="352" height="10" rx="5"/>
+        <rect x="24" y="150" width="286" height="10" rx="5"/>
+        <rect x="24" y="178" width="320" height="10" rx="5"/>
+      </g>
+    </g>
+
+    <!-- week chart -->
+    <g transform="translate(292 736)">
+      <rect width="978" height="0" />
+    </g>
+    <g transform="translate(292 730)">
+      <rect width="978" height="0"/>
+    </g>
+  </g>
+
+  <!-- heat bars along the bottom edge -->
+  <g transform="translate(150 890)">
+    <g fill="url(#sh-accent)">
+      <rect x="0" y="0" width="34" height="34" rx="4" opacity="0.9"/>
+      <rect x="44" y="8" width="34" height="26" rx="4" opacity="0.6"/>
+      <rect x="88" y="0" width="34" height="34" rx="4" opacity="0.75"/>
+      <rect x="132" y="14" width="34" height="20" rx="4" opacity="0.4"/>
+    </g>
+    <g fill="#ece7e1" fill-opacity="0.08">
+      <rect x="176" y="10" width="34" height="24" rx="4"/>
+      <rect x="220" y="4" width="34" height="30" rx="4"/>
+      <rect x="264" y="16" width="34" height="18" rx="4"/>
+      <rect x="308" y="8" width="34" height="26" rx="4"/>
+      <rect x="352" y="0" width="34" height="34" rx="4"/>
+      <rect x="396" y="12" width="34" height="22" rx="4"/>
+    </g>
+  </g>
+
+  <rect width="1600" height="1000" filter="url(#sh-grain)" opacity="0.035" style="mix-blend-mode:soft-light"/>
+</svg>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { hero, nav, meta } from "../data/content";
 import { getLenis, resumeSmoothScroll, scrollToId } from "../lib/scroll";
 import SoundToggle from "./SoundToggle";
+import AuthControls from "./auth/AuthLayer";
 
 export default function Navbar({ ready }: { ready: boolean }) {
   const [scrolled, setScrolled] = useState(false);
@@ -140,6 +141,10 @@ export default function Navbar({ ready }: { ready: boolean }) {
           </nav>
 
           <div className="relative z-10 flex items-center gap-5">
+            <div className="hidden md:block">
+              <AuthControls />
+            </div>
+            <span className="hidden h-4 w-px bg-bone/15 md:block" aria-hidden="true" />
             <SoundToggle />
             <button
               ref={toggleRef}
@@ -214,8 +219,13 @@ export default function Navbar({ ready }: { ready: boolean }) {
             ))}
           </nav>
 
+          {/* Auth sits with the rest of the menu so it is reachable on phones. */}
+          <div className="pointer-events-auto mt-10 flex items-center justify-center border-t border-bone/10 pt-8 md:hidden">
+            <AuthControls />
+          </div>
+
           {/* Explicit close control — always visible, independent of the header. */}
-          <div className="pointer-events-auto mt-10 flex items-center justify-between">
+          <div className="pointer-events-auto mt-8 flex items-center justify-between">
             <div className="flex flex-col gap-2 font-body text-[11px] uppercase tracking-wide2 text-bone-dim">
               <span>{meta.studio}</span>
               <span>{meta.location}</span>

@@ -14,9 +14,7 @@
 const base = import.meta.env.BASE_URL;
 
 export const assets = {
-  /** Main hero figure — transparent cut-out, bottom-centred. */
-  heroFigure: `${base}assets/hero-figure.svg`,
-  /** Large blurred silhouette behind the figure. */
+  /** Large blurred silhouette behind the 3D hero stage. */
   heroShadow: `${base}assets/hero-shadow.svg`,
   /** Wide atmospheric backdrop. */
   background: `${base}assets/background.svg`,
@@ -30,9 +28,9 @@ export type NavItem = { id: string; label: string };
 
 export const nav: NavItem[] = [
   { id: "home", label: "Home" },
-  { id: "about", label: "About" },
+  { id: "story", label: "Approach" },
   { id: "work", label: "Work" },
-  { id: "gallery", label: "Gallery" },
+  { id: "gallery", label: "Archive" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -44,6 +42,8 @@ export const hero = {
   tagline: "The Art of Building",
   traits: "Developer • Designer • Builder",
   scrollHint: "Scroll to explore",
+  lede:
+    "I design and engineer dark, motion-led web products — interfaces with real depth, built to be felt before they are understood.",
 };
 
 /** How I work — the section right after the hero. */
@@ -55,13 +55,12 @@ export const story = {
     "I build focused digital products with an emphasis on motion, clarity and craft — interfaces that feel considered rather than decorated.",
     "Every project starts with the problem, not the pixels. What follows is iteration, restraint, and a lot of small details that add up.",
   ],
-  // Edit these three to whatever facts you want to lead with.
   stats: [
-    { value: "01", label: "Featured Project" },
-    { value: "React", label: "Primary Stack" },
-    { value: "2026", label: "Portfolio" },
+    { value: "04", label: "Shipped Products" },
+    { value: "3D", label: "Real-time Web" },
+    { value: "2026", label: "Latest Build" },
   ],
-  image: `${base}assets/featured/02.svg`,
+  image: `${base}assets/gallery/03.svg`,
 };
 
 export type Project = {
@@ -71,63 +70,80 @@ export type Project = {
   category: string;
   description: string;
   image: string;
+  /** Bullet list of what the build actually does. */
+  highlights: string[];
+  /** Stack chips rendered on the row. */
+  stack: string[];
   /** When set, clicking the row opens this link instead of the image viewer. */
   href?: string;
 };
 
 /**
- * Featured work. Each array entry renders as one large row (number, title,
- * category, description). Add `href` to make the row open a live site/repo
- * instead of the image viewer.
+ * Featured work — Study Hub and its three flagship pages.
  *
- * The entries after Study Hub are derived from the projects in the GitHub
- * account — rewrite these descriptions so they say what the work actually does.
+ * Each entry renders as one large row (number, title, category, description).
+ * Add `href` to make the row open a live site/repo instead of the image viewer.
  */
 export const projects: Project[] = [
   {
     index: "01",
     title: "Study Hub",
     accent: "Focus",
-    category: "Web App",
+    category: "Product · Platform",
     description:
-      "A study workspace that brings notes, resources and revision into one place — built to cut the friction out of focused learning.",
-    image: `${base}assets/featured/02.svg`,
+      "The core product: a study workspace that folds notes, resources and revision into one calm surface — built to cut every gram of friction out of focused learning.",
+    image: `${base}assets/featured/01-study-hub.svg`,
+    highlights: [
+      "Unified workspace for notes, resources and revision",
+      "Reactive dashboards that stay in sync as you work",
+      "Built for long sessions — low noise, high clarity",
+    ],
+    stack: ["React", "TypeScript", "Convex"],
   },
   {
     index: "02",
-    title: "Wizard XO",
-    accent: "Play",
-    category: "Web Game",
-    description: "A browser tic-tac-toe build with a fast, clean round loop and instant rematches.",
-    image: `${base}assets/featured/01.svg`,
-    href: "https://github.com/WizardAyush0099/Wizard-XO-",
+    title: "FitLife Blueprint",
+    accent: "Discipline",
+    category: "Flagship Page",
+    description:
+      "A training and nutrition blueprint page that turns vague fitness intentions into a concrete, trackable plan — macros, phases and progress in one screen.",
+    image: `${base}assets/featured/02-fitlife.svg`,
+    highlights: [
+      "Structured training phases with progress tracking",
+      "Nutrition targets that adapt to your goal",
+      "Motion-led onboarding that explains itself",
+    ],
+    stack: ["React", "GSAP", "Charts"],
   },
   {
     index: "03",
-    title: "Truth or Dare",
-    accent: "Social",
-    category: "Web Game",
-    description: "A party game for groups — open it, pass the device round and play.",
-    image: `${base}assets/featured/03.svg`,
-    href: "https://github.com/WizardAyush0099/Truth-or-Dare-Game",
+    title: "Guitar Theory Lab",
+    accent: "Craft",
+    category: "Flagship Page",
+    description:
+      "An interactive fretboard that makes music theory visible — scales, intervals and chords light up in place so the pattern is understood, not memorised.",
+    image: `${base}assets/featured/03-guitar-lab.svg`,
+    highlights: [
+      "Live fretboard that highlights scales and intervals",
+      "Chord and mode explorer with instant audio feedback",
+      "Theory explained visually, in the order you play it",
+    ],
+    stack: ["React", "Web Audio", "SVG"],
   },
   {
     index: "04",
-    title: "Anime Watcher",
-    accent: "Discover",
-    category: "Web App",
-    description: "A discovery app for finding and keeping track of what to watch next.",
-    image: `${base}assets/featured/04.svg`,
-    href: "https://github.com/WizardAyush0099/Anime-Watcher",
-  },
-  {
-    index: "05",
-    title: "Wizard Web",
-    accent: "Archive",
-    category: "Web Project",
-    description: "An earlier web build, kept as part of the archive.",
-    image: `${base}assets/horizontal/04.svg`,
-    href: "https://github.com/WizardAyush0099/Wizard-Web",
+    title: "E-book Store",
+    accent: "Commerce",
+    category: "Flagship Page",
+    description:
+      "A dark, editorial storefront for digital books — cinematic covers, instant previews and a checkout flow that gets out of the way.",
+    image: `${base}assets/featured/04-ebook-store.svg`,
+    highlights: [
+      "Editorial storefront that puts the writing first",
+      "Sample reader with instant page previews",
+      "Frictionless purchase and library delivery",
+    ],
+    stack: ["React", "Commerce", "Storage"],
   },
 ];
 
@@ -166,23 +182,47 @@ export const horizontal: HorizontalFrame[] = [
   { src: `${base}assets/horizontal/05.svg`, alt: "Shapes dissolving into shadow", index: "V", title: "Feather", scale: "md" },
 ];
 
+/** Capability grid — placed after the reel for rhythm. */
+export const capabilities = {
+  eyebrow: "02 — Capability",
+  title: "What I Bring",
+  body: "Three things I care about more than anything else on a build.",
+  items: [
+    {
+      key: "01",
+      title: "Interface Engineering",
+      body: "React and TypeScript front-ends that stay fast under real content, real networks and real users.",
+    },
+    {
+      key: "02",
+      title: "Motion & 3D",
+      body: "GSAP timelines and WebGL scenes — depth, parallax and physics that serve the story instead of showing off.",
+    },
+    {
+      key: "03",
+      title: "Product Thinking",
+      body: "I scope to the problem, ship the smallest version that proves it, then refine what the data rewards.",
+    },
+  ],
+};
+
 export const about = {
-  eyebrow: "02 — About",
+  eyebrow: "03 — About",
   title: "Behind the Work",
   accent: "AY",
   body: [
     "I design and build dark, motion-led web experiences where atmosphere carries the story. Every scroll and transition is deliberate — restraint over spectacle.",
-    "This portfolio is itself a build: a cinematic, interaction-heavy site engineered to stay smooth even on a mid-range phone.",
+    "This portfolio is itself a build: a WebGL hero, a pinned horizontal reel and this account system, engineered to stay smooth even on a mid-range phone.",
   ],
   facts: [
-    { label: "Focus", value: "Web Applications" },
+    { label: "Focus", value: "Web Products" },
     { label: "Stack", value: "React · TypeScript" },
     { label: "Based", value: "Remote" },
   ],
 };
 
 export const cta = {
-  eyebrow: "03 — Contact",
+  eyebrow: "04 — Contact",
   title: "Let's Work Together",
   accent: "WZ",
   body: "Have a project, a role or an idea worth building? I'd like to hear about it.",
@@ -202,7 +242,7 @@ export const contact = {
 export const footer = {
   tagline: "Portfolio",
   columns: [
-    { title: "Explore", links: ["Home", "About", "Work", "Gallery"] },
+    { title: "Explore", links: ["Home", "Approach", "Work", "Archive"] },
     { title: "Connect", links: ["Contact", "GitHub"] },
   ],
   social: [{ label: "GitHub", href: contact.github }],
@@ -219,3 +259,29 @@ export const meta = {
 export const contactHref = contact.email
   ? `mailto:${contact.email}`
   : contact.github;
+
+/* ==========================================================================
+ *  ACCOUNT LAYER
+ * ========================================================================== */
+
+/**
+ * Emails allowed into the admin dashboard.
+ *
+ * The dashboard additionally accepts any signed-in user whose Clerk
+ * `publicMetadata.role` is "admin" — set that in the Clerk dashboard if you
+ * would rather not hardcode addresses here. These are not secrets: the real
+ * gate is the Clerk session plus this allow-list check.
+ *
+ * IMPORTANT: add your own sign-in email below, otherwise nobody can open the
+ * dashboard.
+ */
+export const adminAllowlist: string[] = [];
+
+/** Shown on the admin gate when the allow-list is still empty. */
+export const adminSetupHint =
+  "Add your sign-in email to adminAllowlist in src/data/content.ts (or set publicMetadata.role = \"admin\" in Clerk) to unlock this dashboard.";
+
+export const routes = {
+  /** Hash route for the dashboard — works on any static host. */
+  admin: "/admin",
+} as const;

@@ -1,42 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" preserveAspectRatio="xMidYMid slice">
-  <!-- PLACEHOLDER ARTWORK — about portrait. Replace with /assets/portrait.webp -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="Portrait of a figure lit by a low red rim light">
   <defs>
-    <linearGradient id="p" x1="0" y1="0" x2="0.4" y2="1">
-      <stop offset="0%" stop-color="#241a1f"/>
-      <stop offset="45%" stop-color="#100b0e"/>
-      <stop offset="100%" stop-color="#050304"/>
+    <linearGradient id="pt-bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#100809"/>
+      <stop offset="0.45" stop-color="#080405"/>
+      <stop offset="1" stop-color="#040203"/>
     </linearGradient>
-    <radialGradient id="rim" cx="72%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#ff4d4d" stop-opacity="0.55"/>
-      <stop offset="60%" stop-color="#8c0b10" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#050304" stop-opacity="0"/>
+    <radialGradient id="pt-halo" cx="0.72" cy="0.24" r="0.62">
+      <stop offset="0" stop-color="#f24b4b" stop-opacity="0.42"/>
+      <stop offset="0.4" stop-color="#8c0b10" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#5e070b" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="eyeg" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffe4e4"/>
-      <stop offset="35%" stop-color="#ff3b3b"/>
-      <stop offset="100%" stop-color="#b31115" stop-opacity="0"/>
+    <radialGradient id="pt-moon" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffe3d8" stop-opacity="0.85"/>
+      <stop offset="0.55" stop-color="#d61f26" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#d61f26" stop-opacity="0"/>
     </radialGradient>
-    <filter id="soft2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="18"/></filter>
-    <filter id="glow2" x="-120%" y="-120%" width="340%" height="340%">
-      <feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <linearGradient id="pt-body" x1="0" y1="0" x2="1" y2="0.6">
+      <stop offset="0" stop-color="#0b0708"/>
+      <stop offset="0.55" stop-color="#050304"/>
+      <stop offset="1" stop-color="#0a0506"/>
+    </linearGradient>
+    <linearGradient id="pt-rim" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0" stop-color="#ff8a8a" stop-opacity="0.9"/>
+      <stop offset="0.35" stop-color="#d61f26" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#8c0b10" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="pt-floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8c0b10" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#8c0b10" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="pt-soft"><feGaussianBlur stdDeviation="22"/></filter>
+    <filter id="pt-soft2"><feGaussianBlur stdDeviation="6"/></filter>
+    <filter id="pt-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
     </filter>
   </defs>
-  <rect width="1000" height="1250" fill="#07050600"/>
-  <rect width="1000" height="1250" fill="#050304"/>
-  <rect width="1000" height="1250" fill="url(#rim)"/>
-  <g filter="url(#soft2)"><path d="M500 250 C760 250 860 560 880 1250 L120 1250 C140 560 240 250 500 250 Z" fill="#8c0b10" opacity="0.4"/></g>
-  <path d="M262 1250 C280 720 340 470 500 470 C660 470 720 720 738 1250 Z" fill="url(#p)"/>
-  <path d="M500 430 C600 430 660 500 660 560 C700 610 736 820 738 1250 L600 1250 C600 900 560 700 500 620 C440 700 400 900 400 1250 L262 1250 C264 820 300 610 340 560 C340 500 400 430 500 430 Z" fill="#0d090c"/>
-  <ellipse cx="500" cy="360" rx="118" ry="140" fill="#161115"/>
-  <path d="M382 330 C392 210 452 160 500 160 C580 160 612 236 610 330 C590 286 552 268 512 292 C548 332 584 380 600 430 C552 386 486 380 436 428 C452 372 424 348 382 330 Z" fill="#0b080a"/>
-  <path d="M372 240 L628 240 L628 290 L372 290 Z" fill="#0d0a0c"/>
-  <path d="M392 246 L608 246 L608 284 L392 284 Z" fill="#2c3237"/>
-  <path d="M392 288 L608 270" stroke="#0a0709" stroke-width="7" stroke-linecap="round"/>
-  <g filter="url(#glow2)">
-    <ellipse cx="452" cy="346" rx="30" ry="18" fill="url(#eyeg)"/>
-    <ellipse cx="548" cy="346" rx="30" ry="18" fill="url(#eyeg)"/>
-    <ellipse cx="452" cy="346" rx="6" ry="9" fill="#ffd9d9"/>
-    <ellipse cx="548" cy="346" rx="6" ry="9" fill="#ffd9d9"/>
+
+  <rect width="1000" height="1250" fill="url(#pt-bg)"/>
+  <rect width="1000" height="1250" fill="url(#pt-halo)"/>
+
+  <!-- moon -->
+  <circle cx="720" cy="300" r="230" fill="url(#pt-moon)" opacity="0.9"/>
+  <circle cx="720" cy="300" r="96" fill="#ffe9e2" opacity="0.14" filter="url(#pt-soft)"/>
+
+  <!-- distant haze band -->
+  <rect x="0" y="760" width="1000" height="220" fill="url(#pt-floor)" filter="url(#pt-soft)"/>
+
+  <!-- drifting crows -->
+  <g fill="#050304" opacity="0.75">
+    <path d="M170 250 q 34 -22 66 -2 q 30 -20 62 2 q -32 -8 -62 6 q -32 -14 -66 -6 z"/>
+    <path d="M232 196 q 24 -16 47 -2 q 21 -14 44 2 q -23 -6 -44 4 q -23 -10 -47 -4 z" opacity="0.8"/>
+    <path d="M120 320 q 20 -13 39 -1 q 18 -12 37 1 q -19 -5 -37 4 q -19 -9 -39 -4 z" opacity="0.6"/>
   </g>
-  <rect y="980" width="1000" height="270" fill="#050304" opacity="0.75"/>
+
+  <!-- figure: shoulders + head, rim-lit from the left -->
+  <g>
+    <!-- rim glow behind the silhouette -->
+    <path
+      d="M300 1250 C 300 980 360 860 470 812 C 430 780 414 720 414 662 C 414 546 494 470 590 470 C 690 470 770 546 770 662 C 770 720 754 780 714 812 C 826 862 886 984 886 1250 Z"
+      fill="#d61f26" opacity="0.32" filter="url(#pt-soft)"/>
+
+    <!-- body -->
+    <path
+      d="M300 1250 C 300 980 360 858 472 812 C 430 780 414 720 414 662 C 414 546 494 470 590 470 C 690 470 770 546 770 662 C 770 720 754 780 712 812 C 826 862 886 984 886 1250 Z"
+      fill="url(#pt-body)"/>
+
+    <!-- rim light along the lit edge -->
+    <path
+      d="M472 812 C 430 780 414 720 414 662 C 414 546 494 470 590 470"
+      fill="none" stroke="url(#pt-rim)" stroke-width="7" stroke-linecap="round" opacity="0.95"/>
+    <path
+      d="M300 1250 C 300 980 360 858 472 812"
+      fill="none" stroke="url(#pt-rim)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <path
+      d="M590 470 C 690 470 770 546 770 662 C 770 720 754 780 712 812"
+      fill="none" stroke="#8c0b10" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+
+    <!-- collar shadow -->
+    <path d="M492 836 q 98 62 196 0 q -26 74 -98 74 q -72 0 -98 -74 z" fill="#040203" opacity="0.85"/>
+
+    <!-- eye light -->
+    <ellipse cx="520" cy="640" rx="26" ry="9" fill="#ff6a6a" opacity="0.5" filter="url(#pt-soft2)"/>
+    <ellipse cx="662" cy="640" rx="26" ry="9" fill="#ff6a6a" opacity="0.32" filter="url(#pt-soft2)"/>
+  </g>
+
+  <!-- foreground haze -->
+  <rect x="-10%" y="86%" width="120%" height="20%" fill="#050304" opacity="0.9" filter="url(#pt-soft)"/>
+
+  <rect width="1000" height="1250" filter="url(#pt-grain)" opacity="0.045" style="mix-blend-mode:soft-light"/>
 </svg>

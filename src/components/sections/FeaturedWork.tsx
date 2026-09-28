@@ -5,6 +5,11 @@ import { useCrowCue } from "../../lib/useCrowCue";
 import { RevealImage, RevealText } from "../common/Reveal";
 import { useLightbox } from "../common/Lightbox";
 
+/**
+ * Featured work — four rows, one per product. On desktop the row is joined by
+ * a cursor-following preview card; on touch the preview is inline so nothing
+ * is hidden behind a hover that never happens.
+ */
 export default function FeaturedWork() {
   const sectionRef = useRef<HTMLElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -38,8 +43,8 @@ export default function FeaturedWork() {
       state.ty = e.clientY;
     };
     const loop = () => {
-      state.x += (state.tx - state.x) * 0.12;
-      state.y += (state.ty - state.y) * 0.12;
+      state.x += (state.tx - state.x) * 0.11;
+      state.y += (state.ty - state.y) * 0.11;
       el.style.transform = `translate3d(${state.x - state.w / 2}px, ${state.y - state.h / 2}px, 0)`;
       raf = requestAnimationFrame(loop);
     };
@@ -57,7 +62,6 @@ export default function FeaturedWork() {
 
   const openProject = (i: number) => {
     const project = projects[i];
-    // Projects with a link open the real thing; the rest open the image viewer.
     if (project.href) {
       window.open(project.href, "_blank", "noopener,noreferrer");
       return;
@@ -81,14 +85,20 @@ export default function FeaturedWork() {
           <h2 id="work-title" className="display text-[12vw] leading-[0.9] sm:text-6xl lg:text-7xl">
             Featured
           </h2>
-          <p className="max-w-[50ch] font-body text-base text-bone-muted">
-            Four studies in restraint — each built to be felt before it is understood.
+          <p className="max-w-[52ch] font-body text-base text-bone-muted">
+            Study Hub and the three flagship pages that carry it — each built to be felt before
+            it is understood.
           </p>
         </RevealText>
 
         <ul className="mt-16 md:mt-20">
           {projects.map((p, i) => (
-            <li key={p.index} className="border-t border-bone/10 last:border-b last:border-bone/10">
+            <li
+              key={p.index}
+              className={`border-t border-bone/10 transition-colors duration-700 ease-silk last:border-b ${
+                active === i ? "border-blood-800/50" : "border-bone/10"
+              }`}
+            >
               <button
                 type="button"
                 onClick={() => openProject(i)}
@@ -99,9 +109,9 @@ export default function FeaturedWork() {
                 data-cursor="media"
                 data-cursor-label={p.href ? "Open" : "View"}
                 className="group block w-full py-8 text-left md:py-12"
-                aria-label={p.href ? `Open ${p.title} (opens in a new tab)` : `View ${p.title} project image`}
+                aria-label={p.href ? `Open ${p.title} (opens in a new tab)` : `View ${p.title}`}
               >
-                <div className="grid items-center gap-6 md:grid-cols-12 md:gap-8">
+                <div className="grid items-start gap-6 md:grid-cols-12 md:gap-8">
                   <span className="col-span-1 font-body text-xs tracking-cinematic text-blood-500/70">
                     {p.index}
                   </span>
@@ -110,41 +120,59 @@ export default function FeaturedWork() {
                     <h3 className="display text-[8vw] leading-[0.95] text-bone transition-transform duration-700 ease-silk group-hover:translate-x-2 sm:text-4xl lg:text-5xl">
                       {p.title}
                     </h3>
-                    <span className="mt-2 inline-block font-accent text-xs tracking-[0.4em] text-blood-500/60">
-                      {p.accent}
+                    <span className="mt-3 flex items-center gap-3">
+                      <span className="font-accent text-xs tracking-[0.4em] text-blood-500/60">
+                        {p.accent}
+                      </span>
+                      <span className="h-px w-6 bg-bone/20" aria-hidden="true" />
+                      <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
+                        {p.category}
+                      </span>
                     </span>
                   </div>
 
                   <div className="md:col-span-4">
-                    <p className="max-w-[38ch] font-body text-sm leading-relaxed text-bone-dim transition-colors duration-500 group-hover:text-bone-muted">
+                    <p className="max-w-[42ch] font-body text-sm leading-relaxed text-bone-dim transition-colors duration-500 group-hover:text-bone-muted">
                       {p.description}
                     </p>
+                    <ul className="mt-5 hidden flex-col gap-2 md:flex">
+                      {p.highlights.map((h) => (
+                        <li key={h} className="flex gap-2.5 font-body text-[12px] leading-relaxed text-bone-dim/80">
+                          <span aria-hidden="true" className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-blood-600/80" />
+                          {h}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
-                  <div className="flex items-center justify-between gap-4 md:col-span-2 md:justify-end">
-                    <span className="flex items-center gap-2 font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
-                      {p.category}
-                      {p.href && (
-                        <span aria-hidden="true" className="text-blood-500/80">
-                          ↗
-                        </span>
-                      )}
+                  <div className="flex flex-wrap items-center gap-2 md:col-span-2 md:justify-end">
+                    {p.stack.map((s) => (
+                      <span
+                        key={s}
+                        className="border border-bone/10 px-2.5 py-1 font-body text-[9px] uppercase tracking-wide2 text-bone-dim transition-colors duration-500 group-hover:border-bone/20 group-hover:text-bone-muted"
+                      >
+                        {s}
+                      </span>
+                    ))}
+                    <span
+                      aria-hidden="true"
+                      className="ml-2 text-blood-500/80 transition-transform duration-700 ease-silk group-hover:translate-x-1"
+                    >
+                      {p.href ? "↗" : "→"}
                     </span>
-                    <span className="h-px w-0 bg-blood-500 transition-all duration-700 ease-silk group-hover:w-10" />
                   </div>
                 </div>
-
               </button>
 
-              {/* Inline preview on touch/small screens (outside the button so
-                  the markup stays valid — the row button above opens it). */}
+              {/* Inline preview on touch/small screens — outside the row button
+                  so the markup stays valid. */}
               {!hasFine && (
                 <div className="relative mb-8 md:hidden">
                   <RevealImage
                     src={p.image}
                     alt={`${p.title} — ${p.category}`}
                     variant="blur"
-                    className="aspect-[16/10] w-full"
+                    className="aspect-[16/10] w-full border border-bone/10"
                   />
                   <button
                     type="button"
@@ -152,7 +180,7 @@ export default function FeaturedWork() {
                     data-cursor="media"
                     data-cursor-label={p.href ? "Open" : "View"}
                     className="absolute inset-0 z-10"
-                    aria-label={p.href ? `Open ${p.title} (opens in a new tab)` : `View ${p.title} project image`}
+                    aria-label={p.href ? `Open ${p.title} (opens in a new tab)` : `View ${p.title}`}
                   />
                 </div>
               )}
@@ -170,11 +198,11 @@ export default function FeaturedWork() {
           style={{ willChange: "transform" }}
         >
           <div
-            className="relative aspect-[4/5] w-[clamp(220px,26vw,360px)] overflow-hidden border border-bone/10 transition-[opacity,transform] duration-500 ease-silk"
+            className="relative aspect-[4/5] w-[clamp(240px,26vw,380px)] overflow-hidden border border-bone/10 transition-[opacity,transform] duration-500 ease-silk"
             style={{
               opacity: active === null ? 0 : 1,
-              transform: active === null ? "scale(0.9)" : "scale(1)",
-              boxShadow: "0 30px 90px rgba(0,0,0,0.6)",
+              transform: active === null ? "scale(0.92) rotate(-2deg)" : "scale(1) rotate(0deg)",
+              boxShadow: "0 40px 110px rgba(0,0,0,0.7)",
             }}
           >
             {projects.map((p, i) => (
@@ -188,9 +216,9 @@ export default function FeaturedWork() {
                 style={{ opacity: active === i ? 1 : 0 }}
               />
             ))}
-            <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-ink-950/90 to-transparent px-4 pb-3 pt-10 font-body text-[10px] uppercase tracking-wide2 text-bone/80">
+            <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 bg-gradient-to-t from-ink-950/95 via-ink-950/50 to-transparent px-4 pb-3 pt-12 font-body text-[10px] uppercase tracking-wide2 text-bone/80">
               <span>{active !== null ? projects[active].title : ""}</span>
-              <span className="text-blood-400">View</span>
+              <span className="text-blood-400">{active !== null ? projects[active].accent : ""}</span>
             </span>
           </div>
         </div>

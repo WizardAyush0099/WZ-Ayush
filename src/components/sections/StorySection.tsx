@@ -68,7 +68,7 @@ export default function StorySection() {
             <div ref={imageRef}>
               <RevealImage
                 src={story.image}
-                alt="A crimson moon above a dark ridge"
+                alt="A dead forest lit by a low crimson glow"
                 variant="mask"
                 className="aspect-[4/5] w-full sm:aspect-[3/4] md:aspect-[4/5]"
               />

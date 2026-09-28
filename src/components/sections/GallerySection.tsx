@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
-import { gallery } from "../../data/content";
+import { useEffect, useMemo, useRef } from "react";
+import { gallery, type GalleryFrame } from "../../data/content";
+import { useStoredImages } from "../../lib/imageStore";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 import { RevealImage, RevealText } from "../common/Reveal";
@@ -20,13 +21,36 @@ const RATIOS: Record<string, string> = {
   square: "aspect-square",
 };
 
-const SPEEDS = [5, -4, 7, -6, 4, -7];
+const SPEEDS = [5, -4, 7, -6, 4, -7, 6, -5];
+
+/** Cycle the layout hints so any number of uploads keeps the collage rhythm. */
+function spanFor(index: number): GalleryFrame["span"] {
+  return (["wide", "tall", "square"] as const)[index % 3];
+}
 
 export default function GallerySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
   const reduced = usePrefersReducedMotion();
   const { open } = useLightbox();
+  const { images } = useStoredImages();
+
+  /**
+   * Images added from the dashboard render first — the site visibly changes
+   * the moment something is uploaded.
+   */
+  const frames = useMemo<GalleryFrame[]>(() => {
+    const uploaded = images.map((image, i) => ({
+      src: image.dataUrl,
+      alt: image.caption,
+      caption: image.caption,
+      span: spanFor(i),
+      rotate: ((i % 5) - 2) * 0.7,
+    }));
+    return [...uploaded, ...gallery];
+  }, [images]);
+
+  const items = frames.map((f) => ({ src: f.src, alt: f.alt, caption: f.caption }));
 
   useEffect(() => {
     if (reduced) return;
@@ -46,9 +70,8 @@ export default function GallerySection() {
       });
     }, sectionRef);
     return () => ctx.revert();
-  }, [reduced]);
-
-  const items = gallery.map((g) => ({ src: g.src, alt: g.alt, caption: g.caption }));
+    // `frames.length` re-runs the parallax when uploads change the grid.
+  }, [reduced, frames.length]);
 
   return (
     <section
@@ -69,9 +92,9 @@ export default function GallerySection() {
         </RevealText>
 
         <div className="mt-16 grid grid-cols-12 gap-4 sm:gap-6 md:mt-24 md:gap-x-8 md:gap-y-16">
-          {gallery.map((frame, i) => (
+          {frames.map((frame, i) => (
             <div
-              key={frame.src}
+              key={`${frame.caption}-${i}`}
               ref={(el) => {
                 itemRefs.current[i] = el;
               }}
@@ -95,9 +118,16 @@ export default function GallerySection() {
                     className="absolute inset-0 z-10"
                     aria-label={`Open ${frame.caption} full-screen`}
                   />
+                  {i < images.length && (
+                    <span className="pointer-events-none absolute left-3 top-3 z-20 border border-blood-600/60 bg-ink-950/80 px-2 py-1 font-body text-[9px] uppercase tracking-wide2 text-blood-300 backdrop-blur-sm">
+                      New
+                    </span>
+                  )}
                 </div>
                 <span className="mt-4 flex items-center justify-between font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
-                  <span className="transition-colors duration-500 group-hover:text-bone">{frame.caption}</span>
+                  <span className="truncate transition-colors duration-500 group-hover:text-bone">
+                    {frame.caption}
+                  </span>
                   <span className="text-blood-500/70">{String(i + 1).padStart(2, "0")}</span>
                 </span>
               </div>
