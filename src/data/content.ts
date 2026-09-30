@@ -11,6 +11,8 @@
  * ============================================================================
  */
 
+import type { ThemeId } from "../lib/theme";
+
 const base = import.meta.env.BASE_URL;
 
 export const assets = {
@@ -28,9 +30,9 @@ export type NavItem = { id: string; label: string };
 
 export const nav: NavItem[] = [
   { id: "home", label: "Home" },
-  { id: "story", label: "Approach" },
   { id: "work", label: "Work" },
-  { id: "gallery", label: "Archive" },
+  { id: "templates", label: "Templates" },
+  { id: "order", label: "Order" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -43,7 +45,7 @@ export const hero = {
   traits: "Developer • Designer • Builder",
   scrollHint: "Scroll to explore",
   lede:
-    "I design and engineer dark, motion-led web products — interfaces with real depth, built to be felt before they are understood.",
+    "I design and engineer dark, motion-led websites — and I build them for businesses too. Pick a template below, send a brief, and I'll take it from there.",
 };
 
 /** How I work — the section right after the hero. */
@@ -207,7 +209,7 @@ export const capabilities = {
 };
 
 export const about = {
-  eyebrow: "03 — About",
+  eyebrow: "05 — About",
   title: "Behind the Work",
   accent: "AY",
   body: [
@@ -222,11 +224,11 @@ export const about = {
 };
 
 export const cta = {
-  eyebrow: "04 — Contact",
+  eyebrow: "06 — Contact",
   title: "Let's Work Together",
   accent: "WZ",
-  body: "Have a project, a role or an idea worth building? I'd like to hear about it.",
-  action: "Get in Touch",
+  body: "Have a project in mind? Pick a template, send the brief, and I'll reply within one working day.",
+  action: "Start Your Order",
 };
 
 /**
@@ -237,12 +239,19 @@ export const cta = {
 export const contact = {
   email: "",
   github: "https://github.com/WizardAyush0099",
+  /**
+   * WhatsApp number for commission enquiries — country code + number, digits
+   * only (no +, spaces or dashes). Replace the placeholder below with your
+   * real number. You can also set VITE_WHATSAPP_NUMBER in the environment,
+   * which takes priority and keeps the number out of the source.
+   */
+  whatsapp: "919999999999",
 };
 
 export const footer = {
   tagline: "Portfolio",
   columns: [
-    { title: "Explore", links: ["Home", "Approach", "Work", "Archive"] },
+    { title: "Explore", links: ["Home", "Work", "Templates", "Order"] },
     { title: "Connect", links: ["Contact", "GitHub"] },
   ],
   social: [{ label: "GitHub", href: contact.github }],
@@ -259,6 +268,157 @@ export const meta = {
 export const contactHref = contact.email
   ? `mailto:${contact.email}`
   : contact.github;
+
+/* ==========================================================================
+ *  TEMPLATES  —  starter designs visitors can preview and order
+ * ========================================================================== */
+
+/**
+ * The miniature layout each template preview renders. `TemplatePreview`
+ * switches on this value, so adding a template is a data change plus (at
+ * most) one new preview branch.
+ */
+export type TemplateKind = "hotel" | "restaurant" | "salon" | "store" | "gym" | "studio";
+
+export type SiteTemplate = {
+  id: string;
+  /** Business-style name shown inside the preview. */
+  name: string;
+  domain: string;
+  kind: TemplateKind;
+  category: string;
+  blurb: string;
+  /** Palette applied live when this template is picked. */
+  theme: ThemeId;
+  /** Standout things the build includes. */
+  features: string[];
+  startingAt: string;
+};
+
+export const templatesSection = {
+  eyebrow: "03 — Templates",
+  title: "Start From a Template",
+  lede:
+    "Pick the closest starting point and the whole site repaints in that palette so you can feel it, not imagine it. Every template is a real, responsive build — not a screenshot.",
+  note: "Tap a palette below to preview any theme on this very site.",
+};
+
+export const templates: SiteTemplate[] = [
+  {
+    id: "hotel",
+    name: "Azure Bay",
+    domain: "azurebay.com",
+    kind: "hotel",
+    category: "Hotel · Resort",
+    blurb:
+      "Room showcase, availability enquiry, amenities and a booking call — built to convert lookers into reservations.",
+    theme: "amber",
+    features: ["Rooms & suites", "Availability form", "Amenities", "Location map"],
+    startingAt: "₹18,000",
+  },
+  {
+    id: "restaurant",
+    name: "Saveur",
+    domain: "saveur.in",
+    kind: "restaurant",
+    category: "Restaurant · Café",
+    blurb:
+      "Menu, gallery and reservations with a table booking flow and delivery links — the details diners actually look for.",
+    theme: "crimson",
+    features: ["Digital menu", "Table booking", "Gallery", "Delivery links"],
+    startingAt: "₹15,000",
+  },
+  {
+    id: "salon",
+    name: "Lumière",
+    domain: "lumierestudio.com",
+    kind: "salon",
+    category: "Salon · Spa",
+    blurb:
+      "Service menu with pricing, an appointment request form and a stylist showcase that sells the experience.",
+    theme: "plum",
+    features: ["Service & price list", "Appointment form", "Stylist profiles", "Instagram feed"],
+    startingAt: "₹14,000",
+  },
+  {
+    id: "store",
+    name: "North & Co",
+    domain: "northandco.shop",
+    kind: "store",
+    category: "Online Store",
+    blurb:
+      "Product catalogue, cart and checkout with payments wired in — from browsing to a paid order without leaving the site.",
+    theme: "ocean",
+    features: ["Product catalogue", "Cart & checkout", "Payments", "Order updates"],
+    startingAt: "₹25,000",
+  },
+  {
+    id: "gym",
+    name: "Iron & Ember",
+    domain: "ironember.fit",
+    kind: "gym",
+    category: "Gym · Fitness",
+    blurb:
+      "Membership plans, class timetable and trainer profiles with a trial-signup form that fills your books.",
+    theme: "graphite",
+    features: ["Membership plans", "Class timetable", "Trainer profiles", "Free-trial form"],
+    startingAt: "₹16,000",
+  },
+  {
+    id: "studio",
+    name: "Atelier",
+    domain: "atelier.work",
+    kind: "studio",
+    category: "Portfolio · Agency",
+    blurb:
+      "Case studies, an about that builds trust and an enquiry path for clients — the shape this very site is built on.",
+    theme: "verdant",
+    features: ["Case studies", "About & team", "Client enquiry", "Blog / Journal"],
+    startingAt: "₹20,000",
+  },
+];
+
+export function templateById(id: string): SiteTemplate | undefined {
+  return templates.find((t) => t.id === id);
+}
+
+/* ==========================================================================
+ *  ORDER  —  the commission request form
+ * ========================================================================== */
+
+export const order = {
+  eyebrow: "04 — Commissions",
+  title: "Order Your Website",
+  lede:
+    "Tell me what you want — and just as importantly what you don't. The more specific you are, the closer the first draft lands. Nothing is charged here; this starts the conversation.",
+  steps: [
+    { key: "01", title: "Pick a template", body: "Choose the closest starting point above, or describe your own in the notes." },
+    { key: "02", title: "Send the brief", body: "Fill the form with your pages, budget, timeline and the things you want to avoid." },
+    { key: "03", title: "Talk it through", body: "I reply within one working day — on WhatsApp or email, whichever you prefer." },
+  ],
+  /** Multi-select chips in the form. */
+  pageOptions: [
+    "Home",
+    "About",
+    "Services / Menu",
+    "Gallery",
+    "Booking / Enquiry",
+    "Blog",
+    "Shop + Payments",
+    "Contact & Map",
+  ],
+  budgets: [
+    "Under ₹10,000",
+    "₹10,000 – ₹25,000",
+    "₹25,000 – ₹50,000",
+    "₹50,000 – ₹1,00,000",
+    "₹1,00,000+",
+    "Not sure yet",
+  ],
+  timelines: ["ASAP (1–2 weeks)", "This month", "1–2 months", "Flexible"],
+  footnote:
+    "Your details are used only to reply to this enquiry. No spam, no mailing list.",
+};
 
 /* ==========================================================================
  *  ACCOUNT LAYER

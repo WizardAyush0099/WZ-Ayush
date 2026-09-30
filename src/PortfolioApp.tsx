@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollTrigger } from "./lib/gsap";
-import { initSmoothScroll } from "./lib/scroll";
+import { initSmoothScroll, scrollToId } from "./lib/scroll";
 import { usePrefersReducedMotion } from "./lib/hooks";
+import { useTheme } from "./lib/theme";
+import type { SiteTemplate } from "./data/content";
 import { LightboxProvider } from "./components/common/Lightbox";
 import Atmosphere from "./components/fx/Atmosphere";
 import CustomCursor from "./components/CustomCursor";
@@ -14,6 +16,8 @@ import HorizontalGallery from "./components/sections/HorizontalGallery";
 import CapabilitySection from "./components/sections/CapabilitySection";
 import AboutSection from "./components/sections/AboutSection";
 import GallerySection from "./components/sections/GallerySection";
+import TemplatesSection from "./components/sections/TemplatesSection";
+import OrderSection from "./components/sections/OrderSection";
 import FinalCTA from "./components/sections/FinalCTA";
 import Footer from "./components/sections/Footer";
 
@@ -21,6 +25,20 @@ import Footer from "./components/sections/Footer";
 export default function PortfolioApp() {
   const [ready, setReady] = useState(false);
   const reduced = usePrefersReducedMotion();
+
+  // The visitor's palette and the template they are considering — both shared
+  // between the Templates and Order sections.
+  const [theme, setTheme] = useTheme();
+  const [templateId, setTemplateId] = useState<string | null>(null);
+
+  const selectTemplate = useCallback(
+    (template: SiteTemplate) => {
+      setTemplateId(template.id);
+      setTheme(template.theme);
+      window.setTimeout(() => scrollToId("order"), 140);
+    },
+    [setTheme],
+  );
 
   // Smooth scrolling (skipped entirely for reduced-motion users).
   useEffect(() => initSmoothScroll(!reduced), [reduced]);
@@ -49,6 +67,13 @@ export default function PortfolioApp() {
         <Hero ready={ready} />
         <StorySection />
         <FeaturedWork />
+        <TemplatesSection
+          activeTemplateId={templateId}
+          onSelectTemplate={selectTemplate}
+          theme={theme}
+          onSelectTheme={setTheme}
+        />
+        <OrderSection templateId={templateId} theme={theme} />
         <HorizontalGallery />
         <CapabilitySection />
         <AboutSection />
