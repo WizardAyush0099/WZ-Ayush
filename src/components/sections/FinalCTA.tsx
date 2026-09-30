@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { assets, contactHref, cta } from "../../data/content";
+import { assets, cta } from "../../data/content";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
-import { useCrowCue } from "../../lib/useCrowCue";
-import { triggerCrows } from "../../lib/fx";
+import { scrollToId } from "../../lib/scroll";
+import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
 
 export default function FinalCTA() {
@@ -12,7 +12,6 @@ export default function FinalCTA() {
   const bgRef = useRef<HTMLImageElement>(null);
   const [hover, setHover] = useState(false);
   const reduced = usePrefersReducedMotion();
-  useCrowCue(sectionRef, 18, "top 70%");
 
   // Red light that trails the cursor across the section.
   useEffect(() => {
@@ -95,7 +94,7 @@ export default function FinalCTA() {
         aria-hidden="true"
         className="pointer-events-none absolute left-0 top-0 h-[46rem] w-[46rem] rounded-full blur-[90px] transition-opacity duration-500"
         style={{
-          background: "radial-gradient(circle, rgba(214,31,38,0.30), transparent 65%)",
+          background: "radial-gradient(circle, rgb(var(--accent-rgb) / 0.28), transparent 65%)",
           opacity: hover ? 1 : 0.35,
         }}
       />
@@ -110,14 +109,12 @@ export default function FinalCTA() {
           <p className="max-w-[42ch] font-body text-base leading-relaxed text-bone-muted">{cta.body}</p>
         </RevealText>
 
-        <div className="mt-12 flex justify-center">
-          <a
-            href={contactHref}
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-5">
+          <button
+            type="button"
             data-cursor="hover"
-            onMouseEnter={() => {
-              setHover(true);
-              if (!reduced) triggerCrows(10);
-            }}
+            onClick={() => scrollToId("order")}
+            onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             className="group relative inline-flex items-center gap-4 overflow-hidden border border-bone/25 px-10 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-all duration-500 ease-silk hover:border-blood-500/80 hover:px-14"
           >
@@ -127,6 +124,16 @@ export default function FinalCTA() {
             />
             {cta.action}
             <span className="transition-transform duration-500 ease-silk group-hover:translate-x-1">→</span>
+          </button>
+          <a
+            href={buildWhatsAppUrl(introMessage())}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor="hover"
+            className="inline-flex items-center gap-3 border border-transparent px-4 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:text-bone"
+          >
+            WhatsApp
+            <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>

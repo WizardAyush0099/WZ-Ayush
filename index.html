@@ -27,6 +27,16 @@
     <link rel="icon" href="%BASE_URL%assets/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <!--
+      Paint the saved theme before the app boots so there is never a flash of
+      the default palette. Key must match STORAGE_KEY in src/lib/theme.ts.
+    -->
+    <script>
+      try {
+        var t = localStorage.getItem("wz.theme.v1");
+        if (t) document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

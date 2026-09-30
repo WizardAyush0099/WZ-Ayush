@@ -38,6 +38,12 @@ const ANALYTICS_URL: string =
 /** True when a shared backend is configured (drives the dashboard copy). */
 export const isRemoteAnalyticsEnabled = ANALYTICS_URL.length > 0;
 
+/**
+ * Shared data endpoint, reused by the commission/order store so both live on
+ * one serverless function. Empty string when no backend is configured.
+ */
+export const dataApiUrl = ANALYTICS_URL;
+
 /** Fire-and-forget POST of new sessions/events. Never throws, never blocks. */
 function pushRemote(payload: { sessions?: Session[]; events?: TelemetryEvent[] }): void {
   if (!ANALYTICS_URL) return;

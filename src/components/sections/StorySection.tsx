@@ -2,14 +2,12 @@ import { useEffect, useRef } from "react";
 import { story } from "../../data/content";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
-import { useCrowCue } from "../../lib/useCrowCue";
 import { RevealImage, RevealText } from "../common/Reveal";
 
 export default function StorySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
-  useCrowCue(sectionRef, 10, "top 65%");
 
   // Gentle counter-parallax so the still drifts against the copy.
   useEffect(() => {
@@ -33,7 +31,7 @@ export default function StorySection() {
     <section
       id="story"
       ref={sectionRef}
-      className="relative z-10 bg-ink-950 py-28 md:py-40 lg:py-48"
+      className="relative z-10 bg-ink-950 py-24 md:py-32 lg:py-40"
       aria-labelledby="story-title"
     >
       <div className="shell">

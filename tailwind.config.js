@@ -1,33 +1,32 @@
 /** @type {import('tailwindcss').Config} */
+
+/*
+ * Every colour is driven by a CSS custom property (`--*-rgb`, a space
+ * separated channel triplet). `:root` in src/index.css defines the default
+ * "Crimson" theme and `[data-theme="…"]` blocks override it, so switching a
+ * single attribute on <html> re-themes the entire site — including every
+ * opacity modifier (`bg-ink-950/70`) which keeps working via `<alpha-value>`.
+ */
+const rgb = (name) => `rgb(var(${name}) / <alpha-value>)`;
+
+const ramp = (prefix, keys) =>
+  Object.fromEntries(keys.map((k) => [k, rgb(`--${prefix}-${k}-rgb`)]));
+
+const BLOOD_KEYS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+const INK_KEYS = [950, 900, 800, 700];
+
 export default {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        ink: {
-          950: "#050304",
-          900: "#0a0709",
-          800: "#120d10",
-          700: "#1b1418",
-        },
-        blood: {
-          50: "#fff1f1",
-          100: "#ffdede",
-          200: "#ffbcbc",
-          300: "#ff8a8a",
-          400: "#f24b4b",
-          500: "#d61f26",
-          600: "#b31115",
-          700: "#8c0b10",
-          800: "#5e070b",
-          900: "#3a0407",
-          950: "#1e0203",
-        },
+        ink: ramp("ink", INK_KEYS),
+        blood: ramp("blood", BLOOD_KEYS),
         bone: {
-          DEFAULT: "#ece7e1",
-          muted: "#a9a29b",
-          dim: "#6f6a65",
+          DEFAULT: rgb("--bone-rgb"),
+          muted: rgb("--bone-muted-rgb"),
+          dim: rgb("--bone-dim-rgb"),
         },
       },
       fontFamily: {

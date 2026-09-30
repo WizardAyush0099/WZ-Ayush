@@ -12,17 +12,19 @@ import { linkTo } from "../../lib/router";
 import GrowthPanel from "./GrowthPanel";
 import LoginsPanel from "./LoginsPanel";
 import ImageManager from "./ImageManager";
+import OrdersPanel from "./OrdersPanel";
 
-type Tab = "overview" | "logins" | "images";
+type Tab = "orders" | "overview" | "logins" | "images";
 
 const TABS: Array<{ id: Tab; label: string; hint: string }> = [
+  { id: "orders", label: "Orders", hint: "Website briefs visitors have submitted" },
   { id: "overview", label: "Growth", hint: "Traffic, reach and engagement" },
   { id: "logins", label: "Logins", hint: "Sessions and authenticated accounts" },
   { id: "images", label: "Images", hint: "Add artwork to the live site" },
 ];
 
 export default function AdminApp() {
-  const [tab, setTab] = useState<Tab>("overview");
+  const [tab, setTab] = useState<Tab>("orders");
   const localSnapshot = useTelemetry();
   const remote = useRemoteSnapshot();
   // Prefer the shared store; fall back to this browser until it is reachable.
@@ -149,6 +151,7 @@ export default function AdminApp() {
         </p>
 
         <div className="mt-8">
+          {tab === "orders" && <OrdersPanel />}
           {tab === "overview" && <GrowthPanel snapshot={snapshot} summary={summary} />}
           {tab === "logins" && <LoginsPanel snapshot={snapshot} summary={summary} />}
           {tab === "images" && <ImageManager />}

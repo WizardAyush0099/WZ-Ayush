@@ -8,8 +8,9 @@
 
  Routes (both served by this one file):
 
-     POST /api/analytics   { "sessions": [...], "events": [...] }
-     GET  /api/analytics   -> { "sessions": [...], "events": [...] }
+     POST /api/analytics   { "sessions": [...], "events": [...], "orders": [...] }
+     GET  /api/analytics   -> { "sessions": [...], "events": [...], "orders": [...] }
+     ("orders" are the website briefs submitted from the Order section)
 
  The GET response deliberately mirrors the client `Snapshot` shape, so the
  dashboard's existing derivations (daily series, summaries, breakdowns) work
@@ -37,6 +38,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 
 MAX_SESSIONS = 800
 MAX_EVENTS = 3000
+MAX_ORDERS = 400
 
 SCHEMA = """
 create table if not exists wz_sessions (
@@ -65,8 +67,29 @@ create table if not exists wz_events (
   account_email text
 );
 
+create table if not exists wz_orders (
+  id            text primary key,
+  created_at    timestamptz not null,
+  name          text,
+  contact       text,
+  business      text,
+  template_id   text,
+  template_name text,
+  theme_id      text,
+  theme_name    text,
+  pages         text,
+  budget        text,
+  timeline      text,
+  wants         text,
+  avoids        text,
+  references    text,
+  visitor       text,
+  status        text default 'new'
+);
+
 create index if not exists wz_events_at_idx on wz_events (at desc);
 create index if not exists wz_sessions_started_idx on wz_sessions (started_at desc);
+create index if not exists wz_orders_created_idx on wz_orders (created_at desc);
 """
 
 
@@ -169,6 +192,19 @@ class handler(BaseHTTPRequestHandler):
                 )
                 event_rows = cur.fetchall()
 
+                cur.execute(
+                    """
+                    select id, created_at, name, contact, business, template_id,
+                           template_name, theme_id, theme_name, pages, budget,
+                           timeline, wants, avoids, references, visitor, status
+                    from wz_orders
+                    order by created_at desc
+                    limit %s
+                    """,
+                    (MAX_ORDERS,),
+                )
+                order_rows = cur.fetchall()
+
             sessions = [
                 {
                     "id": r[0],
@@ -205,7 +241,33 @@ class handler(BaseHTTPRequestHandler):
                 for r in event_rows
             ]
 
-            self._send(200, {"ok": True, "sessions": sessions, "events": events})
+            orders = [
+                {
+                    "id": r[0],
+                    "createdAt": _iso(r[1]),
+                    "name": r[2] or "",
+                    "contact": r[3] or "",
+                    "business": r[4] or "",
+                    "templateId": r[5] or "",
+                    "templateName": r[6] or "",
+                    "themeId": r[7] or "",
+                    "themeName": r[8] or "",
+                    "pages": [p for p in (r[9] or "").split("\u001f") if p],
+                    "budget": r[10] or "",
+                    "timeline": r[11] or "",
+                    "wants": r[12] or "",
+                    "avoids": r[13] or "",
+                    "references": r[14] or "",
+                    "visitor": r[15] or "",
+                    "status": r[16] or "new",
+                }
+                for r in order_rows
+            ]
+
+            self._send(
+                200,
+                {"ok": True, "sessions": sessions, "events": events, "orders": orders},
+            )
         except Exception as exc:  # noqa: BLE001 - never leak a stack trace
             self._send(500, {"ok": False, "error": str(exc)[:200]})
         finally:
@@ -219,8 +281,13 @@ class handler(BaseHTTPRequestHandler):
         payload = self._read_json()
         sessions = payload.get("sessions") or []
         events = payload.get("events") or []
-        if not isinstance(sessions, list) or not isinstance(events, list):
-            self._send(400, {"ok": False, "error": "sessions and events must be arrays"})
+        orders = payload.get("orders") or []
+        if (
+            not isinstance(sessions, list)
+            or not isinstance(events, list)
+            or not isinstance(orders, list)
+        ):
+            self._send(400, {"ok": False, "error": "sessions, events and orders must be arrays"})
             return
         try:
             self._ensure_schema(conn)
@@ -279,6 +346,49 @@ class handler(BaseHTTPRequestHandler):
                             account.get("id"),
                             account.get("name"),
                             account.get("email"),
+                        ),
+                    )
+                    written += 1
+
+                for o in orders[:50]:
+                    if not isinstance(o, dict) or not o.get("id"):
+                        continue
+                    pages = o.get("pages") or []
+                    if not isinstance(pages, list):
+                        pages = [str(pages)]
+                    cur.execute(
+                        """
+                        insert into wz_orders
+                          (id, created_at, name, contact, business, template_id,
+                           template_name, theme_id, theme_name, pages, budget,
+                           timeline, wants, avoids, references, visitor, status)
+                        values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                        on conflict (id) do update set
+                          status = excluded.status,
+                          wants = excluded.wants,
+                          avoids = excluded.avoids,
+                          budget = excluded.budget,
+                          timeline = excluded.timeline,
+                          pages = excluded.pages
+                        """,
+                        (
+                            str(o["id"]),
+                            _parse_ts(o.get("createdAt")),
+                            o.get("name"),
+                            o.get("contact"),
+                            o.get("business"),
+                            o.get("templateId"),
+                            o.get("templateName"),
+                            o.get("themeId"),
+                            o.get("themeName"),
+                            "\u001f".join(str(p) for p in pages),
+                            o.get("budget"),
+                            o.get("timeline"),
+                            o.get("wants"),
+                            o.get("avoids"),
+                            o.get("references"),
+                            o.get("visitor"),
+                            o.get("status") or "new",
                         ),
                     )
                     written += 1

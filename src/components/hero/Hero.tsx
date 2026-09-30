@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "../../lib/gsap";
+import { gsap } from "../../lib/gsap";
 import { hero as heroContent } from "../../data/content";
 import { useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
 import { scrollToId } from "../../lib/scroll";
-import { triggerCrows } from "../../lib/fx";
 import NinjaScene from "./NinjaScene";
 import FogCanvas from "../fx/FogCanvas";
 
@@ -127,17 +126,10 @@ export default function Hero({ ready }: { ready: boolean }) {
         .to(darkRef.current, { opacity: 0.86 }, 0)
         .to(smokeRef.current, { xPercent: 22, opacity: 0.55 }, 0)
         .to(orbsRef.current, { yPercent: -18, opacity: 0.35 }, 0);
-
-      // A single crow burst the first time the hero is left behind.
-      ScrollTrigger.create({
-        trigger: section,
-        start: "35% top",
-        onEnter: () => triggerCrows(isTouch ? 8 : 16),
-      });
     }, section);
 
     return () => ctx.revert();
-  }, [reduced, isTouch]);
+  }, [reduced]);
 
   /* ------------------------------------------------------------------ *
    * 3. Intro reveal once the preloader hands over
@@ -176,14 +168,14 @@ export default function Hero({ ready }: { ready: boolean }) {
           className="absolute inset-[-6%] z-0"
           style={{
             background:
-              "radial-gradient(115% 85% at 72% 26%, rgba(94,7,11,0.55) 0%, rgba(35,3,5,0.35) 38%, transparent 70%), radial-gradient(90% 70% at 18% 82%, rgba(58,4,7,0.5) 0%, transparent 65%), #050304",
+              "radial-gradient(115% 85% at 72% 26%, rgb(var(--blood-800-rgb) / 0.55) 0%, rgb(var(--blood-950-rgb) / 0.35) 38%, transparent 70%), radial-gradient(90% 70% at 18% 82%, rgb(var(--blood-900-rgb) / 0.5) 0%, transparent 65%), rgb(var(--ink-950-rgb))",
             willChange: "transform",
           }}
         />
         <div
           ref={glowRef}
           className="absolute -left-[12%] top-[-14%] z-0 h-[62%] w-[62%] rounded-full opacity-40 blur-[110px]"
-          style={{ background: "radial-gradient(circle, rgba(140,11,16,0.6), transparent 70%)", willChange: "transform" }}
+          style={{ background: "radial-gradient(circle, rgb(var(--blood-700-rgb) / 0.6), transparent 70%)", willChange: "transform" }}
           aria-hidden="true"
         />
 
@@ -229,9 +221,9 @@ export default function Hero({ ready }: { ready: boolean }) {
 
         {/* 5 — foreground orbs (fast parallax) */}
         <div ref={orbsRef} className="pointer-events-none absolute inset-0 z-[24]" aria-hidden="true" style={{ willChange: "transform" }}>
-          <div className="absolute left-[8%] top-[62%] h-24 w-24 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, rgba(214,31,38,0.5), transparent 70%)" }} />
-          <div className="absolute right-[16%] top-[22%] h-16 w-16 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, rgba(214,31,38,0.4), transparent 70%)" }} />
-          <div className="absolute bottom-[14%] left-[38%] h-28 w-28 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgba(140,11,16,0.45), transparent 70%)" }} />
+          <div className="absolute left-[8%] top-[62%] h-24 w-24 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, rgb(var(--accent-rgb) / 0.45), transparent 70%)" }} />
+          <div className="absolute right-[16%] top-[22%] h-16 w-16 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, rgb(var(--accent-rgb) / 0.35), transparent 70%)" }} />
+          <div className="absolute bottom-[14%] left-[38%] h-28 w-28 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgb(var(--blood-700-rgb) / 0.4), transparent 70%)" }} />
         </div>
 
         {/* 6 — smoke band that sweeps in on scroll */}
@@ -261,8 +253,13 @@ export default function Hero({ ready }: { ready: boolean }) {
             {heroContent.lede}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <button type="button" onClick={goDown} className="btn" data-cursor="hover">
-              Enter the Story
+            <button
+              type="button"
+              onClick={() => scrollToId("order")}
+              data-cursor="hover"
+              className="btn border-blood-600/70 bg-blood-600/15"
+            >
+              Order a Website
             </button>
             <a
               href="#work"

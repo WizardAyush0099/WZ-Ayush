@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { projects } from "../../data/content";
 import { useHasFinePointer, usePrefersReducedMotion } from "../../lib/hooks";
-import { useCrowCue } from "../../lib/useCrowCue";
 import { RevealImage, RevealText } from "../common/Reveal";
 import { useLightbox } from "../common/Lightbox";
 
@@ -17,7 +16,6 @@ export default function FeaturedWork() {
   const hasFine = useHasFinePointer();
   const reduced = usePrefersReducedMotion();
   const { open } = useLightbox();
-  useCrowCue(sectionRef, 12, "top 60%");
 
   // Cursor-following preview (desktop only).
   useEffect(() => {
@@ -76,7 +74,7 @@ export default function FeaturedWork() {
     <section
       id="work"
       ref={sectionRef}
-      className="relative z-10 overflow-hidden bg-ink-950 py-24 md:py-32 lg:py-40"
+      className="relative z-10 overflow-hidden bg-ink-950 py-24 md:py-28 lg:py-32"
       aria-labelledby="work-title"
     >
       <div className="shell">
