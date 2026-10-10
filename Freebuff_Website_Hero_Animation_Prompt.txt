@@ -1,0 +1,308 @@
+You are an expert frontend developer, creative developer, and interactive web animation engineer.
+
+You are working inside MY EXISTING WEBSITE REPOSITORY.
+
+Your job is to replace ONLY the current top/hero section of my website with a premium, cinematic, scroll-driven image animation that creates the feeling of a high-end 3D website.
+
+IMPORTANT: I DO NOT WANT A NEW WEBSITE.
+I WANT TO UPGRADE THE EXISTING WEBSITE WITHOUT BREAKING IT.
+
+==================================================
+1. UNDERSTAND THE EXISTING PROJECT FIRST
+==================================================
+
+Before writing or modifying any code:
+- Inspect the complete project structure.
+- Identify the framework, libraries, styling system, and existing development commands.
+- Inspect the current homepage and identify the exact component responsible for the top/hero section.
+- Understand how the navbar, hero section, and remaining homepage sections fit together.
+- Inspect the assets already included in this repository.
+- Locate Images.zip, which has already been added to the repository.
+- Determine how the images inside Images.zip are organized.
+- Identify the images that belong to the intended animation.
+- Check whether the images have a meaningful filename order.
+
+Do not assume the project uses React, Next.js, Vite, or any particular framework. Detect the actual technology first.
+
+Do not start by generating a new project or replacing the existing application.
+
+Before editing, provide a short implementation plan stating:
+1. Which component contains the current hero section.
+2. Where Images.zip is located and how its images are organized.
+3. Which files you intend to modify.
+4. How you will implement the scrolling animation.
+
+Then proceed with the implementation.
+
+==================================================
+2. IMAGE ASSETS: Images.zip
+==================================================
+
+All images needed for the new animation have already been added to the repository in a file named Images.zip.
+
+You MUST inspect and use the images from this archive.
+
+First:
+- Locate Images.zip.
+- Inspect its contents.
+- Determine whether the images are already extracted.
+- If extraction is necessary, extract them into an appropriate assets directory within the existing project.
+- Do not delete Images.zip.
+- Do not overwrite existing assets.
+- Do not move or rename unrelated project files.
+- Do not create duplicate copies unnecessarily.
+- Use the actual images from the archive for the animation.
+
+Determine the intended sequence of images. If filenames contain sequence numbers, use them to determine the correct order. If the filenames do not establish an order, inspect the images and arrange them in a visually coherent sequence.
+
+Do not use random stock images, placeholder images, unrelated images, or newly generated images instead of the supplied assets.
+
+Ensure all image paths work correctly in the existing framework.
+
+==================================================
+3. THE MAIN TASK: REPLACE ONLY THE HERO SECTION
+==================================================
+
+Remove the current top/hero section and replace it with the new animated image-scrolling experience.
+
+The replacement should occupy the appropriate space at the top of the existing homepage.
+
+Preserve the existing website around it.
+
+The following must remain intact:
+- Existing navbar and navigation.
+- All sections below the hero section.
+- Footer.
+- Existing routes and pages.
+- Existing buttons and links outside the hero section.
+- Existing application functionality.
+- Existing typography, colors, and design outside the section being replaced.
+- Existing responsive layout outside the hero section.
+
+Do not redesign the entire homepage. Do not replace the entire homepage component simply because it is easier than isolating the hero section.
+
+Modify only the hero component and the minimum additional files strictly necessary to support the new animation.
+
+If a shared stylesheet or layout file must be modified, make the smallest possible change.
+
+==================================================
+4. VISUAL GOAL: A PREMIUM 3D IMAGE-SCROLLING WEBSITE
+==================================================
+
+The new hero section should feel cinematic, immersive, premium, and professionally designed.
+
+I want the kind of experience where the images appear to come alive as the visitor scrolls down the page.
+
+This should NOT look like a basic image gallery, a normal slideshow, or a collection of static images.
+
+The animation should create an illusion of depth and three-dimensional movement.
+
+Use the supplied images as the main visual content.
+
+Possible techniques include:
+- Scroll-controlled image sequences.
+- Sticky or pinned hero sections.
+- Smooth image transitions.
+- Perspective transforms.
+- Carefully controlled scaling and zoom.
+- Layered depth effects.
+- Subtle parallax movement.
+- Cinematic camera-like movement.
+- Opacity and compositing transitions where appropriate.
+- Smooth progression tied to the user's scroll position.
+
+Use these techniques only where they improve the experience. Do not add effects simply for the sake of adding effects.
+
+==================================================
+5. HOW THE SCROLL ANIMATION SHOULD WORK
+==================================================
+
+Build the experience around the images provided in Images.zip.
+
+The intended interaction is:
+1. The user opens the homepage and sees the new hero section.
+2. The first image or opening frame is presented attractively.
+3. As the user scrolls, the animation progresses through the image sequence.
+4. The images transition smoothly instead of changing abruptly.
+5. The movement creates a convincing sense of depth, perspective, and cinematic progression.
+6. The animation remains synchronized with the user's scroll.
+7. After the sequence finishes, the user can continue scrolling naturally into the original next section of the website.
+
+Implementation guidance:
+- Consider using a sticky container with a scrollable outer section if it suits the existing layout.
+- Calculate animation progress from the actual scroll position.
+- Map scroll progress to the appropriate image or frame.
+- If the assets are sequential animation frames, render them as a scroll-controlled frame sequence.
+- If the assets are individual scenes, use a smooth scene transition strategy.
+- Avoid unnecessary React state updates on every scroll event if they would cause performance problems.
+- Use requestAnimationFrame, an existing animation library, or an appropriate framework-native approach where helpful.
+- Keep the implementation compatible with the existing stack.
+
+Do not introduce a complicated animation framework if the same result can be achieved reliably with the current setup.
+
+IMPORTANT: Do not assume that the images are video frames. Inspect them first and choose the appropriate implementation.
+
+==================================================
+6. DESIGN AND COMPOSITION
+==================================================
+
+Make the animation visually impressive while keeping the supplied images as the main focus.
+
+IMAGE PRESENTATION:
+- Use appropriate object-fit and object-position values.
+- Avoid stretching or distorting the images.
+- Keep important subjects visible.
+- Prevent unwanted cropping wherever practical.
+- Maintain smooth transitions between images.
+
+DEPTH:
+- Use perspective and scaling carefully.
+- Add subtle depth cues where appropriate.
+- Avoid exaggerated rotations or cheap-looking effects.
+
+COMPOSITION:
+- Keep the visual focus clear.
+- Avoid unnecessary UI elements.
+- Do not cover the main subject with unwanted overlays.
+- Make sure the navbar remains readable and functional.
+
+TRANSITIONS:
+- Avoid sudden flashes, flickering, and jarring jumps.
+- Prevent blank frames during image changes.
+- Preload or decode images appropriately when needed.
+- Use smooth animation timing and scroll mapping.
+
+Do not invent unrelated text, marketing copy, buttons, cards, or additional sections.
+
+If the original hero contains content that is specifically part of the section being replaced, it may be removed as part of this task. Do not change content elsewhere.
+
+==================================================
+7. PERFORMANCE REQUIREMENTS
+==================================================
+
+The website must remain responsive and usable.
+
+- Optimize image loading.
+- Avoid loading unnecessarily large assets all at once if doing so causes memory or performance problems.
+- Preload important initial images.
+- Decode images before displaying them when appropriate.
+- Avoid unnecessary rerenders.
+- Avoid memory leaks and event listeners that are not cleaned up.
+- Prevent layout shifts.
+- Avoid horizontal overflow.
+- Keep scrolling smooth.
+- Do not block the main thread with expensive work.
+- Use existing dependencies where practical.
+
+If there are many high-resolution images, implement a sensible loading strategy without compromising the visual experience.
+
+Do not sacrifice the entire website's performance to create the animation.
+
+==================================================
+8. RESPONSIVE BEHAVIOR
+==================================================
+
+The new section must work on desktop computers, laptops, tablets, and mobile phones.
+
+Ensure that:
+- The image composition adapts to different screen sizes.
+- The animation does not create horizontal scrolling.
+- The section height behaves correctly.
+- The navbar continues to function.
+- Touch scrolling remains natural.
+- The animation does not cause the page to become unusable on mobile devices.
+
+Respect prefers-reduced-motion where practical, providing a suitable reduced-motion experience.
+
+==================================================
+9. STRICT RULES: DO NOT DAMAGE MY WEBSITE
+==================================================
+
+These instructions are mandatory.
+
+DO NOT:
+- Rebuild the website from scratch.
+- Replace the existing homepage with a new template.
+- Redesign the entire website.
+- Modify unrelated sections.
+- Change the existing navbar design.
+- Change the footer.
+- Delete existing pages or routes.
+- Remove existing functionality.
+- Rename unrelated files.
+- Delete Images.zip.
+- Replace my images with stock images.
+- Install unnecessary dependencies.
+- Perform unrelated refactoring.
+- Change project configuration unnecessarily.
+- Rewrite entire files when a small targeted change is enough.
+- Change existing styling outside the requested hero section.
+- Modify files that are not required for this task.
+
+If you discover an existing bug unrelated to the requested animation, do not attempt to fix it as part of this task.
+
+Do not revert or overwrite your pre-existing work.
+
+Keep the code readable and follow the existing conventions.
+
+If you need to modify a shared file, explain why and limit the change to what is necessary.
+
+==================================================
+10. TEST THE IMPLEMENTATION
+==================================================
+
+After implementation:
+- Run the existing project build or validation command.
+- Fix any errors introduced by your changes.
+- Check for missing image paths.
+- Verify that the image sequence loads in the correct order.
+- Verify that scrolling controls the animation correctly.
+- Check for flickering and blank frames.
+- Check that the navbar still works.
+- Confirm that the next original homepage section remains intact.
+- Confirm that all unrelated sections remain unchanged.
+- Check responsive behavior at different viewport sizes.
+- Check for horizontal overflow.
+- Inspect the final changes and remove any accidental, unrelated modifications.
+
+If a browser preview or browser testing tool is available, use it to inspect the actual result.
+
+Do not claim the animation has been tested in a browser if you have only inspected the source code.
+
+If a build or test fails because of an unrelated pre-existing issue, report that clearly instead of hiding the failure.
+
+==================================================
+11. CHANGE CONTROL
+==================================================
+
+Before modifying files, inspect the repository and provide the implementation plan described above.
+
+Then implement the requested change.
+
+Do not stop after giving me a plan or tutorial. The goal is to make the actual code changes in this repository.
+
+Do not ask me to manually create a new website or copy the entire project elsewhere.
+
+Work directly inside the existing repository.
+
+After finishing, provide a concise report containing:
+1. What you changed.
+2. Which files you modified.
+3. How Images.zip was used.
+4. How the scroll-driven animation works.
+5. Which build or tests you ran and their results.
+6. Any remaining limitations.
+
+==================================================
+FINAL AND MOST IMPORTANT INSTRUCTION
+==================================================
+
+MY EXISTING WEBSITE MUST REMAIN INTACT.
+
+Replace ONLY the current top/hero section with a premium, cinematic, scroll-driven image experience using the images already supplied in Images.zip.
+
+Do not modify anything else unless it is strictly required to implement that specific feature.
+
+Prioritize preserving the existing website over adding unnecessary complexity.
+
+Inspect carefully. Make minimal changes. Test the result.
