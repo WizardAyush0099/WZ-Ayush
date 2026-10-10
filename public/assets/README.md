@@ -1,61 +1,45 @@
 # Assets
 
-Three kinds of artwork live here:
+All artwork the site renders lives here. Everything is original work produced for this project, so
+it is safe to ship as-is — and all of it is replaceable from the dashboard without touching code.
 
-1. **The 3D hero** — `models/` holds an optional `.glb` character model. The
-   hero itself is a live WebGL scene generated at runtime, so it needs no files.
-2. **Product mockups** — `featured/` contains designed interface mockups for the
-   four projects (Study Hub, FitLife Blueprint, Guitar Theory Lab, E-book Store).
-   These are original vector art, not photographs.
-3. **Atmospheric stills** — `gallery/` and `horizontal/` are the abstract
-   backdrops used by the archive and the pinned reel.
+**Full instructions: [`docs/ASSET_WORKFLOW.md`](../../docs/ASSET_WORKFLOW.md)** — how to upload,
+which path formats work on Vercel vs GitHub Pages, and how to set up video or a scroll-scrubbed
+image sequence.
 
-Everything here is original work produced for this project, so it is safe to
-ship as-is.
+## Quick version
 
-## The 3D hero
+1. Drop your file in this folder (or a subfolder), e.g. `public/assets/hero.webp`.
+2. Open `#/admin` → **Artwork** and paste the **repo-relative** path: `assets/hero.webp`.
+3. Press **Save & publish** (shared backend) or **Copy JSON for the repo** and paste the values into
+   `src/data/content.ts`.
 
-The hero renders real geometry (`src/components/hero/NinjaScene.tsx`): a 3D
-Mangekyo eye, a crow swarm on elliptical flight paths, and an ember field.
+Repo-relative paths are the portable choice: they resolve correctly on Vercel (`/`), on the GitHub
+Pages project site (`/WZ-Ayush/`) and in the preview, because they are prefixed with `BASE_URL`.
 
-To use your own character model, drop it in and change nothing else:
+## A ZIP is not playable
 
-```
-public/assets/models/hero.glb
-```
-
-It is auto-framed, centred and slowly rotated beside the eye. See
-`models/README.md` for where to find a suitable CC-licensed model.
+Browsers cannot play a `.zip`. Use an MP4/WebM (`mode: "video"`) or export the archive as a
+zero-padded still sequence (`mode: "sequence"`). The hero falls back to the built-in 3D scene if the
+configured media fails to load.
 
 ## Current files
 
 | File | Used by | Notes |
 | --- | --- | --- |
-| `models/hero.glb` | Hero (optional) | Any glTF 2.0 character, < ~5 MB |
-| `hero-shadow.svg` | Hero grounding silhouette | Blurred, low opacity |
-| `portrait.svg` | About section | Rim-lit figure, 4:5 crop |
-| `background.svg` | Atmosphere / backdrops | Wide atmospheric still |
-| `cta.svg` | Final CTA backdrop | Wide cinematic still |
-| `featured/01-study-hub.svg` | Study Hub | Dashboard mockup |
-| `featured/02-fitlife.svg` | FitLife Blueprint | Training-plan mockup |
-| `featured/03-guitar-lab.svg` | Guitar Theory Lab | Fretboard mockup |
-| `featured/04-ebook-store.svg` | E-book Store | Storefront mockup |
-| `gallery/01..06.svg` | Archive + lightbox | Mixed portrait/landscape |
-| `horizontal/01..05.svg` | Horizontal reel | Tall/wide art-direction stills |
-
-## Swapping in your own images
-
-Point the entry in `src/data/content.ts` at your file — for example:
-
-```ts
-{ src: `${base}assets/gallery/07.webp`, alt: "…", caption: "…", span: "tall", rotate: -1 }
-```
-
-Compress to WebP/AVIF at roughly quality 80 before shipping.
+| `hero-shadow.svg` | Hero grounding silhouette | Blurred, low opacity. Replaceable (Artwork → Hero silhouette). |
+| `background.svg` | Atmosphere / backdrops / OG image | Wide atmospheric still. |
+| `portrait.svg` | About section | Rim-lit figure, 4:5 crop. Replaceable. |
+| `cta.svg` | Final CTA backdrop | Wide cinematic still. Replaceable. |
+| `featured/*.svg` | Project previews | One per live project; also editable per card in **Projects**. |
+| `gallery/*.svg` | Archive + lightbox | Mixed portrait/landscape. |
+| `horizontal/*.svg` | Horizontal reel | Tall/wide art-direction stills. |
+| `models/hero.glb` | Hero (optional) | Drop-in glTF character; auto-framed. See `models/README.md`. |
+| `sequence/` | Hero (optional) | `000.webp`, `001.webp`, … for the scroll sequence. |
+| `media/` | Hero (optional) | `hero.mp4` / `hero-poster.webp` for the video mode. |
 
 ## Images added at runtime
 
-Images uploaded from `#/admin` → **Images** are stored in the browser
-(IndexedDB), not in this folder. They render **before** these built-in frames
-in the Archive gallery and carry a small “New” badge. Deleting them there
-restores the artwork in this folder.
+Images uploaded from `#/admin` → **Uploads** are stored in the browser (IndexedDB), not in this
+folder. They render ahead of the built-in frames in the Archive gallery with a “New” badge. To ship
+one permanently, save it here and point the gallery entry at it.

@@ -20,6 +20,7 @@ import {
 import { adminSetupHint } from "../../data/content";
 import { linkTo } from "../../lib/router";
 import { recordSignIn, recordSignOut } from "../../lib/telemetry";
+import { ApiAuthBridge } from "../../lib/apiAuth";
 
 /* -------------------------------------------------------------------------- */
 /*  Appearance — Clerk styled to match the site's dark cinematic language     */
@@ -76,6 +77,8 @@ export function AuthLayer({ children }: { children: ReactNode }) {
       afterSignOutUrl={import.meta.env.BASE_URL}
     >
       <SessionTracker />
+      {/* Mirrors the Clerk session token for authenticated API calls. */}
+      <ApiAuthBridge />
       {children}
     </ClerkProvider>
   );

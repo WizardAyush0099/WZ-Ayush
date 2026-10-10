@@ -1,15 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { hero, nav, meta } from "../data/content";
+import { hero, meta, nav } from "../data/content";
+import { linkTo } from "../lib/router";
 import { getLenis, resumeSmoothScroll, scrollToId } from "../lib/scroll";
 import SoundToggle from "./SoundToggle";
+import ThemeToggle from "./theme/ThemeToggle";
 import AuthControls from "./auth/AuthLayer";
 
+/**
+ * The header.
+ *
+ * `nav` mixes two kinds of destination: section ids that scroll on the
+ * homepage, and routes that open another page (the builder). Both are handled
+ * by one list so the mobile menu never diverges from the desktop one.
+ */
 export default function Navbar({ ready }: { ready: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("home");
   const [open, setOpen] = useState(false);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+
+  const sectionItems = nav.filter((item) => item.id);
 
   // Solidify the bar once the hero starts scrolling past.
   useEffect(() => {
@@ -21,8 +32,8 @@ export default function Navbar({ ready }: { ready: boolean }) {
 
   // Track the section currently in view.
   useEffect(() => {
-    const sections = nav
-      .map((n) => document.getElementById(n.id))
+    const sections = sectionItems
+      .map((n) => (n.id ? document.getElementById(n.id) : null))
       .filter((el): el is HTMLElement => Boolean(el));
     if (!sections.length) return;
 
@@ -36,6 +47,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
     );
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
@@ -72,7 +84,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
   // Resizing up to desktop must dismiss the overlay, not strand it open.
   useEffect(() => {
     if (!open) return;
-    const mql = window.matchMedia("(min-width: 768px)");
+    const mql = window.matchMedia("(min-width: 1280px)");
     const onChange = () => {
       if (mql.matches) setOpen(false);
     };
@@ -112,39 +124,54 @@ export default function Navbar({ ready }: { ready: boolean }) {
             className="group relative z-10 flex items-baseline gap-2"
             aria-label={`${hero.title} — home`}
           >
-            <span className="display text-lg tracking-[0.28em] text-bone transition-colors duration-300 group-hover:text-blood-400">
+            <span className="display text-[15px] tracking-[0.28em] text-bone transition-colors duration-300 group-hover:text-blood-400 sm:text-lg">
               {hero.title}
             </span>
             <span className="font-accent text-[10px] tracking-[0.3em] text-blood-500/70">{hero.accent}</span>
           </a>
 
-          <nav className="hidden items-center gap-9 md:flex" aria-label="Primary">
-            {nav.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  go(item.id);
-                }}
-                className="group relative py-2 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:text-bone"
-                aria-current={active === item.id ? "true" : undefined}
-              >
-                {item.label}
-                <span
-                  className={`absolute -bottom-0.5 left-0 h-px bg-blood-500 transition-all duration-500 ease-silk ${
-                    active === item.id ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
-                />
-              </a>
-            ))}
+          {/* Seven destinations plus the account cluster only fit from 1280px
+              up; below that the overlay menu takes over rather than letting
+              the bar squash. */}
+          <nav className="hidden items-center gap-5 xl:flex xl:gap-7" aria-label="Primary">
+            {nav.map((item) => {
+              const isRoute = Boolean(item.route);
+              return (
+                <a
+                  key={item.label}
+                  href={isRoute ? linkTo(item.route!) : `#${item.id}`}
+                  onClick={(e) => {
+                    if (isRoute || !item.id) return; // let the router handle it
+                    e.preventDefault();
+                    go(item.id);
+                  }}
+                  className="group relative py-2 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:text-bone"
+                  aria-current={!isRoute && active === item.id ? "true" : undefined}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute -bottom-0.5 left-0 h-px bg-blood-500 transition-all duration-500 ease-silk ${
+                      !isRoute && active === item.id ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </a>
+              );
+            })}
           </nav>
 
-          <div className="relative z-10 flex items-center gap-5">
-            <div className="hidden md:block">
+          <div className="relative z-10 flex items-center gap-2 sm:gap-4">
+            <a
+              href={linkTo("/builder")}
+              data-cursor="hover"
+              className="hidden border border-blood-600/70 bg-blood-600/10 px-4 py-2.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-300 hover:border-blood-500 hover:bg-blood-600/20 md:inline-block"
+            >
+              Start a Project
+            </a>
+            <ThemeToggle />
+            <div className="hidden xl:block">
               <AuthControls />
             </div>
-            <span className="hidden h-4 w-px bg-bone/15 md:block" aria-hidden="true" />
+            <span className="hidden h-4 w-px bg-bone/15 xl:block" aria-hidden="true" />
             <SoundToggle />
             <button
               ref={toggleRef}
@@ -153,7 +180,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="flex h-11 w-11 items-center justify-center md:hidden"
+              className="flex h-11 w-11 items-center justify-center xl:hidden"
             >
               <span className="relative block h-4 w-6">
                 <span
@@ -175,7 +202,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
       {/* Mobile menu — sits just under the header so the close control stays reachable. */}
       <div
         id="mobile-menu"
-        className={`fixed inset-0 z-[80] md:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+        className={`fixed inset-0 z-[80] overflow-y-auto xl:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
         aria-hidden={!open}
       >
         <button
@@ -188,22 +215,26 @@ export default function Navbar({ ready }: { ready: boolean }) {
           }`}
         />
 
-        <div className="shell pointer-events-none relative flex h-full flex-col justify-center">
-          <span className="eyebrow mb-8">Navigate</span>
+        <div className="shell pointer-events-none relative flex min-h-full flex-col justify-center py-24">
+          <span className="eyebrow mb-6">Navigate</span>
           <nav className="pointer-events-auto flex flex-col gap-1" aria-label="Mobile">
             {nav.map((item, i) => (
               <a
-                key={item.id}
+                key={item.label}
                 ref={i === 0 ? firstLinkRef : undefined}
-                href={`#${item.id}`}
+                href={item.route ? linkTo(item.route) : `#${item.id}`}
                 tabIndex={open ? 0 : -1}
                 onClick={(e) => {
+                  if (item.route || !item.id) {
+                    setOpen(false);
+                    return;
+                  }
                   e.preventDefault();
                   go(item.id);
                 }}
-                className="display border-b border-bone/10 py-4 text-[12vw] leading-none text-bone-muted transition-colors duration-300 hover:text-blood-400 sm:text-5xl"
+                className="display border-b border-bone/10 py-3 text-[9vw] leading-none text-bone-muted transition-colors duration-300 hover:text-blood-400 sm:text-4xl"
                 style={{
-                  transitionDelay: open ? `${100 + i * 60}ms` : "0ms",
+                  transitionDelay: open ? `${100 + i * 50}ms` : "0ms",
                   opacity: open ? 1 : 0,
                   transform: open ? "translateY(0)" : "translateY(24px)",
                   transitionProperty: "opacity, transform, color",
@@ -211,7 +242,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
                   transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
                 }}
               >
-                <span className="mr-4 align-middle font-body text-xs tracking-cinematic text-blood-500/60">
+                <span className="mr-3 align-middle font-body text-xs tracking-cinematic text-blood-500/60">
                   0{i + 1}
                 </span>
                 {item.label}
@@ -219,14 +250,24 @@ export default function Navbar({ ready }: { ready: boolean }) {
             ))}
           </nav>
 
-          {/* Auth sits with the rest of the menu so it is reachable on phones. */}
-          <div className="pointer-events-auto mt-10 flex items-center justify-center border-t border-bone/10 pt-8 md:hidden">
+          <a
+            href={linkTo("/builder")}
+            tabIndex={open ? 0 : -1}
+            onClick={() => setOpen(false)}
+            className="pointer-events-auto mt-8 inline-flex items-center justify-center gap-3 border border-blood-600/70 bg-blood-600/15 px-6 py-4 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone"
+          >
+            Start a Project
+            <span aria-hidden="true">→</span>
+          </a>
+
+          <div className="pointer-events-auto mt-8 flex items-center justify-between gap-6 border-t border-bone/10 pt-6">
+            <ThemeToggle align="left" />
             <AuthControls />
           </div>
 
           {/* Explicit close control — always visible, independent of the header. */}
-          <div className="pointer-events-auto mt-8 flex items-center justify-between">
-            <div className="flex flex-col gap-2 font-body text-[11px] uppercase tracking-wide2 text-bone-dim">
+          <div className="pointer-events-auto mt-7 flex items-center justify-between">
+            <div className="flex flex-col gap-1 font-body text-[11px] uppercase tracking-wide2 text-bone-dim">
               <span>{meta.studio}</span>
               <span>{meta.location}</span>
             </div>

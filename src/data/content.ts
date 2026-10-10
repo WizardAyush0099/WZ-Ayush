@@ -2,53 +2,175 @@
  * ============================================================================
  *  SITE CONTENT — single source of truth
  * ============================================================================
- *  Everything editable lives here: copy, nav, projects, gallery and asset
- *  paths. Change the values below and the whole site follows — no component
- *  edits required.
+ *  Everything editable lives here: identity, contact, nav, projects, gallery
+ *  and the builder questionnaire. The twenty website concepts are in
+ *  `src/data/templates.ts` because each one is a full design definition.
  *
- *  Asset paths are prefixed with `import.meta.env.BASE_URL` so the same build
- *  works at the domain root (Vercel) and under a sub-path (GitHub Pages).
+ *  Asset paths are prefixed with `import.meta.env.BASE_URL`, so the same build
+ *  works at the domain root (Vercel), under a sub-path (GitHub Pages project
+ *  site: /WZ-Ayush/) and inside the preview.
+ *
+ *  Admin-editable overrides (artwork paths, cinematic scroll media, project
+ *  cards) live in src/lib/siteData.ts and layer on top of the defaults below.
  * ============================================================================
  */
 
-import type { ThemeId } from "../lib/theme";
-
 const base = import.meta.env.BASE_URL;
 
-export const assets = {
-  /** Large blurred silhouette behind the 3D hero stage. */
-  heroShadow: `${base}assets/hero-shadow.svg`,
-  /** Wide atmospheric backdrop. */
-  background: `${base}assets/background.svg`,
-  /** About section portrait. */
-  portrait: `${base}assets/portrait.svg`,
-  /** Final CTA backdrop. */
-  cta: `${base}assets/cta.svg`,
+/* ==========================================================================
+ *  OWNER + STUDIO IDENTITY
+ * ========================================================================== */
+
+export const meta = {
+  studio: "AYUSH",
+  owner: "Ayush Danthta",
+  role: "Designer & Developer",
+  location: "India · Remote",
+  year: new Date().getFullYear(),
 } as const;
 
-export type NavItem = { id: string; label: string };
+/**
+ * Contact details — the real, verified values.
+ *
+ * `whatsapp` is digits only (country code + number) because that is the shape
+ * https://wa.me/<number> requires. Setting `VITE_WHATSAPP_NUMBER` in the
+ * environment overrides it without touching source.
+ */
+export const contact = {
+  email: "ayushdanthta@gmail.com",
+  whatsapp: "918353011030",
+  whatsappDisplay: "+91 83530 11030",
+  github: "https://github.com/WizardAyush0099",
+  vercel: "https://wzayush.vercel.app/",
+  githubPages: "https://wizardayush0099.github.io/WZ-Ayush/",
+} as const;
 
-export const nav: NavItem[] = [
-  { id: "home", label: "Home" },
-  { id: "work", label: "Work" },
-  { id: "templates", label: "Templates" },
-  { id: "order", label: "Order" },
-  { id: "contact", label: "Contact" },
-];
+/** Canonical contact target for generic "get in touch" links. */
+export const contactHref = `mailto:${contact.email}`;
 
-export const hero = {
-  /** Primary wordmark — swap for your name or studio name. */
-  title: "AYUSH",
-  /** Short mono mark shown beside the wordmark. */
-  accent: "WZ",
-  tagline: "The Art of Building",
-  traits: "Developer • Designer • Builder",
-  scrollHint: "Scroll to explore",
-  lede:
-    "I design and engineer dark, motion-led websites — and I build them for businesses too. Pick a template below, send a brief, and I'll take it from there.",
+/* ==========================================================================
+ *  ASSETS
+ * ========================================================================== */
+
+export type AssetKey = "heroShadow" | "background" | "portrait" | "cta";
+
+/** Default artwork paths. The dashboard can override each one. */
+export const assetDefaults: Record<AssetKey, string> = {
+  heroShadow: `${base}assets/hero-shadow.svg`,
+  background: `${base}assets/background.svg`,
+  portrait: `${base}assets/portrait.svg`,
+  cta: `${base}assets/cta.svg`,
 };
 
-/** How I work — the section right after the hero. */
+export const assetLabels: Record<AssetKey, string> = {
+  heroShadow: "Hero silhouette",
+  background: "Atmospheric backdrop",
+  portrait: "About portrait",
+  cta: "Final CTA backdrop",
+};
+
+/* ==========================================================================
+ *  CINEMATIC SCROLL MEDIA
+ * ==========================================================================
+ *  The hero's centrepiece can be a rendered image sequence, a looping video,
+ *  or the procedural WebGL scene (the default fallback). A ZIP is NOT playable
+ *  in a browser — see docs/ASSET_WORKFLOW.md for the two supported formats.
+ */
+
+export type ScrollMediaMode = "scene" | "video" | "sequence";
+
+export type MediaConfig = {
+  mode: ScrollMediaMode;
+  /** Public path/URL to an .mp4 or .webm (mode: "video"). */
+  videoSrc: string;
+  /** Public folder holding 000.webp, 001.webp … (mode: "sequence"). */
+  frameDir: string;
+  /** How many frames exist in `frameDir`. */
+  frameCount: number;
+  /** Frame file extension, without the dot. */
+  frameExt: "webp" | "avif" | "jpg" | "png";
+  /** Standalone poster shown before the media loads, and if it fails. */
+  poster: string;
+  /** Scroll distance the scrub is spread across, e.g. "180vh". */
+  scrollLength: string;
+  /** Free-text reminder of where the source render came from. */
+  sourceNote: string;
+};
+
+/**
+ * The hero's default centrepiece is the cinematic render supplied in
+ * `Images.zip`: 300 sequential frames, extracted to
+ * `public/assets/hero-sequence/` as `000.jpg` … `299.jpg` (the archive's own
+ * `ezgif-frame-NNN.jpg` order, renumbered to the zero-based index the shared
+ * sequence loader — and the dashboard preview — address frames by).
+ */
+export const heroSequenceDir = `${base}assets/hero-sequence`;
+export const heroSequenceFrames = 300;
+
+export const mediaDefaults: MediaConfig = {
+  mode: "sequence",
+  videoSrc: "",
+  frameDir: heroSequenceDir,
+  frameCount: heroSequenceFrames,
+  frameExt: "jpg",
+  // The opening frame doubles as the poster, so the stage is never blank
+  // while the rest of the run loads.
+  poster: `${heroSequenceDir}/000.jpg`,
+  // Roughly 2.6 screens of travel across the run — slow enough to read as a
+  // camera move, short enough that the visitor never feels stuck.
+  scrollLength: "360vh",
+  sourceNote: "Images.zip — 300-frame render",
+};
+
+export const mediaLabels: Record<ScrollMediaMode, string> = {
+  scene: "Procedural 3D scene (works with zero setup)",
+  video: "Looping video — MP4 or WebM",
+  sequence: "Image sequence scrubbed by scroll",
+};
+
+/* ==========================================================================
+ *  NAVIGATION
+ * ========================================================================== */
+
+/** `id` scrolls to a section on the homepage; `route` opens another page. */
+export type NavItem = { label: string; id?: string; route?: string };
+
+export const nav: NavItem[] = [
+  { label: "Home", id: "home" },
+  { label: "Work", id: "work" },
+  { label: "Websites", id: "websites" },
+  { label: "Studio", id: "story" },
+  { label: "Archive", id: "gallery" },
+  { label: "Templates", id: "templates" },
+  { label: "Contact", id: "contact" },
+];
+
+export const routes = {
+  home: "/",
+  admin: "/admin",
+  builder: "/builder",
+} as const;
+
+/* ==========================================================================
+ *  HERO
+ * ========================================================================== */
+
+export const hero = {
+  title: "AYUSH",
+  accent: "WZ",
+  tagline: "Designing digital experiences that feel impossible to ignore.",
+  traits: "Designer • Developer • Motion",
+  scrollHint: "Scroll to explore",
+  lede:
+    "I design and build modern websites and digital experiences — cinematic, fast, and made for real businesses. See the work, or start a project and tell me what you need.",
+  primaryCta: "Start a Project",
+  secondaryCta: "Explore My Work",
+} as const;
+
+/* ==========================================================================
+ *  APPROACH
+ * ========================================================================== */
+
 export const story = {
   eyebrow: "01 — Approach",
   title: "How I Work",
@@ -58,36 +180,45 @@ export const story = {
     "Every project starts with the problem, not the pixels. What follows is iteration, restraint, and a lot of small details that add up.",
   ],
   stats: [
-    { value: "04", label: "Shipped Products" },
+    { value: "04", label: "Live Products" },
+    { value: "20", label: "Site Concepts" },
     { value: "3D", label: "Real-time Web" },
-    { value: "2026", label: "Latest Build" },
   ],
   image: `${base}assets/gallery/03.svg`,
 };
 
+/* ==========================================================================
+ *  FEATURED WORK — the four verified live deployments
+ * ========================================================================== */
+
 export type Project = {
+  /** Stable id — the admin dashboard edits projects by this key. */
+  id: string;
   index: string;
   title: string;
   accent: string;
   category: string;
   description: string;
   image: string;
-  /** Bullet list of what the build actually does. */
   highlights: string[];
-  /** Stack chips rendered on the row. */
   stack: string[];
-  /** When set, clicking the row opens this link instead of the image viewer. */
+  /** Verified public URL. These are real deployments — do not invent others. */
   href?: string;
+  /** Shown as "Live" only for URLs that are actually deployed. */
+  live: boolean;
+  /** Parent project, used to show the Study Hub hierarchy. */
+  parent?: string;
+  /** Whether it appears in the "Live on the web" strip. */
+  showInLiveStrip: boolean;
 };
 
 /**
- * Featured work — Study Hub and its three flagship pages.
- *
- * Each entry renders as one large row (number, title, category, description).
- * Add `href` to make the row open a live site/repo instead of the image viewer.
+ * The four live pages, with the exact URLs verified for this project.
+ * Study Hub is the parent; the other three are its flagship pages.
  */
 export const projects: Project[] = [
   {
+    id: "study-hub",
     index: "01",
     title: "Study Hub",
     accent: "Focus",
@@ -100,28 +231,17 @@ export const projects: Project[] = [
       "Reactive dashboards that stay in sync as you work",
       "Built for long sessions — low noise, high clarity",
     ],
-    stack: ["React", "TypeScript", "Convex"],
+    stack: ["React", "TypeScript", "Vite"],
+    href: "https://study-hub-kappa.vercel.app/",
+    live: true,
+    showInLiveStrip: true,
   },
   {
+    id: "guitar-theory",
     index: "02",
-    title: "FitLife Blueprint",
-    accent: "Discipline",
-    category: "Flagship Page",
-    description:
-      "A training and nutrition blueprint page that turns vague fitness intentions into a concrete, trackable plan — macros, phases and progress in one screen.",
-    image: `${base}assets/featured/02-fitlife.svg`,
-    highlights: [
-      "Structured training phases with progress tracking",
-      "Nutrition targets that adapt to your goal",
-      "Motion-led onboarding that explains itself",
-    ],
-    stack: ["React", "GSAP", "Charts"],
-  },
-  {
-    index: "03",
     title: "Guitar Theory Lab",
     accent: "Craft",
-    category: "Flagship Page",
+    category: "Study Hub · Flagship Page",
     description:
       "An interactive fretboard that makes music theory visible — scales, intervals and chords light up in place so the pattern is understood, not memorised.",
     image: `${base}assets/featured/03-guitar-lab.svg`,
@@ -131,12 +251,37 @@ export const projects: Project[] = [
       "Theory explained visually, in the order you play it",
     ],
     stack: ["React", "Web Audio", "SVG"],
+    href: "https://study-hub-kappa.vercel.app/index.guitar-theory",
+    live: true,
+    parent: "Study Hub",
+    showInLiveStrip: true,
   },
   {
+    id: "fitlife",
+    index: "03",
+    title: "FitLife Blueprint",
+    accent: "Discipline",
+    category: "Study Hub · Flagship Page",
+    description:
+      "A training and nutrition blueprint page that turns vague fitness intentions into a concrete, trackable plan — macros, phases and progress in one screen.",
+    image: `${base}assets/featured/02-fitlife.svg`,
+    highlights: [
+      "Structured training phases with progress tracking",
+      "Nutrition targets that adapt to your goal",
+      "Motion-led onboarding that explains itself",
+    ],
+    stack: ["React", "GSAP", "Charts"],
+    href: "https://study-hub-kappa.vercel.app/index.health",
+    live: true,
+    parent: "Study Hub",
+    showInLiveStrip: true,
+  },
+  {
+    id: "ebook-store",
     index: "04",
-    title: "E-book Store",
+    title: "E-books Store",
     accent: "Commerce",
-    category: "Flagship Page",
+    category: "Study Hub · Flagship Page",
     description:
       "A dark, editorial storefront for digital books — cinematic covers, instant previews and a checkout flow that gets out of the way.",
     image: `${base}assets/featured/04-ebook-store.svg`,
@@ -146,14 +291,36 @@ export const projects: Project[] = [
       "Frictionless purchase and library delivery",
     ],
     stack: ["React", "Commerce", "Storage"],
+    href: "https://study-hub-kappa.vercel.app/index.e-books",
+    live: true,
+    parent: "Study Hub",
+    showInLiveStrip: true,
   },
 ];
+
+export const featuredSection = {
+  eyebrow: "02 — Selected Work",
+  title: "Featured",
+  lede:
+    "Study Hub and the three flagship pages that carry it — each one live on the web right now. Open any of them and use it, rather than looking at a screenshot of it.",
+  openLabel: "Visit Live Website",
+} as const;
+
+export const liveWebsitesSection = {
+  eyebrow: "03 — Live on the Web",
+  title: "Live on the Web",
+  lede:
+    "These are running deployments, not mockups. Every button below opens the real thing in a new tab.",
+} as const;
+
+/* ==========================================================================
+ *  ARCHIVE GALLERY + HORIZONTAL REEL
+ * ========================================================================== */
 
 export type GalleryFrame = {
   src: string;
   alt: string;
   caption: string;
-  /** Layout hints for the asymmetric gallery. */
   span: "tall" | "wide" | "square";
   rotate: number;
 };
@@ -172,7 +339,6 @@ export type HorizontalFrame = {
   alt: string;
   index: string;
   title: string;
-  /** Relative visual weight — used for varied sizes in the horizontal reel. */
   scale: "sm" | "md" | "lg";
 };
 
@@ -184,9 +350,12 @@ export const horizontal: HorizontalFrame[] = [
   { src: `${base}assets/horizontal/05.svg`, alt: "Shapes dissolving into shadow", index: "V", title: "Feather", scale: "md" },
 ];
 
-/** Capability grid — placed after the reel for rhythm. */
+/* ==========================================================================
+ *  CAPABILITY + ABOUT
+ * ========================================================================== */
+
 export const capabilities = {
-  eyebrow: "02 — Capability",
+  eyebrow: "04 — Capability",
   title: "What I Bring",
   body: "Three things I care about more than anything else on a build.",
   items: [
@@ -206,206 +375,228 @@ export const capabilities = {
       body: "I scope to the problem, ship the smallest version that proves it, then refine what the data rewards.",
     },
   ],
-};
+} as const;
 
 export const about = {
   eyebrow: "05 — About",
   title: "Behind the Work",
-  accent: "AY",
+  accent: "AD",
   body: [
-    "I design and build dark, motion-led web experiences where atmosphere carries the story. Every scroll and transition is deliberate — restraint over spectacle.",
-    "This portfolio is itself a build: a WebGL hero, a pinned horizontal reel and this account system, engineered to stay smooth even on a mid-range phone.",
+    "I'm Ayush — I design and build websites and digital experiences where atmosphere carries the story. Every scroll and transition is deliberate: restraint over spectacle.",
+    "That ranges from product work like Study Hub to single-purpose sites for restaurants, hotels and studios. If it needs to look expensive and load fast, that's the brief I like.",
   ],
   facts: [
     { label: "Focus", value: "Web Products" },
     { label: "Stack", value: "React · TypeScript" },
-    { label: "Based", value: "Remote" },
+    { label: "Based", value: "India · Remote" },
   ],
-};
-
-export const cta = {
-  eyebrow: "06 — Contact",
-  title: "Let's Work Together",
-  accent: "WZ",
-  body: "Have a project in mind? Pick a template, send the brief, and I'll reply within one working day.",
-  action: "Start Your Order",
-};
-
-/**
- * Contact details.
- * `email` is intentionally empty — set it and the CTA + footer will use a
- * mailto link automatically; until then they point at GitHub.
- */
-export const contact = {
-  email: "",
-  github: "https://github.com/WizardAyush0099",
-  /**
-   * WhatsApp number for commission enquiries — country code + number, digits
-   * only (no +, spaces or dashes). Replace the placeholder below with your
-   * real number. You can also set VITE_WHATSAPP_NUMBER in the environment,
-   * which takes priority and keeps the number out of the source.
-   */
-  whatsapp: "919999999999",
-};
-
-export const footer = {
-  tagline: "Portfolio",
-  columns: [
-    { title: "Explore", links: ["Home", "Work", "Templates", "Order"] },
-    { title: "Connect", links: ["Contact", "GitHub"] },
-  ],
-  social: [{ label: "GitHub", href: contact.github }],
-  email: contact.email,
-};
-
-export const meta = {
-  studio: "AYUSH",
-  location: "Remote",
-  year: new Date().getFullYear(),
-};
-
-/** Canonical contact target — mailto when an address exists, else GitHub. */
-export const contactHref = contact.email
-  ? `mailto:${contact.email}`
-  : contact.github;
+} as const;
 
 /* ==========================================================================
- *  TEMPLATES  —  starter designs visitors can preview and order
- * ========================================================================== */
-
-/**
- * The miniature layout each template preview renders. `TemplatePreview`
- * switches on this value, so adding a template is a data change plus (at
- * most) one new preview branch.
- */
-export type TemplateKind = "hotel" | "restaurant" | "salon" | "store" | "gym" | "studio";
-
-export type SiteTemplate = {
-  id: string;
-  /** Business-style name shown inside the preview. */
-  name: string;
-  domain: string;
-  kind: TemplateKind;
-  category: string;
-  blurb: string;
-  /** Palette applied live when this template is picked. */
-  theme: ThemeId;
-  /** Standout things the build includes. */
-  features: string[];
-  startingAt: string;
-};
-
-export const templatesSection = {
-  eyebrow: "03 — Templates",
-  title: "Start From a Template",
-  lede:
-    "Pick the closest starting point and the whole site repaints in that palette so you can feel it, not imagine it. Every template is a real, responsive build — not a screenshot.",
-  note: "Tap a palette below to preview any theme on this very site.",
-};
-
-export const templates: SiteTemplate[] = [
-  {
-    id: "hotel",
-    name: "Azure Bay",
-    domain: "azurebay.com",
-    kind: "hotel",
-    category: "Hotel · Resort",
-    blurb:
-      "Room showcase, availability enquiry, amenities and a booking call — built to convert lookers into reservations.",
-    theme: "amber",
-    features: ["Rooms & suites", "Availability form", "Amenities", "Location map"],
-    startingAt: "₹18,000",
-  },
-  {
-    id: "restaurant",
-    name: "Saveur",
-    domain: "saveur.in",
-    kind: "restaurant",
-    category: "Restaurant · Café",
-    blurb:
-      "Menu, gallery and reservations with a table booking flow and delivery links — the details diners actually look for.",
-    theme: "crimson",
-    features: ["Digital menu", "Table booking", "Gallery", "Delivery links"],
-    startingAt: "₹15,000",
-  },
-  {
-    id: "salon",
-    name: "Lumière",
-    domain: "lumierestudio.com",
-    kind: "salon",
-    category: "Salon · Spa",
-    blurb:
-      "Service menu with pricing, an appointment request form and a stylist showcase that sells the experience.",
-    theme: "plum",
-    features: ["Service & price list", "Appointment form", "Stylist profiles", "Instagram feed"],
-    startingAt: "₹14,000",
-  },
-  {
-    id: "store",
-    name: "North & Co",
-    domain: "northandco.shop",
-    kind: "store",
-    category: "Online Store",
-    blurb:
-      "Product catalogue, cart and checkout with payments wired in — from browsing to a paid order without leaving the site.",
-    theme: "ocean",
-    features: ["Product catalogue", "Cart & checkout", "Payments", "Order updates"],
-    startingAt: "₹25,000",
-  },
-  {
-    id: "gym",
-    name: "Iron & Ember",
-    domain: "ironember.fit",
-    kind: "gym",
-    category: "Gym · Fitness",
-    blurb:
-      "Membership plans, class timetable and trainer profiles with a trial-signup form that fills your books.",
-    theme: "graphite",
-    features: ["Membership plans", "Class timetable", "Trainer profiles", "Free-trial form"],
-    startingAt: "₹16,000",
-  },
-  {
-    id: "studio",
-    name: "Atelier",
-    domain: "atelier.work",
-    kind: "studio",
-    category: "Portfolio · Agency",
-    blurb:
-      "Case studies, an about that builds trust and an enquiry path for clients — the shape this very site is built on.",
-    theme: "verdant",
-    features: ["Case studies", "About & team", "Client enquiry", "Blog / Journal"],
-    startingAt: "₹20,000",
-  },
-];
-
-export function templateById(id: string): SiteTemplate | undefined {
-  return templates.find((t) => t.id === id);
-}
-
-/* ==========================================================================
- *  ORDER  —  the commission request form
+ *  COMMISSIONS — the brief, on the homepage and in the builder
  * ========================================================================== */
 
 export const order = {
-  eyebrow: "04 — Commissions",
+  eyebrow: "06 — Commissions",
   title: "Order Your Website",
   lede:
     "Tell me what you want — and just as importantly what you don't. The more specific you are, the closer the first draft lands. Nothing is charged here; this starts the conversation.",
   steps: [
-    { key: "01", title: "Pick a template", body: "Choose the closest starting point above, or describe your own in the notes." },
-    { key: "02", title: "Send the brief", body: "Fill the form with your pages, budget, timeline and the things you want to avoid." },
-    { key: "03", title: "Talk it through", body: "I reply within one working day — on WhatsApp or email, whichever you prefer." },
+    {
+      key: "01",
+      title: "Pick a template",
+      body: "Choose the closest starting point above. It repaints this page in its palette first, so you can see it before you commit.",
+    },
+    {
+      key: "02",
+      title: "Send the brief",
+      body: "Eight short steps: the pages you need, the features, your budget and timeline — and the things you want to avoid.",
+    },
+    {
+      key: "03",
+      title: "Talk it through",
+      body: "I reply within one working day, on WhatsApp or email, whichever you prefer.",
+    },
   ],
-  /** Multi-select chips in the form. */
-  pageOptions: [
-    "Home",
-    "About",
-    "Services / Menu",
-    "Gallery",
-    "Booking / Enquiry",
+} as const;
+
+/* ==========================================================================
+ *  CONTACT / FINAL CTA
+ * ========================================================================== */
+
+export const cta = {
+  eyebrow: "07 — Contact",
+  title: "Let's Build It",
+  accent: "AD",
+  body:
+    "Have a project in mind? Tell me what you need — or message me directly and we can start today. I reply within one working day.",
+  primaryAction: "Start a Project",
+  secondaryAction: "Chat on WhatsApp",
+} as const;
+
+export const footer = {
+  tagline: "Designer & developer — India",
+  social: [
+    { label: "GitHub", href: contact.github },
+    { label: "Vercel", href: contact.vercel },
+  ],
+};
+
+/* ==========================================================================
+ *  BUILDER — the commission request flow (route: /#/builder)
+ * ========================================================================== */
+
+export const builder = {
+  eyebrow: "Start a Project",
+  title: "Build My Website",
+  lede:
+    "Eight short steps, and I'll know exactly what you want. Nothing is charged here — this starts the conversation, and you can send the finished brief straight to WhatsApp.",
+  steps: [
+    { key: "01", title: "About you", hint: "Who you are and how to reach you." },
+    { key: "02", title: "Website type", hint: "What kind of site this is." },
+    { key: "03", title: "Template", hint: "The closest starting point." },
+    { key: "04", title: "Theme", hint: "Light, dark, or one of the palettes." },
+    { key: "05", title: "Features", hint: "Everything the site must do." },
+    { key: "06", title: "Custom requirements", hint: "What you want — and what you don't." },
+    { key: "07", title: "References", hint: "Sites you like, for direction." },
+    { key: "08", title: "Project details", hint: "Goals, audience, content, timeline." },
+  ],
+  websiteTypes: [
+    "Portfolio",
+    "Business website",
+    "Landing page",
+    "E-commerce",
+    "Blog / Magazine",
+    "Education",
+    "Personal brand",
+    "Restaurant / Café",
+    "Fitness",
+    "Agency",
+    "SaaS",
+    "Event",
+    "Hotel / Resort",
+    "Salon / Spa",
+    "Photography",
+    "Music",
+    "Gaming",
+    "Other",
+  ],
+  /**
+   * Conditional follow-ups. These only appear when the visitor picks the
+   * matching website type, so the form never asks an irrelevant question.
+   */
+  conditional: {
+    "E-commerce": [
+      { key: "products", label: "How many products?" },
+      { key: "payments", label: "Which payment method? (UPI, cards, Razorpay…)" },
+      { key: "shipping", label: "Do you need shipping and delivery tracking?" },
+      { key: "accounts", label: "Should customers have accounts?" },
+    ],
+    "Restaurant / Café": [
+      { key: "menu", label: "Do you need a full menu with prices?" },
+      { key: "reservations", label: "Table reservations online?" },
+      { key: "hours", label: "Opening hours and location to show?" },
+      { key: "delivery", label: "Swiggy / Zomato / delivery links?" },
+    ],
+    "Hotel / Resort": [
+      { key: "rooms", label: "How many room types?" },
+      { key: "booking", label: "Booking enquiry or live availability?" },
+      { key: "amenities", label: "Amenities and facilities to list?" },
+      { key: "location", label: "Should I add a map and directions?" },
+    ],
+    Portfolio: [
+      { key: "projects", label: "How many projects do you want to show?" },
+      { key: "bio", label: "Do you have a written bio?" },
+      { key: "socials", label: "Which social links should be included?" },
+    ],
+    "Landing page": [
+      { key: "goal", label: "What is the one action a visitor should take?" },
+      { key: "campaign", label: "Is this for a campaign or a product launch?" },
+      { key: "ads", label: "Will you drive paid traffic to it?" },
+    ],
+    SaaS: [
+      { key: "plans", label: "How many pricing plans?" },
+      { key: "accounts", label: "Do users need to sign up?" },
+      { key: "docs", label: "Do you need documentation pages?" },
+    ],
+    "Salon / Spa": [
+      { key: "services", label: "How many services and price points?" },
+      { key: "booking", label: "Appointment booking online?" },
+      { key: "staff", label: "Should stylists have their own profiles?" },
+    ],
+    Fitness: [
+      { key: "plans", label: "Membership plans and pricing?" },
+      { key: "classes", label: "Class timetable to display?" },
+      { key: "trainers", label: "Trainer profiles?" },
+    ],
+    Event: [
+      { key: "agenda", label: "Full agenda or a single day?" },
+      { key: "tickets", label: "Do you need ticketing?" },
+      { key: "speakers", label: "How many speakers?" },
+    ],
+    "Blog / Magazine": [
+      { key: "cadence", label: "How often will you publish?" },
+      { key: "authors", label: "Multiple authors or just you?" },
+      { key: "newsletter", label: "Newsletter signup needed?" },
+    ],
+    Photography: [
+      { key: "albums", label: "How many albums or collections?" },
+      { key: "prints", label: "Do you sell prints?" },
+      { key: "booking", label: "Do you take bookings through the site?" },
+    ],
+    Music: [
+      { key: "releases", label: "How many releases to show?" },
+      { key: "tour", label: "Do you need tour dates?" },
+      { key: "mailing", label: "Mailing list signup?" },
+    ],
+    Gaming: [
+      { key: "roster", label: "Roster and player profiles?" },
+      { key: "tournaments", label: "Tournament results or fixtures?" },
+      { key: "stream", label: "Live stream embed?" },
+    ],
+    Agency: [
+      { key: "caseStudies", label: "How many case studies?" },
+      { key: "team", label: "Team profiles needed?" },
+      { key: "services", label: "Which services should be listed?" },
+    ],
+    "Business website": [
+      { key: "services", label: "What services does the business offer?" },
+      { key: "team", label: "Should the team be listed?" },
+      { key: "map", label: "Do you need a map and directions?" },
+    ],
+    "Personal brand": [
+      { key: "offerings", label: "What do you sell or offer?" },
+      { key: "testimonials", label: "Do you have client testimonials?" },
+      { key: "booking", label: "Should visitors be able to book you?" },
+    ],
+    Education: [
+      { key: "courses", label: "How many courses or batches?" },
+      { key: "fees", label: "Should fees be shown publicly?" },
+      { key: "admissions", label: "Online admission enquiry?" },
+    ],
+  } as Record<string, { key: string; label: string }[]>,
+  features: [
+    "Contact form",
+    "WhatsApp button",
     "Blog",
-    "Shop + Payments",
-    "Contact & Map",
+    "Gallery",
+    "Animations",
+    "3D elements",
+    "Video",
+    "Testimonials",
+    "Pricing",
+    "FAQ",
+    "Login / signup",
+    "Admin dashboard",
+    "CMS",
+    "E-commerce",
+    "Payments",
+    "Search",
+    "Newsletter",
+    "Google Maps",
+    "Social media integration",
+    "Custom animations",
+    "Other",
   ],
   budgets: [
     "Under ₹10,000",
@@ -416,32 +607,45 @@ export const order = {
     "Not sure yet",
   ],
   timelines: ["ASAP (1–2 weeks)", "This month", "1–2 months", "Flexible"],
+  pageOptions: [
+    "Home",
+    "About",
+    "Services / Menu",
+    "Gallery",
+    "Booking / Enquiry",
+    "Blog",
+    "Shop + Payments",
+    "Contact & Map",
+  ],
+  details: [
+    { key: "goal", label: "What is the website for?", placeholder: "e.g. get more table bookings" },
+    { key: "audience", label: "Who is the target audience?", placeholder: "e.g. families in Pune, 25–45" },
+    { key: "pagesNeeded", label: "Which pages do you need?", placeholder: "e.g. Home, Menu, Gallery, Contact" },
+  ],
+  yesNo: [
+    { key: "hasLogo", label: "Do you already have a logo?" },
+    { key: "hasContent", label: "Do you have the text and photos ready?" },
+    { key: "needsHosting", label: "Do you need hosting and domain help?" },
+    { key: "needsUpdates", label: "Do you need ongoing updates after launch?" },
+  ],
   footnote:
     "Your details are used only to reply to this enquiry. No spam, no mailing list.",
-};
+} as const;
 
 /* ==========================================================================
- *  ACCOUNT LAYER
+ *  ADMIN
  * ========================================================================== */
 
 /**
  * Emails allowed into the admin dashboard.
  *
- * The dashboard additionally accepts any signed-in user whose Clerk
- * `publicMetadata.role` is "admin" — set that in the Clerk dashboard if you
- * would rather not hardcode addresses here. These are not secrets: the real
- * gate is the Clerk session plus this allow-list check.
- *
- * IMPORTANT: add your own sign-in email below, otherwise nobody can open the
- * dashboard.
+ * These are not secrets — the real gate is the Clerk session plus this
+ * allow-list check, and the shared backend refuses to return client data to
+ * anyone without a valid Clerk session token from an allowed address. Set
+ * `VITE_ADMIN_EMAILS` in the environment to add more without editing source.
  */
-export const adminAllowlist: string[] = [];
+export const adminAllowlist: string[] = ["ayushdanthta@gmail.com"];
 
 /** Shown on the admin gate when the allow-list is still empty. */
 export const adminSetupHint =
   "Add your sign-in email to adminAllowlist in src/data/content.ts (or set publicMetadata.role = \"admin\" in Clerk) to unlock this dashboard.";
-
-export const routes = {
-  /** Hash route for the dashboard — works on any static host. */
-  admin: "/admin",
-} as const;

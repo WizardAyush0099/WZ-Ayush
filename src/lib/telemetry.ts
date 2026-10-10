@@ -1,4 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { AUTH_CHANGED_EVENT, authHeaders } from "./apiAuth";
 
 /**
  * ============================================================================
@@ -326,6 +327,8 @@ export type RemoteState =
   | { status: "disabled" }
   | { status: "loading" }
   | { status: "ready"; snapshot: Snapshot }
+  /** The backend answered, but this caller is not an authorised admin. */
+  | { status: "unauthorised" }
   | { status: "error" };
 
 /** The API speaks ISO-8601; the local model speaks epoch millis. */
@@ -354,13 +357,22 @@ export function useRemoteSnapshot(): RemoteState {
 
     const load = async () => {
       try {
-        const res = await fetch(ANALYTICS_URL, { headers: { accept: "application/json" } });
+        const res = await fetch(ANALYTICS_URL, {
+          headers: { accept: "application/json", ...authHeaders() },
+        });
         if (!res.ok) throw new Error(String(res.status));
         const data = (await res.json()) as {
+          authorized?: boolean;
           sessions?: Array<Record<string, unknown>>;
           events?: Array<Record<string, unknown>>;
         };
         if (cancelled) return;
+        // Sessions and events are client data: the backend only returns them
+        // to a verified admin, and says so explicitly.
+        if (!data.authorized) {
+          setState({ status: "unauthorised" });
+          return;
+        }
         const sessions = (data.sessions ?? []).map(
           (s) =>
             ({
@@ -381,9 +393,12 @@ export function useRemoteSnapshot(): RemoteState {
     };
 
     void load();
+    // Re-fetch the moment a verified admin signs in (or out).
+    window.addEventListener(AUTH_CHANGED_EVENT, load);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
+      window.removeEventListener(AUTH_CHANGED_EVENT, load);
     };
   }, []);
 

@@ -180,6 +180,123 @@
   color-scheme: dark;
 }
 
+/* Midnight — deep indigo night with a soft violet accent. */
+[data-theme="midnight"] {
+  --ink-950-rgb: 4 5 12;
+  --ink-900-rgb: 8 10 21;
+  --ink-800-rgb: 14 17 33;
+  --ink-700-rgb: 22 26 46;
+
+  --blood-50-rgb: 238 242 255;
+  --blood-100-rgb: 224 231 255;
+  --blood-200-rgb: 199 210 254;
+  --blood-300-rgb: 165 180 252;
+  --blood-400-rgb: 129 140 248;
+  --blood-500-rgb: 99 102 241;
+  --blood-600-rgb: 79 70 229;
+  --blood-700-rgb: 67 56 202;
+  --blood-800-rgb: 55 48 163;
+  --blood-900-rgb: 49 46 129;
+  --blood-950-rgb: 30 27 75;
+
+  --bone-rgb: 226 229 242;
+  --bone-muted-rgb: 156 162 186;
+  --bone-dim-rgb: 102 108 133;
+
+  --accent-rgb: 129 140 248;
+
+  color-scheme: dark;
+}
+
+/* Neon — black with electric cyan. */
+[data-theme="neon"] {
+  --ink-950-rgb: 2 4 6;
+  --ink-900-rgb: 6 9 12;
+  --ink-800-rgb: 11 16 21;
+  --ink-700-rgb: 18 25 32;
+
+  --blood-50-rgb: 236 254 255;
+  --blood-100-rgb: 207 250 254;
+  --blood-200-rgb: 165 243 252;
+  --blood-300-rgb: 103 232 249;
+  --blood-400-rgb: 34 211 238;
+  --blood-500-rgb: 6 182 212;
+  --blood-600-rgb: 8 145 178;
+  --blood-700-rgb: 14 116 144;
+  --blood-800-rgb: 21 94 117;
+  --blood-900-rgb: 22 78 99;
+  --blood-950-rgb: 8 47 73;
+
+  --bone-rgb: 226 250 252;
+  --bone-muted-rgb: 150 178 182;
+  --bone-dim-rgb: 96 122 126;
+
+  --accent-rgb: 34 211 238;
+
+  color-scheme: dark;
+}
+
+/* Terracotta — warm charcoal and clay. */
+[data-theme="warm"] {
+  --ink-950-rgb: 8 5 3;
+  --ink-900-rgb: 15 10 7;
+  --ink-800-rgb: 24 17 12;
+  --ink-700-rgb: 36 26 19;
+
+  --blood-50-rgb: 255 247 237;
+  --blood-100-rgb: 255 237 213;
+  --blood-200-rgb: 254 215 170;
+  --blood-300-rgb: 253 186 116;
+  --blood-400-rgb: 251 146 60;
+  --blood-500-rgb: 234 88 12;
+  --blood-600-rgb: 194 65 12;
+  --blood-700-rgb: 154 52 18;
+  --blood-800-rgb: 124 45 18;
+  --blood-900-rgb: 106 40 17;
+  --blood-950-rgb: 67 20 7;
+
+  --bone-rgb: 245 236 226;
+  --bone-muted-rgb: 186 170 155;
+  --bone-dim-rgb: 130 116 103;
+
+  --accent-rgb: 234 88 12;
+
+  color-scheme: dark;
+}
+
+/*
+ * Daylight — the LIGHT theme.
+ * Note the inversion: the ink ramp becomes the light background and the bone
+ * ramp becomes the dark foreground. Every component already reads these two
+ * token families, so the whole site flips without a single conditional.
+ */
+[data-theme="daylight"] {
+  --ink-950-rgb: 250 249 247;
+  --ink-900-rgb: 243 241 238;
+  --ink-800-rgb: 234 231 227;
+  --ink-700-rgb: 222 218 213;
+
+  --blood-50-rgb: 254 242 242;
+  --blood-100-rgb: 254 226 226;
+  --blood-200-rgb: 254 202 202;
+  --blood-300-rgb: 252 165 165;
+  --blood-400-rgb: 248 113 113;
+  --blood-500-rgb: 220 38 38;
+  --blood-600-rgb: 185 28 28;
+  --blood-700-rgb: 153 27 27;
+  --blood-800-rgb: 127 29 29;
+  --blood-900-rgb: 110 30 30;
+  --blood-950-rgb: 70 15 15;
+
+  --bone-rgb: 24 23 22;
+  --bone-muted-rgb: 88 84 81;
+  --bone-dim-rgb: 138 133 128;
+
+  --accent-rgb: 185 28 28;
+
+  color-scheme: light;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: auto;
@@ -214,7 +331,7 @@ body {
 
 ::selection {
   background: rgb(var(--accent-rgb) / 0.32);
-  color: #fff;
+  color: rgb(var(--ink-950-rgb));
 }
 
 /* Focus states — always visible, never removed by animation */
@@ -275,6 +392,36 @@ a:focus:not(:focus-visible) {
 }
 
 /* ============================================================
+   HERO STAGE
+   ============================================================
+   `.hero-run` is the pinned travel. The inline `--hero-run` comes from the
+   dashboard's scroll-length setting; with no value — reduced motion, where
+   there is no run to scrub — the section is content-height rather than
+   360vh of empty stage. `.stage-full` keeps its `vh` fallback for browsers
+   that predate `svh`.
+   ============================================================ */
+.hero-run {
+  height: var(--hero-run, auto);
+}
+
+.stage-full {
+  height: 100vh;
+  height: 100svh;
+}
+
+/*
+ * The title card carries a lot: wordmark, headline, lede, two calls to action
+ * and direct contact. On a landscape phone there is no room for all of it, so
+ * the optional lines step aside — the wordmark, headline and buttons always
+ * stay.
+ */
+@media (max-height: 560px) {
+  .card-optional {
+    display: none;
+  }
+}
+
+/* ============================================================
    FILM GRAIN + VIGNETTE (fixed overlays, GPU-cheap)
    ============================================================ */
 .fx-layer {
@@ -301,10 +448,11 @@ a:focus:not(:focus-visible) {
   100% { transform: translate3d(0, 0, 0); }
 }
 
+/* Token-driven so it stays correct in the light theme too. */
 .vignette {
   z-index: 59;
   background:
-    radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(5, 3, 4, 0.55) 100%);
+    radial-gradient(120% 90% at 50% 45%, transparent 40%, rgb(var(--ink-950-rgb) / 0.55) 100%);
 }
 
 /* ============================================================

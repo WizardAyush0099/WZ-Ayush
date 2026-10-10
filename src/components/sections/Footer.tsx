@@ -1,16 +1,40 @@
-import { contact, contactHref, footer, meta, nav } from "../../data/content";
+import { contact, footer, meta, nav } from "../../data/content";
+import { linkTo } from "../../lib/router";
 import { scrollToId } from "../../lib/scroll";
+import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 
-type Resolved = { href: string; external: boolean; id?: string };
+type FooterLink = {
+  label: string;
+  /** Section id on the homepage. */
+  id?: string;
+  /** Hash route (builder, admin). */
+  route?: string;
+  /** External URL or mailto. */
+  href?: string;
+};
 
-function resolveHref(label: string): Resolved {
-  const page = nav.find((n) => n.label.toLowerCase() === label.toLowerCase());
-  if (page) return { href: `#${page.id}`, external: false, id: page.id };
+/**
+ * Footer navigation.
+ *
+ * Section links scroll, route links navigate, and everything else is a real
+ * URL — so no footer link can silently fall back to the wrong destination.
+ */
+function footerColumns(): Array<{ title: string; links: FooterLink[] }> {
+  const sectionLinks: FooterLink[] = nav
+    .filter((item) => item.id)
+    .map((item) => ({ label: item.label, id: item.id }));
 
-  const social = footer.social.find((s) => s.label.toLowerCase() === label.toLowerCase());
-  if (social) return { href: social.href, external: true };
-
-  return { href: contactHref, external: !contact.email };
+  return [
+    { title: "Explore", links: sectionLinks },
+    {
+      title: "Start",
+      links: [
+        { label: "Build My Website", route: "/builder" },
+        { label: "Chat on WhatsApp", href: buildWhatsAppUrl(introMessage()) },
+        { label: "Email", href: `mailto:${contact.email}` },
+      ],
+    },
+  ];
 }
 
 export default function Footer() {
@@ -25,48 +49,67 @@ export default function Footer() {
             <span className="mt-3 block font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
               {footer.tagline}
             </span>
-            <a
-              href={contactHref}
-              target={contact.email ? undefined : "_blank"}
-              rel={contact.email ? undefined : "noopener noreferrer"}
-              data-cursor="hover"
-              className="mt-8 inline-block font-body text-sm text-bone-muted underline decoration-bone/20 underline-offset-4 transition-colors duration-300 hover:text-bone hover:decoration-blood-500/70"
-            >
-              {contact.email || "@WizardAyush0099"}
-            </a>
+            <div className="mt-8 flex flex-col gap-2">
+              <a
+                href={`mailto:${contact.email}`}
+                data-cursor="hover"
+                className="w-fit font-body text-sm text-bone-muted underline decoration-bone/20 underline-offset-4 transition-colors duration-300 hover:text-bone hover:decoration-blood-500/70"
+              >
+                {contact.email}
+              </a>
+              <a
+                href={buildWhatsAppUrl(introMessage())}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cursor="hover"
+                className="w-fit font-body text-sm text-bone-muted transition-colors duration-300 hover:text-bone"
+              >
+                WhatsApp {contact.whatsappDisplay}
+              </a>
+            </div>
           </div>
 
-          {footer.columns.map((col) => (
+          {footerColumns().map((col) => (
             <nav key={col.title} className="md:col-span-2" aria-label={col.title}>
-              <h3 className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">{col.title}</h3>
+              <h3 className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
+                {col.title}
+              </h3>
               <ul className="mt-5 flex flex-col gap-3">
-                {col.links.map((label) => {
-                  const { href, external, id } = resolveHref(label);
-                  return (
-                    <li key={label}>
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    {link.id ? (
                       <a
-                        href={href}
-                        target={external ? "_blank" : undefined}
-                        rel={external ? "noopener noreferrer" : undefined}
+                        href={`#${link.id}`}
                         onClick={(e) => {
-                          if (id) {
-                            e.preventDefault();
-                            scrollToId(id);
-                          }
+                          e.preventDefault();
+                          scrollToId(link.id as string);
                         }}
                         className="font-body text-sm text-bone-muted transition-colors duration-300 hover:text-bone"
                       >
-                        {label}
+                        {link.label}
                       </a>
-                    </li>
-                  );
-                })}
+                    ) : (
+                      <a
+                        href={link.route ? linkTo(link.route) : link.href}
+                        target={link.href && !link.href.startsWith("mailto:") ? "_blank" : undefined}
+                        rel={
+                          link.href && !link.href.startsWith("mailto:")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                        className="font-body text-sm text-bone-muted transition-colors duration-300 hover:text-bone"
+                      >
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
               </ul>
             </nav>
           ))}
 
           <nav className="md:col-span-3" aria-label="Social">
-            <h3 className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">Follow</h3>
+            <h3 className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">Live</h3>
             <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-3">
               {footer.social.map((s) => (
                 <li key={s.label}>
@@ -80,6 +123,14 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              <li>
+                <a
+                  href={linkTo("/admin")}
+                  className="font-body text-sm text-bone-dim transition-colors duration-300 hover:text-bone"
+                >
+                  Dashboard
+                </a>
+              </li>
             </ul>
           </nav>
         </div>
@@ -95,7 +146,9 @@ export default function Footer() {
             className="group flex items-center gap-2 font-body text-[10px] uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:text-bone"
           >
             Back to top
-            <span className="transition-transform duration-500 ease-silk group-hover:-translate-y-0.5">↑</span>
+            <span className="transition-transform duration-500 ease-silk group-hover:-translate-y-0.5">
+              ↑
+            </span>
           </button>
         </div>
       </div>

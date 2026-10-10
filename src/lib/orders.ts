@@ -1,51 +1,83 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { AUTH_CHANGED_EVENT, authHeaders } from "./apiAuth";
 import { dataApiUrl, getVisitorId } from "./telemetry";
 
 /**
  * ============================================================================
- *  ORDER STORE — website commissions requested from the portfolio
+ *  ORDER STORE — website commissions requested from the builder
  * ============================================================================
- *  A visitor picks a template + theme, writes what they want and don't want,
- *  and sends it. The order is kept locally (so it works with zero setup) and
- *  posted to the shared backend when one is configured — the same
- *  `/api/analytics` function that already serves the growth dashboard, which
- *  also exposes a `wz_orders` table. The admin dashboard reads remote-first,
- *  falling back to this browser.
+ *  A visitor picks a template + theme, walks the eight-step brief and sends
+ *  it. The order is kept locally (so it works with zero setup) and posted to
+ *  the shared backend when one is configured — the same `/api/analytics`
+ *  function that serves the dashboard, which also owns the `wz_orders` table.
+ *
+ *  Reading orders back requires an admin credential: the backend only returns
+ *  them to a verified Clerk session from an allowed address, so client data
+ *  is never served to the public. The dashboard falls back to this browser's
+ *  copy when that is not available.
  * ============================================================================
  */
 
-const STORAGE_KEY = "wz.orders.v1";
+const STORAGE_KEY = "wz.orders.v2";
 const MAX_ORDERS = 400;
 const CHANGE_EVENT = "wz:orders-changed";
 
-export type OrderStatus = "new" | "contacted" | "won" | "archived";
+export type OrderStatus =
+  | "new"
+  | "reviewing"
+  | "contacted"
+  | "in-progress"
+  | "completed"
+  | "archived";
+
+export const ORDER_STATUSES: OrderStatus[] = [
+  "new",
+  "reviewing",
+  "contacted",
+  "in-progress",
+  "completed",
+  "archived",
+];
 
 export type Order = {
   id: string;
   createdAt: number;
+  visitor: string;
+  status: OrderStatus;
+  /* --- contact ------------------------------------------------------------ */
   name: string;
-  /** Email or phone — however the visitor wants to be reached. */
+  /** Kept for backwards compatibility: email when present, else phone. */
   contact: string;
+  email: string;
+  phone: string;
   business: string;
+  /* --- what they want ----------------------------------------------------- */
+  websiteType: string;
   templateId: string;
   templateName: string;
   themeId: string;
   themeName: string;
-  /** Requested pages / features. */
-  pages: string[];
+  features: string[];
+  /** Answers to the type-specific follow-up questions. */
+  conditional: Record<string, string>;
+  wants: string;
+  avoids: string;
+  references: string;
+  /* --- project details ---------------------------------------------------- */
+  goal: string;
+  audience: string;
+  pagesNeeded: string;
+  hasLogo: string;
+  hasContent: string;
+  needsHosting: string;
+  needsUpdates: string;
   budget: string;
   timeline: string;
-  /** What the visitor wants included. */
-  wants: string;
-  /** What the visitor explicitly does not want. */
-  avoids: string;
-  /** Links to sites they like. */
-  references: string;
-  visitor: string;
-  status: OrderStatus;
+  /* --- studio side -------------------------------------------------------- */
+  notes: string;
 };
 
-export type OrderInput = Omit<Order, "id" | "createdAt" | "visitor" | "status">;
+export type OrderInput = Omit<Order, "id" | "createdAt" | "visitor" | "status" | "notes">;
 
 /* -------------------------------------------------------------------------- */
 /*  Local persistence                                                         */
@@ -63,10 +95,50 @@ function safeParse(raw: string | null): Order[] {
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as Order[]) : [];
+    return Array.isArray(parsed) ? (parsed as Order[]).map(hydrate) : [];
   } catch {
     return [];
   }
+}
+
+/** Fills in fields added after an order was first stored. */
+function hydrate(raw: Partial<Order>): Order {
+  return {
+    id: String(raw.id ?? uid()),
+    createdAt: typeof raw.createdAt === "number" ? raw.createdAt : Date.now(),
+    visitor: String(raw.visitor ?? "unknown"),
+    status: (ORDER_STATUSES as string[]).includes(String(raw.status))
+      ? (raw.status as OrderStatus)
+      : "new",
+    name: String(raw.name ?? ""),
+    contact: String(raw.contact ?? ""),
+    email: String(raw.email ?? ""),
+    phone: String(raw.phone ?? ""),
+    business: String(raw.business ?? ""),
+    websiteType: String(raw.websiteType ?? ""),
+    templateId: String(raw.templateId ?? ""),
+    templateName: String(raw.templateName ?? ""),
+    themeId: String(raw.themeId ?? ""),
+    themeName: String(raw.themeName ?? ""),
+    features: Array.isArray(raw.features) ? raw.features.map(String) : [],
+    conditional:
+      raw.conditional && typeof raw.conditional === "object"
+        ? Object.fromEntries(Object.entries(raw.conditional).map(([k, v]) => [k, String(v)]))
+        : {},
+    wants: String(raw.wants ?? ""),
+    avoids: String(raw.avoids ?? ""),
+    references: String(raw.references ?? ""),
+    goal: String(raw.goal ?? ""),
+    audience: String(raw.audience ?? ""),
+    pagesNeeded: String(raw.pagesNeeded ?? ""),
+    hasLogo: String(raw.hasLogo ?? ""),
+    hasContent: String(raw.hasContent ?? ""),
+    needsHosting: String(raw.needsHosting ?? ""),
+    needsUpdates: String(raw.needsUpdates ?? ""),
+    budget: String(raw.budget ?? ""),
+    timeline: String(raw.timeline ?? ""),
+    notes: String(raw.notes ?? ""),
+  };
 }
 
 function load(): void {
@@ -90,12 +162,12 @@ function commit(next: Order[]): void {
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
-async function pushRemote(payload: { orders: Order[] }): Promise<void> {
+async function pushRemote(payload: Record<string, unknown>): Promise<void> {
   if (!dataApiUrl) return;
   try {
     await fetch(dataApiUrl, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json", ...authHeaders() },
       body: JSON.stringify(payload),
       keepalive: true,
     });
@@ -122,6 +194,7 @@ export function submitOrder(input: OrderInput): Order {
     createdAt: Date.now(),
     visitor: getVisitorId(),
     status: "new",
+    notes: "",
   };
   commit([order, ...orders]);
   void pushRemote({ orders: [order] });
@@ -136,9 +209,18 @@ export function setOrderStatus(id: string, status: OrderStatus): void {
   if (updated) void pushRemote({ orders: [updated] });
 }
 
+export function setOrderNotes(id: string, notes: string): void {
+  load();
+  const next = orders.map((o) => (o.id === id ? { ...o, notes } : o));
+  commit(next);
+  const updated = next.find((o) => o.id === id);
+  if (updated) void pushRemote({ orders: [updated] });
+}
+
 export function removeOrder(id: string): void {
   load();
   commit(orders.filter((o) => o.id !== id));
+  void pushRemote({ deleteOrder: id });
 }
 
 export function clearOrders(): void {
@@ -170,6 +252,7 @@ export type RemoteOrdersState =
   | { status: "disabled" }
   | { status: "loading" }
   | { status: "ready"; orders: Order[] }
+  | { status: "unauthorised" }
   | { status: "error" };
 
 function toMillis(value: unknown): number {
@@ -181,7 +264,10 @@ function toMillis(value: unknown): number {
   return 0;
 }
 
-/** Orders from every visitor, when the shared backend is configured. */
+/**
+ * Orders from every visitor. The endpoint returns an `authorized` flag; when
+ * it is false the dashboard shows the local copy instead of an empty list.
+ */
 export function useRemoteOrders(): RemoteOrdersState {
   const [state, setState] = useState<RemoteOrdersState>(() =>
     dataApiUrl ? { status: "loading" } : { status: "disabled" },
@@ -194,25 +280,40 @@ export function useRemoteOrders(): RemoteOrdersState {
 
     const fetchOrders = async () => {
       try {
-        const res = await fetch(dataApiUrl, { headers: { accept: "application/json" } });
+        const res = await fetch(dataApiUrl, {
+          headers: { accept: "application/json", ...authHeaders() },
+        });
         if (!res.ok) throw new Error(String(res.status));
-        const data = (await res.json()) as { orders?: Array<Record<string, unknown>> };
+        const raw = (await res.json()) as {
+          authorized?: boolean;
+          orders?: Array<Record<string, unknown>>;
+        };
         if (cancelled) return;
-        const list = (data.orders ?? []).map(
-          (o) => ({ ...o, createdAt: toMillis(o.createdAt) }) as unknown as Order,
+        if (!raw.authorized) {
+          setState({ status: "unauthorised" });
+          return;
+        }
+        const list = (raw.orders ?? []).map((o) =>
+          hydrate({
+            ...(o as unknown as Partial<Order>),
+            createdAt: toMillis(o.createdAt),
+            pagesNeeded: (o.pagesNeeded as string) ?? "",
+          }),
         );
         setState({ status: "ready", orders: list });
       } catch {
         if (!cancelled) setState({ status: "error" });
       } finally {
-        if (!cancelled) timer = window.setTimeout(fetchOrders, 20000);
+        if (!cancelled) timer = window.setTimeout(fetchOrders, 20_000);
       }
     };
 
     void fetchOrders();
+    window.addEventListener(AUTH_CHANGED_EVENT, fetchOrders);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
+      window.removeEventListener(AUTH_CHANGED_EVENT, fetchOrders);
     };
   }, []);
 
@@ -223,26 +324,60 @@ export function useRemoteOrders(): RemoteOrdersState {
 /*  Export                                                                    */
 /* -------------------------------------------------------------------------- */
 
+const CSV_HEADER = [
+  "createdAt",
+  "status",
+  "name",
+  "email",
+  "phone",
+  "business",
+  "websiteType",
+  "template",
+  "theme",
+  "features",
+  "pages",
+  "budget",
+  "timeline",
+  "goal",
+  "audience",
+  "wants",
+  "avoids",
+  "references",
+  "logo",
+  "content",
+  "hosting",
+  "updates",
+  "notes",
+];
+
 export function ordersToCsv(list: Order[]): string {
-  const rows = [
-    "createdAt,name,contact,business,template,theme,pages,budget,timeline,wants,avoids,references,status",
-  ];
+  const rows = [CSV_HEADER.join(",")];
   list.forEach((o) => {
     rows.push(
       [
         new Date(o.createdAt).toISOString(),
+        o.status,
         o.name,
-        o.contact,
+        o.email,
+        o.phone,
         o.business,
+        o.websiteType,
         o.templateName,
         o.themeName,
-        o.pages.join(" / "),
+        o.features.join(" / "),
+        o.pagesNeeded,
         o.budget,
         o.timeline,
+        o.goal,
+        o.audience,
         o.wants,
         o.avoids,
         o.references,
-        o.status,
+        o.hasLogo,
+        o.hasContent,
+        o.needsHosting,
+        o.needsUpdates,
+        o.notes,
       ]
         .map(csvCell)
         .join(","),

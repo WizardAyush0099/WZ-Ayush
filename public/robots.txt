@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# The dashboard is owner-only; there is nothing for a crawler to index.
+Disallow: /#/admin
+
+Sitemap: https://wzayush.vercel.app/sitemap.xml

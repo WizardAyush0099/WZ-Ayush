@@ -1,5 +1,8 @@
-import { templates, templatesSection, type SiteTemplate } from "../../data/content";
-import { THEMES, getThemeById, type ThemeId } from "../../lib/theme";
+import { useEffect, useRef, useState } from "react";
+import { templates, templatesSection, type SiteTemplate } from "../../data/templates";
+import { getThemeById, THEMES, type ThemeId } from "../../lib/theme";
+import { linkTo } from "../../lib/router";
+import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
 import TemplatePreview from "../templates/TemplatePreview";
 
@@ -16,9 +19,16 @@ type Props = {
  * ============================================================================
  *  TEMPLATES — the dedicated block where visitors pick a starting point
  * ============================================================================
- *  Deliberately NOT a floating control in the header. Choosing a template
- *  repaints the entire site in that template's palette, so the decision is
- *  made by looking rather than by reading.
+ *  The whole library lives here on the homepage (the same twenty concepts the
+ *  builder lists), because "what could my site look like?" is the question the
+ *  work above has already earned. Choosing one repaints the entire site in that
+ *  template's palette and carries the choice down into the brief, so the
+ *  decision is made by looking rather than by reading.
+ *
+ *  Each card renders a real miniature of that design. Twenty of those at once
+ *  is a lot of DOM, so previews mount only as they approach the viewport and
+ *  the rest hold a shimmering placeholder — the section stays a scroll away
+ *  from costing anything.
  * ============================================================================
  */
 export default function TemplatesSection({
@@ -30,7 +40,7 @@ export default function TemplatesSection({
   return (
     <section
       id="templates"
-      className="relative z-10 bg-ink-900 py-24 md:py-32"
+      className="relative z-10 border-y border-bone/10 bg-ink-900 py-20 md:py-28"
       aria-labelledby="templates-title"
     >
       <div className="shell">
@@ -38,7 +48,7 @@ export default function TemplatesSection({
           <span className="eyebrow">{templatesSection.eyebrow}</span>
           <h2
             id="templates-title"
-            className="display text-[11vw] leading-[0.9] sm:text-5xl lg:text-6xl"
+            className="display text-[12vw] leading-[0.92] sm:text-5xl lg:text-6xl"
           >
             {templatesSection.title}
           </h2>
@@ -89,15 +99,15 @@ export default function TemplatesSection({
           </div>
         </div>
 
-        {/* Template grid */}
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* The library */}
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {templates.map((template) => {
             const active = template.id === activeTemplateId;
             const palette = getThemeById(template.theme);
             return (
               <article
                 key={template.id}
-                className={`group relative flex flex-col border text-left transition-colors duration-500 ease-silk ${
+                className={`group relative flex flex-col border transition-colors duration-500 ease-silk ${
                   active
                     ? "border-blood-500/70 bg-ink-950"
                     : "border-bone/10 bg-ink-950/60 hover:border-bone/30"
@@ -105,7 +115,7 @@ export default function TemplatesSection({
               >
                 {/* Each preview renders in its OWN palette. */}
                 <div data-theme={template.theme} className="relative overflow-hidden">
-                  <TemplatePreview kind={template.kind} name={template.name} domain={template.domain} />
+                  <LazyPreview template={template} />
                   {active ? (
                     <span className="absolute right-3 top-3 z-10 border border-blood-500/70 bg-ink-950/85 px-2 py-1 font-body text-[9px] uppercase tracking-wide2 text-blood-300">
                       Selected
@@ -114,7 +124,7 @@ export default function TemplatesSection({
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-5">
-                  <div className="flex items-baseline justify-between gap-3">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                     <span className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/80">
                       {template.category}
                     </span>
@@ -126,7 +136,7 @@ export default function TemplatesSection({
                   <h3 className="display text-2xl leading-tight text-bone">{template.name}</h3>
                   <p className="font-body text-sm leading-relaxed text-bone-muted">{template.blurb}</p>
 
-                  <ul className="mt-auto flex flex-wrap gap-2 pt-2">
+                  <ul className="flex flex-wrap gap-2 pt-1">
                     {template.features.map((feature) => (
                       <li
                         key={feature}
@@ -137,30 +147,111 @@ export default function TemplatesSection({
                     ))}
                   </ul>
 
-                  <span className="mt-1 flex items-center gap-2 font-body text-[11px] uppercase tracking-wide2 text-bone transition-colors duration-300 group-hover:text-blood-300">
+                  <button
+                    type="button"
+                    onClick={() => onSelectTemplate(template)}
+                    aria-pressed={active}
+                    className={`mt-auto border px-4 py-3 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
+                      active
+                        ? "border-blood-500/70 bg-blood-950/40 text-bone"
+                        : "border-bone/20 text-bone-muted hover:border-blood-500/60 hover:text-bone"
+                    }`}
+                  >
                     {active ? "Chosen — continue below" : "Choose this template"}
-                    <span aria-hidden="true" className="transition-transform duration-500 ease-silk group-hover:translate-x-1">
-                      →
-                    </span>
-                  </span>
+                  </button>
                   <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
                     Palette · {palette.name}
                   </span>
                 </div>
-
-                {/* Single accessible click target covering the whole card. */}
-                <button
-                  type="button"
-                  onClick={() => onSelectTemplate(template)}
-                  aria-pressed={active}
-                  aria-label={`Choose the ${template.name} template — ${template.category}, from ${template.startingAt}`}
-                  className="absolute inset-0 z-20"
-                />
               </article>
             );
           })}
         </div>
+
+        {/* Two ways forward: pick here and send the brief below, or take the
+            full guided flow. */}
+        <div className="mt-12 flex flex-col gap-5 border-t border-bone/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-[52ch] font-body text-sm leading-relaxed text-bone-muted">
+            Not sure which one fits? The guided version walks through it in eight short steps and
+            sends the finished brief straight to WhatsApp.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={linkTo("/builder")}
+              data-cursor="hover"
+              className="btn border-blood-600/70 bg-blood-600/15 px-6 py-3.5 text-[11px] sm:px-8 sm:py-4 sm:text-[12px]"
+            >
+              Open the full builder
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href={buildWhatsAppUrl(introMessage())}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="hover"
+              className="inline-flex items-center gap-3 border border-bone/20 px-6 py-3.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:border-blood-500/60 hover:text-bone sm:px-7 sm:py-4 sm:text-[12px]"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" aria-hidden="true" />
+              Talk on WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Lazy miniature                                                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Mounts the real preview only once the card is within a screen or so of the
+ * viewport. Twenty full miniatures is thousands of nodes; this keeps the
+ * section cheap until it is actually looked at.
+ */
+function LazyPreview({ template }: { template: SiteTemplate }) {
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const node = hostRef.current;
+    if (!node || shown) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setShown(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShown(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [shown]);
+
+  return (
+    <div ref={hostRef} className="relative">
+      {shown ? (
+        // On phones the thumbnail is cropped to the top of the design: twenty
+        // full-height cards is a very long scroll on a small screen, and the
+        // header + hero is the slice that actually identifies a layout.
+        <div className="max-h-[46vh] overflow-hidden sm:max-h-none">
+          <TemplatePreview template={template} />
+        </div>
+      ) : (
+        // Matches the mounted preview's height at every breakpoint — the
+        // card's own ratio (1100 × 1560) above `sm`, the crop below it — so
+        // the grid never shifts when a preview swaps in.
+        <div
+          className="h-[46vh] w-full animate-shimmer bg-bone/5 sm:h-auto sm:aspect-[1100/1560]"
+          aria-hidden="true"
+        />
+      )}
+    </div>
   );
 }

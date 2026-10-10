@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
-import { about, assets, meta } from "../../data/content";
+import { about, meta } from "../../data/content";
+import { useSiteData } from "../../lib/siteData";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 import { RevealImage, RevealText } from "../common/Reveal";
 
 export default function AboutSection() {
+  const site = useSiteData();
   const sectionRef = useRef<HTMLElement>(null);
   const wordRef = useRef<HTMLSpanElement>(null);
   const reduced = usePrefersReducedMotion();
@@ -46,7 +48,7 @@ export default function AboutSection() {
             </span>
             <div className="relative z-10">
               <RevealImage
-                src={assets.portrait}
+                src={site.assets.portrait}
                 alt="Portrait lit by a low red glow"
                 variant="mask"
                 className="aspect-[4/5] w-full"

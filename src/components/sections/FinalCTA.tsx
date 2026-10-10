@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { assets, cta } from "../../data/content";
+import { contact, cta } from "../../data/content";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
-import { scrollToId } from "../../lib/scroll";
+import { linkTo } from "../../lib/router";
+import { useSiteData } from "../../lib/siteData";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
 
 export default function FinalCTA() {
+  const site = useSiteData();
   const sectionRef = useRef<HTMLElement>(null);
   const lightRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLImageElement>(null);
@@ -78,7 +80,7 @@ export default function FinalCTA() {
     >
       <img
         ref={bgRef}
-        src={assets.cta}
+        src={site.assets.cta}
         alt=""
         aria-hidden="true"
         loading="lazy"
@@ -110,10 +112,9 @@ export default function FinalCTA() {
         </RevealText>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-5">
-          <button
-            type="button"
+          <a
+            href={linkTo("/builder")}
             data-cursor="hover"
-            onClick={() => scrollToId("order")}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             className="group relative inline-flex items-center gap-4 overflow-hidden border border-bone/25 px-10 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-all duration-500 ease-silk hover:border-blood-500/80 hover:px-14"
@@ -122,18 +123,28 @@ export default function FinalCTA() {
               className="absolute inset-0 -z-10 origin-left scale-x-0 bg-blood-700/40 transition-transform duration-700 ease-silk group-hover:scale-x-100"
               aria-hidden="true"
             />
-            {cta.action}
+            {cta.primaryAction}
             <span className="transition-transform duration-500 ease-silk group-hover:translate-x-1">→</span>
-          </button>
+          </a>
           <a
             href={buildWhatsAppUrl(introMessage())}
             target="_blank"
             rel="noopener noreferrer"
             data-cursor="hover"
-            className="inline-flex items-center gap-3 border border-transparent px-4 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:text-bone"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            className="inline-flex items-center gap-3 border border-bone/20 px-8 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:border-blood-500/60 hover:text-bone"
           >
-            WhatsApp
-            <span aria-hidden="true">↗</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" aria-hidden="true" />
+            {cta.secondaryAction}
+          </a>
+          <a
+            href={`mailto:${contact.email}`}
+            data-cursor="hover"
+            className="inline-flex items-center gap-3 px-2 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:text-bone"
+          >
+            {contact.email}
+            <span aria-hidden="true">✉</span>
           </a>
         </div>
       </div>

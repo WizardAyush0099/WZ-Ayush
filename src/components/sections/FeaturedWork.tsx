@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { projects } from "../../data/content";
+import { featuredSection } from "../../data/content";
 import { useHasFinePointer, usePrefersReducedMotion } from "../../lib/hooks";
+import { useSiteData } from "../../lib/siteData";
 import { RevealImage, RevealText } from "../common/Reveal";
 import { useLightbox } from "../common/Lightbox";
 
@@ -10,6 +11,8 @@ import { useLightbox } from "../common/Lightbox";
  * is hidden behind a hover that never happens.
  */
 export default function FeaturedWork() {
+  const site = useSiteData();
+  const projects = site.projects;
   const sectionRef = useRef<HTMLElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<number | null>(null);
@@ -79,14 +82,11 @@ export default function FeaturedWork() {
     >
       <div className="shell">
         <RevealText stagger className="flex flex-col gap-5">
-          <span className="eyebrow">Selected Work</span>
+          <span className="eyebrow">{featuredSection.eyebrow}</span>
           <h2 id="work-title" className="display text-[12vw] leading-[0.9] sm:text-6xl lg:text-7xl">
-            Featured
+            {featuredSection.title}
           </h2>
-          <p className="max-w-[52ch] font-body text-base text-bone-muted">
-            Study Hub and the three flagship pages that carry it — each built to be felt before
-            it is understood.
-          </p>
+          <p className="max-w-[56ch] font-body text-base text-bone-muted">{featuredSection.lede}</p>
         </RevealText>
 
         <ul className="mt-16 md:mt-20">
@@ -127,6 +127,13 @@ export default function FeaturedWork() {
                         {p.category}
                       </span>
                     </span>
+                    {p.href ? (
+                      <span className="mt-3 inline-flex items-center gap-2 font-body text-[10px] uppercase tracking-wide2 text-emerald-300/80">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
+                        {featuredSection.openLabel}
+                        <span aria-hidden="true">↗</span>
+                      </span>
+                    ) : null}
                   </div>
 
                   <div className="md:col-span-4">

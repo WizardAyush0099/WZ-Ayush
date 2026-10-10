@@ -16,7 +16,17 @@ import { useCallback, useEffect, useState } from "react";
  * ============================================================================
  */
 
-export type ThemeId = "crimson" | "verdant" | "amber" | "ocean" | "plum" | "graphite";
+export type ThemeId =
+  | "crimson"
+  | "verdant"
+  | "amber"
+  | "ocean"
+  | "plum"
+  | "graphite"
+  | "midnight"
+  | "neon"
+  | "warm"
+  | "daylight";
 
 export type ThemeDef = {
   id: ThemeId;
@@ -26,6 +36,10 @@ export type ThemeDef = {
   blurb: string;
   /** Ink / accent / text swatch colours — UI only, mirrors the CSS tokens. */
   swatch: [string, string, string];
+  /** `color-scheme` applied to <html> so form controls match. */
+  scheme: "dark" | "light";
+  /** Grouping shown in the builder's theme step. */
+  family: "dark" | "light";
 };
 
 export const THEMES: ThemeDef[] = [
@@ -34,36 +48,80 @@ export const THEMES: ThemeDef[] = [
     name: "Crimson",
     blurb: "Near-black with a deep blood-red accent. The house default.",
     swatch: ["#050304", "#d61f26", "#ece7e1"],
+    scheme: "dark",
+    family: "dark",
   },
   {
     id: "verdant",
     name: "Verdant",
     blurb: "Green-black base, jade accent. Calm and organic.",
     swatch: ["#030604", "#22c55e", "#e9eee9"],
+    scheme: "dark",
+    family: "dark",
   },
   {
     id: "amber",
     name: "Amber",
     blurb: "Warm charcoal and gold. Hospitality and food.",
     swatch: ["#060403", "#f59e0b", "#f0eae0"],
+    scheme: "dark",
+    family: "dark",
   },
   {
     id: "ocean",
     name: "Ocean",
     blurb: "Blue-black with an azure accent. Clean and technical.",
     swatch: ["#030508", "#0ea5e9", "#e4ebf2"],
+    scheme: "dark",
+    family: "dark",
   },
   {
     id: "plum",
     name: "Plum",
     blurb: "Plum-black with a rose accent. Editorial and bold.",
     swatch: ["#070305", "#f472b6", "#f0e7ed"],
+    scheme: "dark",
+    family: "dark",
   },
   {
     id: "graphite",
     name: "Graphite",
     blurb: "Restrained monochrome with a cool silver accent.",
     swatch: ["#040405", "#94a3b8", "#ececee"],
+    scheme: "dark",
+    family: "dark",
+  },
+  {
+    id: "midnight",
+    name: "Midnight",
+    blurb: "Deep indigo night with a soft violet accent. Quiet and premium.",
+    swatch: ["#04050c", "#818cf8", "#e2e5f2"],
+    scheme: "dark",
+    family: "dark",
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    blurb: "Black with electric cyan. For tech and gaming brands.",
+    swatch: ["#020406", "#22d3ee", "#e2fafc"],
+    scheme: "dark",
+    family: "dark",
+  },
+  {
+    id: "warm",
+    name: "Terracotta",
+    blurb: "Warm charcoal and clay. Handmade, food, craft.",
+    swatch: ["#080503", "#ea580c", "#f5ece2"],
+    scheme: "dark",
+    family: "dark",
+  },
+  {
+    id: "daylight",
+    name: "Daylight",
+    blurb: "The light theme — paper-white ground, deep crimson accents.",
+    swatch: ["#faf9f7", "#b91c1c", "#181716"],
+    scheme: "light",
+    family: "light",
   },
 ];
 
@@ -97,9 +155,10 @@ export function getStoredTheme(): ThemeId {
 /** Flip the palette on <html> and remember the choice. */
 export function applyTheme(id: ThemeId): void {
   if (typeof document === "undefined") return;
+  const def = getThemeById(id);
   const root = document.documentElement;
   root.setAttribute("data-theme", id);
-  root.style.colorScheme = "dark";
+  root.style.colorScheme = def.scheme;
   try {
     window.localStorage.setItem(STORAGE_KEY, id);
   } catch {
