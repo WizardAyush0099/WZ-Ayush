@@ -10,6 +10,7 @@ import CustomCursor from "./components/CustomCursor";
 import Preloader from "./components/Preloader";
 import Navbar from "./components/Navbar";
 import Hero from "./components/hero/Hero";
+import HeroIntro from "./components/sections/HeroIntro";
 import StorySection from "./components/sections/StorySection";
 import FeaturedWork from "./components/sections/FeaturedWork";
 import LiveWebsites from "./components/sections/LiveWebsites";
@@ -28,8 +29,8 @@ import Footer from "./components/sections/Footer";
  * ============================================================================
  *  Order of business:
  *
- *    hero → approach → featured work → live websites → reel → capability →
- *    about → archive → templates → brief → contact → footer
+ *    hero (film only) → intro → approach → featured work → live websites →
+ *    reel → capability → about → archive → templates → brief → contact → footer
  *
  *  The work comes first and the commission comes last, but the commission is
  *  no longer a separate route: the template library and the eight-step brief
@@ -80,7 +81,10 @@ export default function PortfolioApp() {
       <Navbar ready={ready} />
 
       <main>
+        {/* The reel carries no words at all; the intro right below it holds
+            the headline, the calls to action and the direct contact. */}
         <Hero ready={ready} />
+        <HeroIntro />
         <StorySection />
         <FeaturedWork />
         <LiveWebsites />

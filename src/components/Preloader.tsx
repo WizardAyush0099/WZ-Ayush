@@ -67,7 +67,9 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
     >
       <div className="flex flex-col items-center gap-6">
         <span className="font-accent text-[13px] tracking-[0.5em] text-blood-500/80">{hero.accent}</span>
-        <h1 className="display text-[13vw] text-bone/90 sm:text-7xl">{hero.title}</h1>
+        {/* Not a heading: this overlay is `aria-hidden`, and the page already
+            has exactly one <h1> — the headline in the intro section. */}
+        <span className="display block text-[13vw] text-bone/90 sm:text-7xl">{hero.title}</span>
         <div className="relative h-px w-[220px] overflow-hidden bg-bone/10 sm:w-[320px]">
           <div
             className="absolute inset-y-0 left-0 bg-blood-500"

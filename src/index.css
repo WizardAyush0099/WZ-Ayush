@@ -409,18 +409,6 @@ a:focus:not(:focus-visible) {
   height: 100svh;
 }
 
-/*
- * The title card carries a lot: wordmark, headline, lede, two calls to action
- * and direct contact. On a landscape phone there is no room for all of it, so
- * the optional lines step aside — the wordmark, headline and buttons always
- * stay.
- */
-@media (max-height: 560px) {
-  .card-optional {
-    display: none;
-  }
-}
-
 /* ============================================================
    FILM GRAIN + VIGNETTE (fixed overlays, GPU-cheap)
    ============================================================ */

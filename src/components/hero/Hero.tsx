@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "../../lib/gsap";
-import { contact, hero as heroContent } from "../../data/content";
+import { hero as heroContent } from "../../data/content";
 import { useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
-import { linkTo } from "../../lib/router";
 import { scrollToId } from "../../lib/scroll";
 import { useSiteData } from "../../lib/siteData";
-import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import ScrollMedia from "../media/ScrollMedia";
 import FogCanvas from "../fx/FogCanvas";
 
 /**
  * ============================================================================
- *  HERO — a scroll-driven film, then a title card
+ *  HERO — the film, and nothing else
  * ============================================================================
  *  The centrepiece is the 300-frame cinematic run supplied in `Images.zip`
  *  (see `mediaDefaults` in src/data/content.ts). The section is deliberately
@@ -28,31 +26,23 @@ import FogCanvas from "../fx/FogCanvas";
  *                           reads as real depth rather than everything
  *                           sliding together
  *
- *  Nothing is written over the footage while it plays. The title card — the
- *  wordmark, headline, calls to action and direct contact — arrives only once
- *  the run is complete (`CARD_AT`), on a scrim that fades up with it. That is
- *  the whole point: the film is the hero, and the type is its closing beat.
+ *  NO TYPE SITS ON THE FOOTAGE — not at the start, not at the end. Every word
+ *  the hero used to carry lives in the section directly below this one
+ *  (`HeroIntro`), in normal document flow, so the last frame is as clean as
+ *  the first. The only thing over the film is the scroll hint, and it is gone
+ *  before the run finishes.
  *
  *  Every plane shares one perspective on the container, and a single scrubbed
- *  GSAP timeline dollies the film in while the haze lifts. At the end of the
- *  run the stage darkens so the pin releases into the next (equally dark)
- *  section as a cut rather than a jolt.
+ *  GSAP timeline dollies the film in. At the end of the run the stage fades to
+ *  ink, so the pin releases into the (equally dark) intro section as a cut
+ *  rather than a jolt.
  * ============================================================================
  */
-
-/**
- * Scroll progress at which the film hands over to the title card. Late enough
- * that the frame run is finished, early enough that the card is still held by
- * the pin (so it is read, not scrolled past).
- */
-const CARD_AT = 0.62;
-
 export default function Hero({ ready }: { ready: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const plateRef = useRef<HTMLDivElement>(null);
   const orbsRef = useRef<HTMLDivElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
   const darkRef = useRef<HTMLDivElement>(null);
@@ -60,20 +50,15 @@ export default function Hero({ ready }: { ready: boolean }) {
   /** Scroll position through the pinned run, read by the frame scrubbing. */
   const progressRef = useRef(0);
 
-  /** True once the run is over — flips the title card on. */
-  const [revealed, setRevealed] = useState(false);
-
   const reduced = usePrefersReducedMotion();
   const isTouch = useIsTouch();
   const site = useSiteData();
 
   /**
    * Pinned only when the visitor is happy with motion. Reduced motion keeps a
-   * single screen: one held frame, no scrub, the copy fully legible from the
-   * first paint.
+   * single held frame and lets the copy below be read straight away.
    */
   const pinned = !reduced;
-  const cardVisible = reduced || revealed;
 
   /* ------------------------------------------------------------------ *
    * 1. Progress + the run's own progress rail
@@ -90,8 +75,6 @@ export default function Hero({ ready }: { ready: boolean }) {
       const progress = Math.max(0, Math.min(1, -rect.top / travel));
       progressRef.current = progress;
       if (barRef.current) barRef.current.style.transform = `scaleY(${progress.toFixed(4)})`;
-      const next = progress >= CARD_AT;
-      setRevealed((prev) => (prev === next ? prev : next));
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -119,7 +102,6 @@ export default function Hero({ ready }: { ready: boolean }) {
       { el: backdropRef.current, depth: 5, z: -110 },
       { el: plateRef.current, depth: 11, z: -40 },
       { el: orbsRef.current, depth: 60, z: 60 },
-      { el: copyRef.current, depth: 9, z: 20 },
     ];
     const layers = rawLayers.filter(
       (l): l is { el: HTMLElement; depth: number; z: number } => l.el !== null,
@@ -176,7 +158,7 @@ export default function Hero({ ready }: { ready: boolean }) {
   }, [reduced, isTouch]);
 
   /* ------------------------------------------------------------------ *
-   * 3. Scroll choreography — the camera move behind the title card
+   * 3. Scroll choreography — the camera move
    * ------------------------------------------------------------------ */
   useEffect(() => {
     const section = sectionRef.current;
@@ -191,14 +173,16 @@ export default function Hero({ ready }: { ready: boolean }) {
       // The dolly. The plate already overscans by 3%, so scaling it can never
       // expose an edge — it just pushes the camera into the scene. Every tween
       // is given an explicit duration so the timeline stays exactly 1 unit
-      // long and `CARD_AT` keeps meaning what it says.
+      // long.
       tl.to(plateRef.current, { scale: 1.16, yPercent: -2, duration: 1 }, 0)
         .to(backdropRef.current, { scale: 1.1, opacity: 0.35, duration: 1 }, 0)
         .to(orbsRef.current, { yPercent: -20, opacity: 0.25, duration: 1 }, 0)
-        // The rail has said everything it can by the time the card arrives.
-        .to(hintRef.current, { autoAlpha: 0, duration: 0.08 }, CARD_AT - 0.1)
-        // Final beat: the stage darkens so the pin releases as a cut.
-        .to(darkRef.current, { opacity: 0.9, duration: 0.2 }, 0.8);
+        // The hint has done its job well before the end — it is off screen
+        // ahead of the final frames, so the last image is pure footage.
+        .to(hintRef.current, { autoAlpha: 0, duration: 0.1 }, 0.78)
+        // Last beat only: the stage fades to ink so the pin releases into the
+        // intro section below as a cut rather than a jolt.
+        .to(darkRef.current, { opacity: 0.9, duration: 0.12 }, 0.88);
     }, section);
 
     return () => ctx.revert();
@@ -219,7 +203,7 @@ export default function Hero({ ready }: { ready: boolean }) {
     return () => ctx.revert();
   }, [ready, reduced]);
 
-  const goDown = () => scrollToId("story");
+  const goDown = () => scrollToId("intro");
 
   return (
     <section
@@ -227,12 +211,9 @@ export default function Hero({ ready }: { ready: boolean }) {
       ref={sectionRef}
       className="hero-run relative isolate w-full bg-ink-950"
       style={pinned ? ({ "--hero-run": site.media.scrollLength } as React.CSSProperties) : undefined}
-      aria-label="Hero"
+      aria-label="Cinematic reel"
     >
-      {/* Sticky stage: the film holds while the scroll length plays out.
-          Exactly one viewport tall, never more — the title card is anchored to
-          the stage's bottom edge, so a stage taller than the screen would push
-          the card's last line out of view. */}
+      {/* Sticky stage: the film holds while the scroll length plays out. */}
       <div className="stage-full sticky top-0 w-full overflow-hidden bg-ink-950">
         {/* One perspective for every plane — that is what makes the depth real. */}
         <div
@@ -257,7 +238,7 @@ export default function Hero({ ready }: { ready: boolean }) {
           </div>
 
           {/* The film. Full bleed, and 3% overscanned so the dolly never
-              shows an edge. Nothing is drawn over it while it runs. */}
+              shows an edge. Nothing is drawn over it at any point. */}
           <div
             ref={plateRef}
             className="absolute inset-[-3%] z-[2] origin-center"
@@ -266,7 +247,7 @@ export default function Hero({ ready }: { ready: boolean }) {
             <ScrollMedia progressRef={progressRef} />
           </div>
 
-          {/* Mid plane — haze drifting between the film and the type. */}
+          {/* Mid plane — haze drifting between the film and the lens. */}
           <FogCanvas className="z-[4] opacity-40" />
 
           {/* Near plane — bokeh that sweeps past fastest of all. */}
@@ -291,122 +272,20 @@ export default function Hero({ ready }: { ready: boolean }) {
           </div>
         </div>
 
-        {/* Grade — just enough lift for the navbar to sit on a dark film
-            without flattening it. */}
+        {/* Grade — just enough lift for the navbar and the scroll hint to sit
+            on a dark film without flattening it. */}
         <div
           className="pointer-events-none absolute inset-0 z-[24]"
           aria-hidden="true"
           style={{
             background: [
+              "linear-gradient(to top, rgb(var(--ink-950-rgb) / 0.55) 0%, rgb(var(--ink-950-rgb) / 0.2) 12%, transparent 24%)",
               "linear-gradient(to bottom, rgb(var(--ink-950-rgb) / 0.74) 0%, rgb(var(--ink-950-rgb) / 0.18) 15%, transparent 36%)",
               "linear-gradient(to right, rgb(var(--ink-950-rgb) / 0.6) 0%, transparent 48%)",
               "radial-gradient(125% 95% at 50% 45%, transparent 45%, rgb(var(--ink-950-rgb) / 0.6) 100%)",
             ].join(", "),
           }}
         />
-
-        {/* ------------------------------------------------------------------
-            Title card. It is not on screen while the film runs: none of this
-            text sits over the footage. It fades up on its own scrim once the
-            sequence has finished, still held in place by the pin.
-        ------------------------------------------------------------------ */}
-        <div
-          className={`pointer-events-none absolute inset-0 z-[30] transition-opacity duration-[1200ms] ease-silk ${
-            cardVisible ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden="true"
-          style={{
-            background: [
-              "linear-gradient(to top, rgb(var(--ink-950-rgb) / 0.96) 0%, rgb(var(--ink-950-rgb) / 0.9) 28%, rgb(var(--ink-950-rgb) / 0.58) 60%, rgb(var(--ink-950-rgb) / 0.14) 84%, transparent 100%)",
-            ].join(", "),
-          }}
-        />
-
-        <div className="shell pointer-events-none absolute inset-x-0 bottom-[7%] z-40 sm:bottom-[9%]">
-          <div
-            ref={copyRef}
-            className="max-w-[640px] lg:max-w-[720px]"
-            style={{ willChange: "transform" }}
-          >
-            <div
-              className={`pointer-events-auto transition-[opacity,transform] duration-[1100ms] ease-silk ${
-                cardVisible
-                  ? "visible translate-y-0 opacity-100"
-                  : "invisible translate-y-8 opacity-0"
-              }`}
-            >
-              <p className="mb-5 inline-flex items-center gap-3 border border-bone/10 bg-ink-950/40 px-4 py-2 font-body text-[10px] uppercase tracking-wide2 text-bone-muted backdrop-blur-sm">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blood-500 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-blood-500" />
-                </span>
-                Available for work
-              </p>
-
-              <p className="eyebrow mb-3 opacity-90">{heroContent.traits}</p>
-
-              {/* Wordmark — the hero's title, arriving with the card. */}
-              <span className="display text-hollow block text-[clamp(2.6rem,min(21vw,14svh),10rem)] leading-none">
-                {heroContent.title}
-              </span>
-
-              <p className="display mt-3 text-[clamp(1.35rem,min(8vw,6.4svh),4rem)] leading-[0.98] text-bone">
-                {heroContent.tagline}
-              </p>
-
-              <p className="card-optional mt-4 max-w-[46ch] font-body text-[12.5px] leading-relaxed text-bone-muted sm:text-[13.5px] lg:text-sm">
-                {heroContent.lede}
-              </p>
-
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <a
-                  href={linkTo("/builder")}
-                  data-cursor="hover"
-                  className="btn border-blood-600/70 bg-blood-600/15 px-5 py-3.5 text-[11px] sm:px-8 sm:py-4 sm:text-[12px]"
-                >
-                  {heroContent.primaryCta}
-                  <span aria-hidden="true">→</span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => scrollToId("work")}
-                  data-cursor="hover"
-                  className="group inline-flex items-center gap-2 border border-bone/20 px-5 py-3.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:border-bone/40 hover:text-bone sm:px-6 sm:py-4 sm:text-[12px]"
-                >
-                  {heroContent.secondaryCta}
-                </button>
-              </div>
-
-              {/* Direct contact — always one tap away once the card lands. */}
-              <div className="card-optional mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
-                <a
-                  href={buildWhatsAppUrl(introMessage())}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-cursor="hover"
-                  className="group flex items-center gap-2 font-body text-[11px] uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:text-bone"
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#25D366]" aria-hidden="true" />
-                  WhatsApp {contact.whatsappDisplay}
-                </a>
-                <a
-                  href={`mailto:${contact.email}`}
-                  data-cursor="hover"
-                  className="group flex items-center gap-2 font-body text-[11px] uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:text-bone"
-                >
-                  <span aria-hidden="true">✉</span>
-                  {contact.email}
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Keeps the document outline intact, whether or not the card has
-              arrived yet. */}
-          <h1 className="sr-only">
-            {heroContent.title} — {heroContent.tagline}
-          </h1>
-        </div>
 
         {/* End-of-run floor so the pin releases as a cut, not a jolt. */}
         <div
@@ -416,8 +295,8 @@ export default function Hero({ ready }: { ready: boolean }) {
         />
 
         {/* Scroll hint — the rail doubles as the position through the run, so
-            a 360vh pinned section never feels like it has stalled. It hands
-            over to the title card at the end. */}
+            a 360vh pinned section never feels like it has stalled. It leaves
+            before the last frames, so no word ever sits on them. */}
         <div
           ref={hintRef}
           className="absolute inset-x-0 bottom-7 z-40 flex justify-center sm:bottom-9"
