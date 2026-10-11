@@ -34,6 +34,7 @@ configured media fails to load.
 | `featured/*.svg` | Project previews | One per live project; also editable per card in **Projects**. |
 | `gallery/*.svg` | Archive + lightbox | Mixed portrait/landscape. |
 | `horizontal/*.svg` | Horizontal reel | Tall/wide art-direction stills. |
+| `hero-sequence/000.jpg … 420.jpg` | Hero scroll sequence | The scene1 + scene2 merge (421 frames, scene 1 cross-dissolved into scene 2 at the seam). Original 1920x1080 stills. |
 | `models/hero.glb` | Hero (optional) | Drop-in glTF character; auto-framed. See `models/README.md`. |
 | `sequence/` | Hero (optional) | `000.webp`, `001.webp`, … for the scroll sequence. |
 | `media/` | Hero (optional) | `hero.mp4` / `hero-poster.webp` for the video mode. |

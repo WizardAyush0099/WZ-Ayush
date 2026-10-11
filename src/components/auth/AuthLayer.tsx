@@ -207,9 +207,16 @@ export function AuthSetupNotice({ compact = false }: { compact?: boolean }) {
         {CLERK_KEY_ENV}=pk_test_…
       </code>
       <p className="mt-4 font-body text-xs leading-relaxed text-bone-dim">
-        Settings → Environment → add the key → save. It is a public value (it starts with
+        Settings → Environment → add the key → save, then redeploy so the value is baked into
+        the build. It is a public value (it starts with
         <span className="text-bone-muted"> pk_</span>), so it is safe to paste. Never add the
         <span className="text-bone-muted"> secret key</span> to client code.
+      </p>
+      <p className="mt-3 font-body text-xs leading-relaxed text-bone-dim">
+        Clerk labels the same value <span className="text-bone-muted">Publishable key</span>; the
+        names <span className="text-bone-muted">CLERK_PUBLISHABLE_KEY</span> and
+        <span className="text-bone-muted"> NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</span> are read
+        automatically too.
       </p>
     </div>
   );

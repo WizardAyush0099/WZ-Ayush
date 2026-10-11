@@ -12,7 +12,25 @@ import { adminAllowlist } from "../data/content";
  * ============================================================================
  */
 
-const raw = (import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "").trim();
+/*
+ * Two sources, both public:
+ *   VITE_CLERK_PUBLISHABLE_KEY  the documented name Vite exposes directly
+ *   __CLERK_PUBLISHABLE_KEY__   build-time alias (see vite.config.ts) so a host
+ *                               that set Clerk's own label — CLERK_PUBLISHABLE_KEY,
+ *                               NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, … — still
+ *                               reaches the client instead of silently failing.
+ *
+ * The alias is read behind `typeof` on purpose. `define` is a build-time
+ * replacement, and the dev server serves this module with the bare identifier
+ * intact — an unguarded read there is a ReferenceError that takes the whole app
+ * down, not just auth. Guarded, dev simply falls back to the VITE_ name and
+ * every environment still boots. The secret key is never read here and must
+ * stay server-side.
+ */
+const buildTimeKey =
+  typeof __CLERK_PUBLISHABLE_KEY__ === "string" ? __CLERK_PUBLISHABLE_KEY__ : "";
+
+const raw = (import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || buildTimeKey || "").trim();
 
 /** Publishable key currently in use, or "" when auth is not configured yet. */
 export const clerkPublishableKey = raw;

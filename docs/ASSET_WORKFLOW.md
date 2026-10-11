@@ -35,7 +35,7 @@ public/assets/
 ├── featured/              project previews
 ├── gallery/               archive frames
 ├── horizontal/            the pinned reel
-├── hero-sequence/         the shipped hero run — 000.jpg … 299.jpg
+├── hero-sequence/         the shipped hero run — 000.jpg … 420.jpg
 ├── sequence/              (optional) 000.webp, 001.webp, …
 └── media/                 (optional) hero.mp4 / hero-poster.webp
 ```
@@ -78,9 +78,14 @@ The clip autoplays **muted** and loops, which is the only autoplay every browser
 
 ### `sequence` — scrubbed by scroll (the shipped hero)
 The most cinematic option, and the cheapest to run, because each frame is a small still. **The
-hero already ships with one**: the 300-frame render from `Images.zip`, extracted to
-`public/assets/hero-sequence/` as `000.jpg` … `299.jpg` and wired up in `mediaDefaults`
+hero already ships with one**: the 413 frames from `scene1.zip` and `scene2.zip` — 209 then 204,
+scene 1 into scene 2 — merged into a single run and extracted to
+`public/assets/hero-sequence/` as `000.jpg` … `420.jpg`, wired up in `mediaDefaults`
 (`src/data/content.ts`). Scrolling the hero advances the frames; scrolling back reverses them.
+
+The two archives were separate takes, not one continuous camera move, so their junction was a hard
+jump. Frames `209` … `216` are eight generated cross-dissolve stills that carry scene 1 into
+scene 2; every frame from the archives is otherwise byte-identical, at its original 1920x1080.
 
 To swap in your own run:
 
@@ -91,7 +96,7 @@ the built-in render).
 4. Optionally set `Scroll length` (default `360vh`) — how much scrolling plays the sequence.
 
 Frames stream in progressively — the opening frame first, then a coarse ladder, then the rest — so
-scrubbing is usable immediately and nothing is ever a blank frame. Up to 420 frames are used.
+scrubbing is usable immediately and nothing is ever a blank frame. Up to 600 frames are used.
 
 ---
 

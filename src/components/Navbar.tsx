@@ -202,7 +202,18 @@ export default function Navbar({ ready }: { ready: boolean }) {
       {/* Mobile menu — sits just under the header so the close control stays reachable. */}
       <div
         id="mobile-menu"
-        className={`fixed inset-0 z-[80] overflow-y-auto xl:hidden ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+        /*
+         * `invisible` when closed, not just `pointer-events-none`: the overlay
+         * panel is a full-viewport fixed layer, and several of its children (the
+         * Start a Project CTA, the theme/auth row, the Close control) carry
+         * `pointer-events-auto` but no opacity rule of their own. Without
+         * `invisible` they stayed painted on top of the hero film — and every
+         * section scrolled past it — while the menu was shut. Visibility is
+         * transitioned so closing still fades out instead of snapping.
+         */
+        className={`fixed inset-0 z-[80] overflow-y-auto transition-[opacity,visibility] duration-500 ease-silk xl:hidden ${
+          open ? "pointer-events-auto visible opacity-100" : "pointer-events-none invisible opacity-0"
+        }`}
         aria-hidden={!open}
       >
         <button

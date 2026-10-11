@@ -39,7 +39,7 @@ type MediaProps = {
   className?: string;
   /**
    * Scroll progress (0 → 1) owned by the pinned hero section. Passed in as a
-   * ref — never as state — so a 300-frame scrub costs zero React renders.
+   * ref — never as state — so a 400-frame scrub costs zero React renders.
    */
   progressRef?: RefObject<number>;
 };
@@ -114,13 +114,23 @@ function VideoMedia({
 
 /**
  * Ceiling on how many frames we are willing to hold. The shipped hero run is
- * 300 stills; the extra headroom is here so an owner can export a longer pass
- * without hitting a silent truncation.
+ * 421 stills (scene1 + scene2 merged); the extra headroom is here so an owner
+ * can export a longer pass without hitting a silent truncation — the previous
+ * 420 cap sat one frame above the shipped count, which is exactly the kind of
+ * silent truncation this constant exists to prevent.
  */
-const MAX_FRAMES = 420;
+const MAX_FRAMES = 600;
 
-/** How many frames to spread the first "keyframe ladder" across. */
-const LADDER_STEPS = 24;
+/**
+ * The first ("keyframe ladder") pass, which decides how good the scrub looks
+ * while the rest still streams in. `LADDER_MIN_STEPS` keeps a short run from
+ * having too few waypoints; `LADDER_SPACING` is the real control — it caps how
+ * far the playhead can be from the nearest decoded frame, so the ladder widens
+ * with a longer run instead of getting coarser. The merged 421-frame pass sits
+ * ~6 frames from its nearest waypoint; a fixed 24 would leave it ~9.
+ */
+const LADDER_MIN_STEPS = 24;
+const LADDER_SPACING = 12;
 /** Parallel image requests. Browsers cap at ~6 per host anyway. */
 const LADDER_CONCURRENCY = 4;
 const STREAM_CONCURRENCY = 6;
@@ -190,7 +200,7 @@ function SequenceMedia({
   };
 
   /**
-   * Nearest frame that is actually decoded. Decoding 300 stills takes a
+   * Nearest frame that is actually decoded. Decoding the whole run takes a
    * moment, so scrubbing fast must show the closest available frame instead
    * of freezing on a stale one — backwards first, because a frame slightly
    * behind the playhead reads as lag, while one ahead reads as a jump cut.
@@ -229,7 +239,7 @@ function SequenceMedia({
         const image = new Image();
         image.decoding = "async";
         // Only the opening frame is worth competing with the page for
-        // bandwidth; the other 299 must never delay first paint.
+        // bandwidth; the rest must never delay first paint.
         image.setAttribute("fetchpriority", index === 0 ? "high" : "low");
         image.onload = () => {
           decoded[index] = true;
@@ -277,7 +287,8 @@ function SequenceMedia({
       await runQueue([0], 1);
       if (cancelled) return;
 
-      const step = Math.max(1, Math.ceil(count / LADDER_STEPS));
+      const steps = Math.max(LADDER_MIN_STEPS, Math.ceil(count / LADDER_SPACING));
+      const step = Math.max(1, Math.ceil(count / steps));
       const ladder: number[] = [];
       for (let i = step; i < count; i += step) ladder.push(i);
       await runQueue(ladder, LADDER_CONCURRENCY);
@@ -292,7 +303,7 @@ function SequenceMedia({
       cancelled = true;
       window.clearTimeout(timeout);
       // Drop every reference (and cancel anything still in flight) so a
-      // route change does not leave 300 bitmaps pinned in memory.
+      // route change does not leave the whole run pinned in memory.
       framesRef.current.forEach((image, i) => {
         if (image && !decoded[i]) image.src = "";
       });

@@ -48,13 +48,18 @@ export const DEFAULT_SITE_DATA: SiteData = {
 };
 
 /*
- * v2: the shipped default media became the 300-frame scroll sequence, so a
- * document cached under the old key (whose `mode` still said "scene") would
- * silently pin the hero to the procedural scene. Bumping the key lets the new
- * default reach every returning visitor; dashboard edits made from here on
- * persist normally.
+ * v2: the shipped default media became the scroll sequence, so a document
+ * cached under the old key (whose `mode` still said "scene") would silently
+ * pin the hero to the procedural scene.
+ *
+ * v3: the sequence changed from the 300-frame `Images.zip` render to the
+ * 421-frame scene1 + scene2 merge. A v2 document still carries
+ * `frameCount: 300` for `hero-sequence`, which would hide the last 121 frames
+ * of the run for every returning visitor — so the key moves forward again and
+ * the new default reaches them. Dashboard edits made from here on persist
+ * normally.
  */
-const STORAGE_KEY = "wz.site.v2";
+const STORAGE_KEY = "wz.site.v3";
 const CHANGE_EVENT = "wz:site-changed";
 
 type Listener = () => void;

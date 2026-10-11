@@ -99,13 +99,20 @@ export type MediaConfig = {
 
 /**
  * The hero's default centrepiece is the cinematic render supplied in
- * `Images.zip`: 300 sequential frames, extracted to
- * `public/assets/hero-sequence/` as `000.jpg` … `299.jpg` (the archive's own
- * `ezgif-frame-NNN.jpg` order, renumbered to the zero-based index the shared
- * sequence loader — and the dashboard preview — address frames by).
+ * `scene1.zip` + `scene2.zip`: 413 sequential frames merged into one run and
+ * extracted to `public/assets/hero-sequence/` as `000.jpg` … `420.jpg` — both
+ * archives' own `ezgif-frame-NNN.jpg` order, scene 1 then scene 2, renumbered
+ * to the zero-based index the shared sequence loader (and the dashboard
+ * preview) address frames by.
+ *
+ * The two archives are two separate takes rather than one continuous camera
+ * move: measured frame-to-frame, their junction was ~43x a normal step — a
+ * hard jump. Eight cross-dissolve frames (`209` … `216`) were rendered at the
+ * seam to carry one into the other. Every original frame is untouched — same
+ * 1920x1080, byte-identical files, nothing resized or re-encoded.
  */
 export const heroSequenceDir = `${base}assets/hero-sequence`;
-export const heroSequenceFrames = 300;
+export const heroSequenceFrames = 421;
 
 export const mediaDefaults: MediaConfig = {
   mode: "sequence",
@@ -119,7 +126,7 @@ export const mediaDefaults: MediaConfig = {
   // Roughly 2.6 screens of travel across the run — slow enough to read as a
   // camera move, short enough that the visitor never feels stuck.
   scrollLength: "360vh",
-  sourceNote: "Images.zip — 300-frame render",
+  sourceNote: "scene1.zip + scene2.zip — 421-frame merged render",
 };
 
 export const mediaLabels: Record<ScrollMediaMode, string> = {
@@ -141,7 +148,9 @@ export const nav: NavItem[] = [
   { label: "Websites", id: "websites" },
   { label: "Studio", id: "story" },
   { label: "Archive", id: "gallery" },
-  { label: "Templates", id: "templates" },
+  // The template library lives on its own page (/builder), not a homepage
+  // section — so this is a route, not a scroll target.
+  { label: "Themes", route: "/builder" },
   { label: "Contact", id: "contact" },
 ];
 
@@ -393,6 +402,23 @@ export const about = {
 } as const;
 
 /* ==========================================================================
+ *  THEMES — the pointer to the library page
+ * ==========================================================================
+ *  The twenty concepts themselves are on /#/builder, where they can be
+ *  browsed and opened without the homepage turning into a catalogue. What
+ *  stays here is this one band, so "where do I pick a starting point?" has an
+ *  answer on the page people actually land on.
+ * ========================================================================== */
+
+export const themesCta = {
+  eyebrow: "Themes",
+  title: "Twenty Starting Points",
+  body:
+    "Every concept has its own layout, type and palette — pick the one that feels closest, then tell me what to build from it. Nothing here is charged, and the brief takes a few minutes.",
+  action: "Start Building",
+} as const;
+
+/* ==========================================================================
  *  COMMISSIONS — the brief, on the homepage and in the builder
  * ========================================================================== */
 
@@ -405,7 +431,7 @@ export const order = {
     {
       key: "01",
       title: "Pick a template",
-      body: "Choose the closest starting point above. It repaints this page in its palette first, so you can see it before you commit.",
+      body: "Pick the closest starting point on the themes page, or in step 3 of the brief below. It repaints this page in its palette first, so you can see it before you commit.",
     },
     {
       key: "02",
