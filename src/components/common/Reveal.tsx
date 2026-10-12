@@ -34,10 +34,10 @@ export function RevealText({
       gsap.from(targets, {
         y,
         opacity: 0,
-        duration: 1.05,
+        duration: 1.3,
         ease: "power3.out",
         delay,
-        stagger: stagger ? 0.12 : 0,
+        stagger: stagger ? 0.16 : 0,
         scrollTrigger: { trigger: el, start: "top 88%", once: true },
       });
     }, el);
@@ -87,7 +87,7 @@ export function RevealImage({
       scale: 1,
       filter: "blur(0px)",
       clipPath: "inset(0% 0% 0% 0%)",
-      duration: 1.35,
+      duration: 1.65,
       ease: "power3.out",
       scrollTrigger: { trigger: wrap, start: "top 88%", once: true },
     };

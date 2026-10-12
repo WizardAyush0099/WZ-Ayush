@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { setSelectedTemplate, useSelectedTemplateId } from "./lib/builderSelection";
 import { ScrollTrigger } from "./lib/gsap";
 import { initSmoothScroll, scrollToId } from "./lib/scroll";
 import { usePrefersReducedMotion } from "./lib/hooks";
@@ -46,13 +47,13 @@ export default function PortfolioApp() {
   const reduced = usePrefersReducedMotion();
 
   // The visitor's palette and the template they are considering — both shared
-  // between the Templates and Commissions sections.
+  // between the homepage brief, the builder page and the template route.
   const [theme, setTheme] = useTheme();
-  const [templateId, setTemplateId] = useState<string | null>(null);
+  const templateId = useSelectedTemplateId();
 
   const selectTemplate = useCallback(
     (template: SiteTemplate) => {
-      setTemplateId(template.id);
+      setSelectedTemplate(template.id);
       setTheme(template.theme);
       window.setTimeout(() => scrollToId("order"), 140);
     },

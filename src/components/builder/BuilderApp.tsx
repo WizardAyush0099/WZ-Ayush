@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { builder, contact, meta } from "../../data/content";
 import {
   templates,
@@ -7,6 +7,7 @@ import {
 } from "../../data/templates";
 import { getThemeById, THEMES, useTheme, type ThemeId } from "../../lib/theme";
 import { linkTo } from "../../lib/router";
+import { setSelectedTemplate, useSelectedTemplateId } from "../../lib/builderSelection";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import Footer from "../sections/Footer";
 import ThemeToggle from "../theme/ThemeToggle";
@@ -28,8 +29,24 @@ import OrderForm from "./OrderForm";
  */
 export default function BuilderApp() {
   const [theme, setTheme] = useTheme();
-  const [templateId, setTemplateId] = useState<string | null>(null);
-  const [preview, setPreview] = useState<SiteTemplate | null>(null);
+  // Shared with the standalone template route, so choosing a concept there and
+  // coming back here keeps the choice.
+  const templateId = useSelectedTemplateId();
+  const [business, setBusiness] = useState<string>("all");
+
+  /** Business labels present in the library, most-populated first. */
+  const businessFilters = useMemo(() => {
+    const counts = new Map<string, number>();
+    templates.forEach((t) => counts.set(t.business, (counts.get(t.business) ?? 0) + 1));
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([label, count]) => ({ label, count }));
+  }, []);
+
+  const visible = useMemo(
+    () => (business === "all" ? templates : templates.filter((t) => t.business === business)),
+    [business],
+  );
 
   // Make sure we land at the top when the route opens.
   useEffect(() => {
@@ -43,7 +60,7 @@ export default function BuilderApp() {
 
   const selectTemplate = useCallback(
     (template: SiteTemplate) => {
-      setTemplateId(template.id);
+      setSelectedTemplate(template.id);
       setTheme(template.theme);
     },
     [setTheme],
@@ -169,9 +186,51 @@ export default function BuilderApp() {
               </span>
             </div>
 
+            {/*
+              Filter by trade. Twenty-six concepts is the point — but nobody
+              wants to read the nineteen that are for someone else's business.
+            */}
+            <div className="mt-9 flex flex-col gap-3 border border-bone/10 bg-ink-950/60 p-4 sm:p-5">
+              <span className="font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
+                {templatesSection.filterLabel}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setBusiness("all")}
+                  aria-pressed={business === "all"}
+                  className={`border px-3 py-2 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
+                    business === "all"
+                      ? "border-blood-500/70 bg-blood-950/40 text-bone"
+                      : "border-bone/15 text-bone-muted hover:border-bone/35 hover:text-bone"
+                  }`}
+                >
+                  {templatesSection.allLabel} · {templates.length}
+                </button>
+                {businessFilters.map((filter) => {
+                  const on = filter.label === business;
+                  return (
+                    <button
+                      key={filter.label}
+                      type="button"
+                      onClick={() => setBusiness(filter.label)}
+                      aria-pressed={on}
+                      className={`border px-3 py-2 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
+                        on
+                          ? "border-blood-500/70 bg-blood-950/40 text-bone"
+                          : "border-bone/15 text-bone-muted hover:border-bone/35 hover:text-bone"
+                      }`}
+                    >
+                      {filter.label} · {filter.count}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Cards */}
             <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {templates.map((template) => {
+              {visible.map((template) => {
                 const on = template.id === templateId;
                 return (
                   <article
@@ -227,16 +286,20 @@ export default function BuilderApp() {
                         >
                           {on ? "Chosen" : "Use this template"}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => setPreview(template)}
+                        {/*
+                          Opens the concept on its own route, full size. The
+                          old modal squeezed the whole page into a card-sized
+                          frame, which is exactly the wrong way to judge one.
+                        */}
+                        <a
+                          href={linkTo(`/template/${template.id}`)}
                           className="border border-bone/15 px-4 py-2.5 font-body text-[10px] uppercase tracking-wide2 text-bone-dim transition-colors duration-300 hover:border-bone/35 hover:text-bone"
                         >
-                          Preview
-                        </button>
+                          Open full page ↗
+                        </a>
                       </div>
                       <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
-                        Palette · {getThemeById(template.theme).name}
+                        {template.business} · Palette {getThemeById(template.theme).name}
                       </span>
                     </div>
                   </article>
@@ -311,88 +374,7 @@ export default function BuilderApp() {
       </main>
 
       <Footer />
-
-      {/* Full-size template preview */}
-      {preview ? (
-        <TemplatePreviewModal template={preview} onClose={() => setPreview(null)} onUse={() => {
-          selectTemplate(preview);
-          setPreview(null);
-        }} />
-      ) : null}
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Preview modal                                                             */
-/* -------------------------------------------------------------------------- */
-
-function TemplatePreviewModal({
-  template,
-  onClose,
-  onUse,
-}: {
-  template: SiteTemplate;
-  onClose: () => void;
-  onUse: () => void;
-}) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [onClose]);
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${template.name} — full preview`}
-      className="fixed inset-0 z-[95] flex items-start justify-center overflow-y-auto bg-ink-950/95 p-4 backdrop-blur-md sm:p-8"
-    >
-      <div className="w-full max-w-4xl border border-bone/15 bg-ink-950">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-bone/10 px-5 py-4">
-          <div>
-            <p className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/80">
-              {template.category}
-            </p>
-            <h2 className="display mt-1 text-2xl text-bone">{template.name}</h2>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onUse}
-              className="border border-blood-500/70 bg-blood-950/40 px-4 py-2.5 font-body text-[10px] uppercase tracking-wide2 text-bone transition-colors hover:border-blood-400"
-            >
-              Use this template
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close preview"
-              className="flex h-10 w-10 items-center justify-center border border-bone/20 text-bone transition-colors hover:border-blood-500/70"
-            >
-              ✕
-            </button>
-          </div>
-        </header>
-
-        <div className="p-4 sm:p-6">
-          {/* The preview inherits the template's palette, not the page's. */}
-          <div data-theme={template.theme} className="border border-bone/10">
-            <TemplatePreview template={template} variant="full" />
-          </div>
-          <p className="mt-4 font-body text-xs text-bone-dim">
-            This is a live miniature of the layout — the real build is responsive, animated and
-            filled with your content.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}

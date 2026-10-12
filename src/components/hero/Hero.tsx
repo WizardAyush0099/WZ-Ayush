@@ -166,7 +166,9 @@ export default function Hero({ ready }: { ready: boolean }) {
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: 0.6 },
+        // A longer scrub makes the film lag gently behind the wheel instead of
+        // snapping frame-for-frame — the move lands slower and reads as cinema.
+        scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: 1.5 },
         defaults: { ease: "none" },
       });
 

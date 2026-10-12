@@ -7,7 +7,10 @@ import {
   type MediaConfig,
   type Project,
 } from "../data/content";
+import { defaultTemplatePhotos, templatePhotoSlots } from "../data/photos";
+import { templates } from "../data/templates";
 import { authHeaders } from "./apiAuth";
+import { useStoredImages } from "./imageStore";
 import { dataApiUrl, getVisitorId } from "./telemetry";
 
 /**
@@ -37,6 +40,12 @@ import { dataApiUrl, getVisitorId } from "./telemetry";
 export type SiteConfig = {
   assets: Record<AssetKey, string>;
   media: MediaConfig;
+  /**
+   * Template photography, keyed by template id then slot index. Only templates
+   * the owner has touched appear here; everything else uses the defaults in
+   * `src/data/photos.ts`. An empty string means "fall back to the default".
+   */
+  photos: Record<string, string[]>;
 };
 
 export type SiteData = SiteConfig & { projects: Project[] };
@@ -44,6 +53,7 @@ export type SiteData = SiteConfig & { projects: Project[] };
 export const DEFAULT_SITE_DATA: SiteData = {
   assets: { ...assetDefaults },
   media: { ...mediaDefaults },
+  photos: {},
   projects: defaultProjects.map((p) => ({ ...p })),
 };
 
@@ -81,12 +91,17 @@ function normaliseAssetPath(value: unknown, fallback: string): string {
   const text = asString(value, "").trim();
   if (!text) return fallback;
   /*
-   * Accept three shapes and store one:
+   * Accept five shapes and store one:
    *   assets/foo.webp          → BASE_URL + assets/foo.webp  (in-repo file)
    *   /WZ-Ayush/assets/foo.webp→ used as-is                  (absolute path)
    *   https://cdn…/foo.webp    → used as-is                  (external)
+   *   data:image/webp;base64,… → used as-is                  (inlined upload)
+   *   idb:<image id>           → used as-is (upload held in IndexedDB by
+   *                              `src/lib/imageStore.ts`; resolved at render
+   *                              time, so the site document stays tiny)
    */
-  if (/^(https?:)?\/\//.test(text) || text.startsWith("data:")) return text;
+  if (/^(https?:)?\/\//.test(text)) return text;
+  if (/^(data|blob|idb):/.test(text)) return text;
   if (text.startsWith("/")) return text;
   return `${import.meta.env.BASE_URL}${text.replace(/^\.?\//, "")}`;
 }
@@ -124,6 +139,38 @@ export function normaliseMedia(input: unknown, base: MediaConfig): MediaConfig {
     scrollLength: asString(source.scrollLength, base.scrollLength).trim() || base.scrollLength,
     sourceNote: asString(source.sourceNote, base.sourceNote),
   };
+}
+
+/**
+ * Template photographs. Only the slots a template actually has are kept, and
+ * each value is normalised like any other asset path — so a pasted CDN URL, a
+ * repo path, or an uploaded data URL are all stored in the one shape the
+ * renderer understands. Unknown ids are dropped rather than carried along.
+ */
+function normalisePhotos(input: unknown, base: Record<string, string[]>): Record<string, string[]> {
+  const source = (input ?? {}) as Record<string, unknown>;
+  const next: Record<string, string[]> = {};
+  (Object.keys(base) as string[]).forEach((id) => {
+    const value = source[id];
+    if (!Array.isArray(value)) return;
+    const defaults = base[id];
+    const list = defaults.map((fallback, i) => {
+      const raw = value[i];
+      if (typeof raw !== "string" || !raw.trim()) return fallback;
+      return normaliseAssetPath(raw, fallback);
+    });
+    next[id] = list;
+  });
+  return next;
+}
+
+/** The committed default photo pools, as a plain id → URLs map. */
+function defaultPhotoMap(): Record<string, string[]> {
+  const map: Record<string, string[]> = {};
+  templates.forEach((template) => {
+    map[template.id] = defaultTemplatePhotos(template.id);
+  });
+  return map;
 }
 
 function normaliseProjects(input: unknown, base: Project[]): Project[] {
@@ -168,6 +215,7 @@ function applyDocument(doc: Partial<SiteData> | null): void {
   data = {
     assets: normaliseAssets(doc.assets, DEFAULT_SITE_DATA.assets),
     media: normaliseMedia(doc.media, DEFAULT_SITE_DATA.media),
+    photos: normalisePhotos(doc.photos, defaultPhotoMap()),
     projects: normaliseProjects(doc.projects, DEFAULT_SITE_DATA.projects),
   };
 }
@@ -224,6 +272,7 @@ export async function pullRemote(): Promise<void> {
     const next: SiteData = {
       assets: normaliseAssets(raw.config?.assets, data.assets),
       media: normaliseMedia(raw.config?.media, data.media),
+      photos: normalisePhotos(raw.config?.photos, defaultPhotoMap()),
       projects: normaliseProjects(raw.projects, data.projects),
     };
     data = next;
@@ -245,7 +294,7 @@ async function pushRemote(): Promise<boolean> {
       headers: { "content-type": "application/json", ...authHeaders() },
       body: JSON.stringify({
         visitor: getVisitorId(),
-        config: { assets: data.assets, media: data.media },
+        config: { assets: data.assets, media: data.media, photos: data.photos },
         projects: data.projects,
       }),
     });
@@ -304,7 +353,75 @@ export function updateConfig(patch: Partial<SiteConfig>): void {
     ...data,
     assets: normaliseAssets({ ...data.assets, ...patch.assets }, DEFAULT_SITE_DATA.assets),
     media: normaliseMedia({ ...data.media, ...patch.media }, data.media),
+    photos: normalisePhotos({ ...data.photos, ...patch.photos }, defaultPhotoMap()),
   });
+}
+
+/**
+ * Replace one template photograph. `url` is normalised, so a pasted CDN link,
+ * a repo path and an uploaded data URL all work. Pass an empty string to put
+ * the default back for that slot.
+ */
+export function setTemplatePhoto(templateId: string, index: number, url: string): void {
+  ensureLoaded();
+  const defaults = defaultTemplatePhotos(templateId);
+  const current = data.photos[templateId] ?? defaults;
+  const next = current.slice();
+  next[index] = url;
+  updateConfig({ photos: { ...data.photos, [templateId]: next } });
+}
+
+/** Restore every photograph of one template to the shipped default. */
+export function resetTemplatePhotos(templateId: string): void {
+  ensureLoaded();
+  const next = { ...data.photos };
+  delete next[templateId];
+  updateConfig({ photos: next });
+}
+
+/** The photo URLs in use for a template — defaults where nothing is stored. */
+export function getTemplatePhotos(templateId: string): string[] {
+  return getSiteData().photos[templateId] ?? defaultTemplatePhotos(templateId);
+}
+
+/**
+ * React binding for the photo pool of one template.
+ *
+ * A slot may point at an image uploaded from the dashboard (`idb:<id>`), which
+ * lives in this browser's IndexedDB rather than in the site document — so the
+ * document stays small enough for localStorage and the backend. Those are
+ * resolved here, and an unresolved slot falls back to the stand-in artwork
+ * instead of a broken image.
+ */
+export function useTemplatePhotos(templateId: string): string[] {
+  const site = useSiteData();
+  const { images } = useStoredImages();
+  const stored = site.photos[templateId];
+  const raw = useMemo(
+    () => stored ?? defaultTemplatePhotos(templateId),
+    // `stored` is a stable array reference from the store, so this is cheap.
+    [stored, templateId],
+  );
+
+  return useMemo(
+    () =>
+      raw.map((url) => {
+        if (!url.startsWith("idb:")) return url;
+        return images.find((image) => image.id === url.slice(4))?.dataUrl ?? "";
+      }),
+    [raw, images],
+  );
+}
+
+/** Editable slot descriptors (label + current value) for the dashboard. */
+export function templatePhotoEditorState(templateId: string) {
+  const stored = getTemplatePhotos(templateId);
+  return templatePhotoSlots(templateId).map((slot, i) => ({
+    key: slot.key,
+    label: slot.label,
+    url: stored[i] ?? slot.url,
+    isDefault: stored[i] === slot.url,
+  }));
 }
 
 /** Replace the project list (dashboard table editor). */
@@ -329,6 +446,7 @@ export function resetSiteData(): void {
   commit({
     assets: { ...DEFAULT_SITE_DATA.assets },
     media: { ...DEFAULT_SITE_DATA.media },
+    photos: {},
     projects: DEFAULT_SITE_DATA.projects.map((p) => ({ ...p })),
   });
 }
@@ -344,6 +462,7 @@ export function exportSiteDataJson(): string {
     {
       assetDefaults: current.assets,
       mediaDefaults: current.media,
+      photos: current.photos,
       projects: current.projects,
     },
     null,

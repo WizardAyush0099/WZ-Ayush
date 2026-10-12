@@ -24,7 +24,9 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
 
     let raf = 0;
     const start = performance.now();
-    const DURATION = 1500;
+    // Deliberately unhurried: the counter and the hairline fill at a calmer
+    // pace so the reveal lands as a title card rather than a loading spinner.
+    const DURATION = 2200;
 
     const tick = (now: number) => {
       const p = Math.min(1, (now - start) / DURATION);

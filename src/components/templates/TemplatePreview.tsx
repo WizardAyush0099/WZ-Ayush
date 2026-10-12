@@ -1,5 +1,14 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import type { SiteTemplate, TemplateDesign, TemplateSection } from "../../data/templates";
+import { defaultTemplatePhotos } from "../../data/photos";
 
 /**
  * ============================================================================
@@ -10,16 +19,25 @@ import type { SiteTemplate, TemplateDesign, TemplateSection } from "../../data/t
  *  proportions, type scale and section rhythm are the real ones, rather than
  *  a diagram that happens to be small.
  *
- *  Everything visible comes from the template's own `design` tokens and
- *  `sections`, so twenty concepts genuinely look like twenty websites —
- *  different composition, typography, shape language and art direction — and
- *  adding one is a data change, not a new component.
+ *  Everything visible comes from the template's own `design` tokens,
+ *  `sections` and photograph pool, so twenty-six concepts genuinely look like
+ *  twenty-six websites — different composition, typography, shape language,
+ *  art direction and *subject matter* — and adding one is a data change, not a
+ *  new component.
+ *
+ *  `variant="card"` clips to a tall thumbnail for the gallery; `variant="page"`
+ *  renders the whole document at natural size, which is what the standalone
+ *  `/#/template/<id>` route uses so a visitor can scroll a concept like a real
+ *  site instead of squinting at a promo tile.
  * ============================================================================
  */
 
 const DESIGN_WIDTH = 1100;
 /** How much of the page a card shows before clipping. */
 const CARD_DESIGN_HEIGHT = 1560;
+/** Legibility floor / ceiling for the standalone full-page view. */
+const PAGE_MIN_ZOOM = 0.62;
+const PAGE_MAX_ZOOM = 1.3;
 
 const FONTS: Record<TemplateDesign["display"], string> = {
   serif: '"Cinzel", Georgia, serif',
@@ -129,10 +147,53 @@ function button(ctx: Ctx, kind: "solid" | "outline" = "solid"): CSSProperties {
 }
 
 /* ==========================================================================
- *  imagery — abstract, art-directed stand-ins for photography
+ *  photography — real pictures, handed out deterministically
+ * ==========================================================================
+ *  Each template paints its images from a pool of photographs of the business
+ *  it is for. Handing them out by call order would break the moment React
+ *  re-rendered (StrictMode double-invokes a render), so every <Photo> claims a
+ *  stable slot the first time it is drawn and keeps it for its whole life.
+ *  Slot order is settled on first paint, so the page is identical on every
+ *  re-render and after a resize.
  * ========================================================================== */
 
 type ShotVariant = "portrait" | "product" | "space" | "food" | "scene" | "headshot" | "album";
+
+/** Preferred slots per shot type, so a hero crop gets a hero-grade photo. */
+const SLOT_ORDER: Record<ShotVariant, number[]> = {
+  scene: [0, 2, 3, 1, 4, 5],
+  space: [1, 2, 0, 3, 4, 5],
+  food: [0, 2, 1, 3, 4, 5],
+  product: [1, 2, 3, 0, 4, 5],
+  portrait: [2, 3, 4, 0, 1, 5],
+  headshot: [3, 2, 0, 1, 4, 5],
+  album: [4, 5, 0, 1, 2, 3],
+};
+
+const slotByInstance = new Map<string, number>();
+let slotCursor = 0;
+
+function photoIndexFor(instanceId: string, order: number[], length: number): number {
+  if (length <= 0) return -1;
+  let slot = slotByInstance.get(instanceId);
+  if (slot === undefined) {
+    // Bounded: previews are unmounted and remounted as the visitor browses.
+    if (slotByInstance.size > 2000) {
+      slotByInstance.clear();
+      slotCursor = 0;
+    }
+    slot = slotCursor++;
+    slotByInstance.set(instanceId, slot);
+  }
+  return order[slot % order.length] % length;
+}
+
+const PhotoPool = createContext<string[]>([]);
+
+/** The pool currently in force for the template being rendered. */
+function usePhotoPool(): string[] {
+  return useContext(PhotoPool);
+}
 
 function Photo({
   t,
@@ -148,6 +209,10 @@ function Photo({
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const bg = `g${uid}`;
   const glow = `p${uid}`;
+  const pool = usePhotoPool();
+  const index = photoIndexFor(uid, SLOT_ORDER[variant], pool.length);
+  const src = index >= 0 ? pool[index] : "";
+  const [failed, setFailed] = useState(false);
 
   return (
     <div
@@ -233,6 +298,30 @@ function Photo({
           ))}
         </g>
       </svg>
+
+      {/*
+        The photograph sits on top of the stand-in, so a slow connection shows
+        an intentional frame rather than an empty box, and a broken URL falls
+        back to the stand-in instead of a browser error icon.
+      */}
+      {src && !failed ? (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          onError={() => setFailed(true)}
+          style={{
+            position: "absolute",
+            inset: 0,
+            height: "100%",
+            width: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -1102,13 +1191,21 @@ function Section({ section, ctx }: { section: TemplateSection; ctx: Ctx }) {
 
 type Props = {
   template: SiteTemplate;
-  /** "card" clips to a tall thumbnail; "full" renders the whole page. */
-  variant?: "card" | "full";
+  /**
+   *  card — clipped to a tall thumbnail for the gallery grid
+   *  full — the whole document, used inside the in-page preview modal
+   *  page — the whole document at natural size (the /#/template/<id> route)
+   */
+  variant?: "card" | "full" | "page";
+  /** Photograph pool; defaults to the shipped set for this template. */
+  photos?: string[];
 };
 
-export default function TemplatePreview({ template, variant = "card" }: Props) {
+export default function TemplatePreview({ template, variant = "card", photos }: Props) {
   const t = template.design;
   const ctx: Ctx = { t };
+  // A template with no stored photography still gets real pictures.
+  const pool = photos && photos.length ? photos : defaultTemplatePhotos(template.id);
   const { ref: hostRef, width } = useMeasured<HTMLDivElement>();
   const innerRef = useRef<HTMLDivElement>(null);
   const [innerHeight, setInnerHeight] = useState(0);
@@ -1127,35 +1224,48 @@ export default function TemplatePreview({ template, variant = "card" }: Props) {
 
   const scale = width > 0 ? width / DESIGN_WIDTH : 0;
   const texture = textureLayer(t);
+  const clipped = variant === "card";
+  /*
+   * The gallery card always fits its column. The standalone page route holds
+   * the design near its real size — on a phone that means a 0.62 floor with
+   * sideways scrolling (a familiar "desktop preview"), never 0.36 text.
+   */
+  const zoom =
+    variant === "page" ? Math.min(Math.max(scale, PAGE_MIN_ZOOM), PAGE_MAX_ZOOM) : scale;
 
   return (
     <div
       ref={hostRef}
       className="relative w-full overflow-hidden"
       style={{
-        height: scale > 0 && innerHeight > 0 ? innerHeight * scale : undefined,
+        height: scale > 0 && innerHeight > 0 ? innerHeight * zoom : undefined,
+        // On the page route the host is exactly as wide as the scaled page, so
+        // the caller can scroll it sideways instead of shrinking it to dust.
+        width: variant === "page" ? DESIGN_WIDTH * zoom : undefined,
         background: t.page,
       }}
     >
       <div
         ref={innerRef}
-        aria-hidden="true"
+        aria-hidden={clipped ? "true" : undefined}
         style={{
           width: DESIGN_WIDTH,
-          transform: `scale(${scale})`,
+          transform: zoom === 1 ? undefined : `scale(${zoom})`,
           transformOrigin: "top left",
           background: t.page,
           color: t.ink,
-          maxHeight: variant === "card" ? CARD_DESIGN_HEIGHT : undefined,
-          overflow: variant === "card" ? "hidden" : undefined,
+          maxHeight: clipped ? CARD_DESIGN_HEIGHT : undefined,
+          overflow: clipped ? "hidden" : undefined,
           position: "relative",
         }}
       >
         {texture ? <div style={{ position: "absolute", inset: 0, pointerEvents: "none", ...texture }} /> : null}
         <div style={{ position: "relative" }}>
-          {template.sections.map((section, i) => (
-            <Section key={`${section.kind}-${i}`} section={section} ctx={ctx} />
-          ))}
+          <PhotoPool.Provider value={pool}>
+            {template.sections.map((section, i) => (
+              <Section key={`${section.kind}-${i}`} section={section} ctx={ctx} />
+            ))}
+          </PhotoPool.Provider>
         </div>
       </div>
     </div>

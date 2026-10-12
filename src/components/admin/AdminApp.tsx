@@ -7,7 +7,8 @@ import {
   useRemoteSnapshot,
   useTelemetry,
 } from "../../lib/telemetry";
-import { displayNameOf } from "../../lib/auth";
+import { displayNameOf, isAuthConfigured, studioSignOut } from "../../lib/auth";
+import { useStudioSession } from "../../lib/studioAuth";
 import { getApiIdentity, useAuthRevision } from "../../lib/apiAuth";
 import { linkTo } from "../../lib/router";
 import { isRemoteSiteDataEnabled } from "../../lib/siteData";
@@ -17,12 +18,14 @@ import ImageManager from "./ImageManager";
 import OrdersPanel from "./OrdersPanel";
 import ProjectsPanel from "./ProjectsPanel";
 import MediaPanel from "./MediaPanel";
+import PhotosPanel from "./PhotosPanel";
 
-type Tab = "orders" | "projects" | "media" | "overview" | "logins" | "images";
+type Tab = "orders" | "projects" | "photos" | "media" | "overview" | "logins" | "images";
 
 const TABS: Array<{ id: Tab; label: string; hint: string }> = [
   { id: "orders", label: "Orders", hint: "Client briefs from the builder, with notes and status" },
   { id: "projects", label: "Projects", hint: "The work shown on the homepage" },
+  { id: "photos", label: "Concept photos", hint: "Replace the photograph inside any template concept" },
   { id: "media", label: "Artwork", hint: "Image paths and the cinematic scroll media" },
   { id: "overview", label: "Growth", hint: "Traffic, reach and engagement" },
   { id: "logins", label: "Logins", hint: "Sessions and authenticated accounts" },
@@ -37,7 +40,6 @@ export default function AdminApp() {
   const shared = remote.status === "ready";
   const snapshot = shared ? remote.snapshot : localSnapshot;
   const summary = useMemo(() => summarise(snapshot), [snapshot]);
-  const { user } = useUser();
   // Re-render once the session token lands, so the diagnostics show real values.
   useAuthRevision();
   const identity = getApiIdentity();
@@ -107,10 +109,9 @@ export default function AdminApp() {
             >
               View builder
             </a>
-            <span className="hidden max-w-[160px] truncate font-body text-[11px] text-bone-muted lg:inline">
-              {displayNameOf(user)}
-            </span>
-            <UserButton afterSignOutUrl={import.meta.env.BASE_URL} />
+            {/* Clerk hooks may only run under a ClerkProvider, so the chip that
+                needs them is its own component on the configured path. */}
+            {isAuthConfigured ? <ClerkAccountChip /> : <StudioAccountChip />}
           </div>
         </div>
       </header>
@@ -184,6 +185,7 @@ export default function AdminApp() {
         <div className="mt-8">
           {tab === "orders" && <OrdersPanel />}
           {tab === "projects" && <ProjectsPanel />}
+          {tab === "photos" && <PhotosPanel />}
           {tab === "media" && <MediaPanel />}
           {tab === "overview" && <GrowthPanel snapshot={snapshot} summary={summary} />}
           {tab === "logins" && <LoginsPanel snapshot={snapshot} summary={summary} />}
@@ -237,5 +239,41 @@ export default function AdminApp() {
         </div>
       </footer>
     </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Header identity — one chip per auth mode                                  */
+/* -------------------------------------------------------------------------- */
+
+/** Clerk path: the signed-in user's name plus Clerk's own account menu. */
+function ClerkAccountChip() {
+  const { user } = useUser();
+  return (
+    <>
+      <span className="hidden max-w-[160px] truncate font-body text-[11px] text-bone-muted lg:inline">
+        {displayNameOf(user)}
+      </span>
+      <UserButton afterSignOutUrl={import.meta.env.BASE_URL} />
+    </>
+  );
+}
+
+/** No-Clerk path: the local studio session governs the dashboard. */
+function StudioAccountChip() {
+  const session = useStudioSession();
+  return (
+    <>
+      <span className="hidden max-w-[160px] truncate font-body text-[11px] text-bone-muted lg:inline">
+        {session ? session.name || session.email : "Signed out"}
+      </span>
+      <button
+        type="button"
+        onClick={studioSignOut}
+        className="border border-bone/15 px-3 py-2 font-body text-[10px] uppercase tracking-wide2 text-bone-muted transition-colors hover:border-bone/35 hover:text-bone"
+      >
+        Sign out
+      </button>
+    </>
   );
 }

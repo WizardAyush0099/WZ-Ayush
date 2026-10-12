@@ -91,6 +91,13 @@ export type SiteTemplate = {
   name: string;
   domain: string;
   category: string;
+  /**
+   * The trade this concept is drawn for — "Restaurant", "Hotel", "Cleaning",
+   * "Shop". The library is filtered by it, so a visitor who runs a cleaning
+   * company sees the cleaning concepts first instead of scrolling past twenty
+   * designs for other people's businesses.
+   */
+  business: string;
   blurb: string;
   /** Site palette applied live when this concept is chosen. */
   theme: ThemeId;
@@ -104,8 +111,11 @@ export const templatesSection = {
   eyebrow: "Build My Website",
   title: "Choose a Starting Point",
   lede:
-    "Twenty real designs — different layouts, type and art direction, not one layout in twenty colours. Open any of them to read the whole page, then pick the closest and I'll build from there.",
+    "Every concept is drawn for a particular trade and filled with real photography of it — a restaurant shows plates and a dining room, a hotel shows rooms and a pool, a cleaning company shows a crew at work. Filter by what you do, open one full page, then pick the closest and I'll build from there.",
   note: "Selecting a concept also repaints this page in its palette.",
+  /** Shown when a filter is active. */
+  filterLabel: "What kind of business?",
+  allLabel: "Everything",
 } as const;
 
 /* ==========================================================================
@@ -119,6 +129,7 @@ export const templates: SiteTemplate[] = [
     name: "Gallery White",
     domain: "gallerywhite.studio",
     category: "Minimal Portfolio",
+    business: "Portfolio",
     blurb: "Type-led and almost white. Thin rules, huge headings, no ornament — the work is the design.",
     theme: "daylight",
     features: ["Case-study index", "About", "Contact", "Light theme"],
@@ -147,6 +158,7 @@ export const templates: SiteTemplate[] = [
     name: "Marigold Studio",
     domain: "marigold.studio",
     category: "Creative Agency",
+    business: "Agency",
     blurb: "Cream cards on olive, a pill navbar and a stat row. Warm, editorial, very current.",
     theme: "crimson",
     features: ["Case studies", "Services", "Team", "Enquiry form"],
@@ -177,6 +189,7 @@ export const templates: SiteTemplate[] = [
     name: "Aurum Estates",
     domain: "aurum-estates.com",
     category: "Dark Luxury",
+    business: "Property",
     blurb: "Black and gold, a full-bleed property hero and a centred showcase. Built for high-ticket sales.",
     theme: "amber",
     features: ["Listing showcase", "Enquiry form", "Location", "Gallery"],
@@ -206,6 +219,7 @@ export const templates: SiteTemplate[] = [
     name: "Meridian",
     domain: "meridian.co.in",
     category: "Modern Business",
+    business: "Consulting",
     blurb: "Calm blue, rounded serif headings and alternating image rows. Reads corporate without being dull.",
     theme: "ocean",
     features: ["Services", "About", "Testimonials", "Contact & map"],
@@ -236,6 +250,7 @@ export const templates: SiteTemplate[] = [
     name: "Orbit",
     domain: "orbit.app",
     category: "SaaS Product",
+    business: "SaaS",
     blurb: "Indigo product marketing: a stacked hero card carousel, feature grid and three pricing tiers.",
     theme: "midnight",
     features: ["Pricing", "Feature grid", "Signup / login", "Docs links"],
@@ -271,6 +286,7 @@ export const templates: SiteTemplate[] = [
     name: "Woodcraft",
     domain: "woodcraft.in",
     category: "Online Store",
+    business: "Online store",
     blurb: "Brutal editorial commerce: oversized wordmark, a black marquee band, collection panel and product grid.",
     theme: "warm",
     features: ["Product catalogue", "Cart & checkout", "Payments", "Order updates"],
@@ -309,6 +325,7 @@ export const templates: SiteTemplate[] = [
     name: "Saveur",
     domain: "saveur.in",
     category: "Restaurant & Café",
+    business: "Restaurant",
     blurb: "Dark plating: a two-column menu with prices, a story panel and a booking bar. Built to get reservations.",
     theme: "crimson",
     features: ["Digital menu", "Table booking", "Gallery", "Delivery links", "Opening hours"],
@@ -340,6 +357,7 @@ export const templates: SiteTemplate[] = [
     name: "Aria",
     domain: "ariamenon.com",
     category: "Personal Brand",
+    business: "Personal",
     blurb: "Soft rose, rounded cards, a centred hero and one testimonial that does the heavy lifting.",
     theme: "plum",
     features: ["Bio & about", "Offerings", "Testimonials", "Booking link"],
@@ -373,6 +391,7 @@ export const templates: SiteTemplate[] = [
     name: "Scholar",
     domain: "scholar.academy",
     category: "Education",
+    business: "Education",
     blurb: "Structured and trustworthy: three course tiers, a coloured stat bar, faculty and a timeline of terms.",
     theme: "ocean",
     features: ["Course list", "Faculty", "Admissions form", "Downloads"],
@@ -406,6 +425,7 @@ export const templates: SiteTemplate[] = [
     name: "Overdrive",
     domain: "overdrive.gg",
     category: "Gaming",
+    business: "Gaming",
     blurb: "Neo-brutalist: graph-paper grid, thick borders, hard shadows and monospace code panels.",
     theme: "neon",
     features: ["Roster", "Tournaments", "Schedule", "Discord link", "Stream embed"],
@@ -440,6 +460,7 @@ export const templates: SiteTemplate[] = [
     name: "Cinematic",
     domain: "cinematic.studio",
     category: "Anime & Cinematic",
+    business: "Film",
     blurb: "Near-black stage, a centred card carousel with arrows, filter pills and a wide CTA band.",
     theme: "crimson",
     features: ["WebGL hero", "Scroll sequence", "Horizontal reel", "Sound toggle"],
@@ -466,6 +487,7 @@ export const templates: SiteTemplate[] = [
     name: "Iron & Ember",
     domain: "ironember.fit",
     category: "Gym & Fitness",
+    business: "Gym",
     blurb: "High-contrast strength brand: lime accents on near-black, membership tiers and a timetable.",
     theme: "graphite",
     features: ["Membership plans", "Class timetable", "Trainer profiles", "Free-trial form"],
@@ -500,6 +522,7 @@ export const templates: SiteTemplate[] = [
     name: "Aperture",
     domain: "aperture.photo",
     category: "Photography",
+    business: "Photography",
     blurb: "Photo-first: a perspective fan of images under a slim nav, dark and gallery-quiet.",
     theme: "graphite",
     features: ["Full-bleed gallery", "Albums", "Prints store", "Booking form"],
@@ -530,6 +553,7 @@ export const templates: SiteTemplate[] = [
     name: "Lowlight",
     domain: "lowlight.band",
     category: "Music & Artist",
+    business: "Music",
     blurb: "Plum and neon: a release carousel, tour list and streaming links. Night-time energy.",
     theme: "plum",
     features: ["Release list", "Tour dates", "Streaming links", "Mailing list"],
@@ -558,6 +582,7 @@ export const templates: SiteTemplate[] = [
     name: "Cortex",
     domain: "cortex.systems",
     category: "Technology",
+    business: "Tech",
     blurb: "Engineering-brand brutal: cyan on charcoal, spec bars, a code panel and a changelog window.",
     theme: "neon",
     features: ["Spec table", "Docs", "Changelog", "Status page"],
@@ -591,6 +616,7 @@ export const templates: SiteTemplate[] = [
     name: "Folio Press",
     domain: "foliopress.media",
     category: "Blog & Magazine",
+    business: "Blog",
     blurb: "Retro monochrome: halftone greys, window-chrome article cards and a typewriter masthead.",
     theme: "daylight",
     features: ["Article index", "Categories", "Author pages", "Newsletter"],
@@ -623,6 +649,7 @@ export const templates: SiteTemplate[] = [
     name: "Summit",
     domain: "summit2026.in",
     category: "Event & Conference",
+    business: "Event",
     blurb: "Conference shape: a day-by-day programme, speaker grid and ticket tiers in warm clay tones.",
     theme: "warm",
     features: ["Agenda", "Speakers", "Ticketing", "Venue map"],
@@ -662,6 +689,7 @@ export const templates: SiteTemplate[] = [
     name: "Launchpad",
     domain: "launchpad.site",
     category: "Landing Page",
+    business: "Landing page",
     blurb: "One page, one goal: an oversized promise, three proof points and a single repeating CTA.",
     theme: "verdant",
     features: ["Single page", "Lead form", "A/B ready", "Analytics"],
@@ -692,6 +720,7 @@ export const templates: SiteTemplate[] = [
     name: "Azure Bay",
     domain: "azurebay.com",
     category: "Hotel & Resort",
+    business: "Hotel",
     blurb: "Bright, airy hospitality: a photo hero, an availability bar, room cards and an amenities panel.",
     theme: "ocean",
     features: ["Rooms & suites", "Availability form", "Amenities", "Location map"],
@@ -723,6 +752,7 @@ export const templates: SiteTemplate[] = [
     name: "Lumière",
     domain: "lumierestudio.com",
     category: "Salon & Spa",
+    business: "Salon",
     blurb: "Muted and tactile: a service menu with prices, stylist profiles and a soft booking panel.",
     theme: "plum",
     features: ["Service & price list", "Appointment form", "Stylist profiles", "Instagram feed"],
@@ -749,6 +779,268 @@ export const templates: SiteTemplate[] = [
       { kind: "galleryMasonry", shots: 3, caption: "The studio" },
       { kind: "bookingBar", fields: ["Service", "Stylist", "Date"], cta: "Request appointment" },
       { kind: "footerBar", items: ["Lumière © 2026", "Instagram", "Directions", "Careers"] },
+    ],
+  },
+
+  /* 21 ─────────────────────────────────────────────────── cleaning services */
+  {
+    id: "cleaning",
+    name: "Freshline",
+    domain: "freshline.in",
+    category: "Cleaning Services",
+    business: "Cleaning",
+    blurb:
+      "A service business that has to look trustworthy before it looks pretty: clear plans, a fixed quote form, a four-step process and a crew worth hiring.",
+    theme: "ocean",
+    features: ["Quote form", "Service areas", "Price plans", "Before / after gallery"],
+    startingAt: "₹14,000",
+    design: {
+      display: "sans", case: "title", tracking: -0.015, radius: 10, border: 1,
+      hard: false, texture: "none",
+      page: "#F4F8FB", panel: "#FFFFFF", ink: "#0C2233", muted: "#55707F",
+      accent: "#0891B2", onAccent: "#FFFFFF", line: "#D8E6ED",
+    },
+    sections: [
+      { kind: "nav", style: "bar", links: ["Services", "Pricing", "Areas", "About"], cta: "Get a quote" },
+      { kind: "heroSplit", eyebrow: "Homes · offices · move-outs", title: "A clean you can book tonight.", body: "Vetted teams, own supplies, fixed prices. Two-hour deep cleans to full handover cleans for letting agents.", cta: "Get a free quote", secondary: "See what's included" },
+      { kind: "statBar", items: [{ value: "6,400", label: "Cleans done" }, { value: "4.9", label: "Avg. rating" }, { value: "24h", label: "Next-day slots" }] },
+      { kind: "featureCards", columns: 4, items: [
+        { title: "Deep clean", body: "Kitchen, bathrooms, skirting, appliances" },
+        { title: "Office & retail", body: "Daily, weekly or after hours" },
+        { title: "Sofas & carpets", body: "Hot extraction, same visit" },
+        { title: "Move in / out", body: "Deposit-back standard" },
+      ] },
+      { kind: "imageTextSplit", eyebrow: "How it works", title: "Four steps, no surprises.", body: "Tell us the rooms and the condition, get a fixed price the same day, pick a slot, and the same team arrives with everything they need.", side: "right", chips: ["Insured", "Own supplies", "No contracts"] },
+      { kind: "timeline", items: [
+        { when: "Step 01", title: "Tell us the job", body: "Rooms, size, last clean, anything to avoid." },
+        { when: "Step 02", title: "Fixed price", body: "Quoted by the job — never by the hour." },
+        { when: "Step 03", title: "Pick a slot", body: "Evenings and weekends included." },
+        { when: "Step 04", title: "Walkthrough", body: "We check the list with you at the door." },
+      ] },
+      { kind: "pricing", items: [
+        { title: "One-off", price: "from ₹1,800", note: "Up to 2 bed · 3 hours" },
+        { title: "Fortnightly", price: "₹1,450", note: "Most popular · same team", featured: true },
+        { title: "Handover", price: "from ₹3,400", note: "End of tenancy" },
+      ] },
+      { kind: "galleryMasonry", shots: 4, caption: "Recent work" },
+      { kind: "footerCta", title: "Tell us the rooms, get a price today.", cta: "Get a free quote" },
+      { kind: "footerBar", items: ["Freshline © 2026", "Service areas", "Careers", "Contact"] },
+    ],
+  },
+
+  /* 22 ───────────────────────────────────────────────── retail shop & boutique */
+  {
+    id: "shop",
+    name: "Marigold",
+    domain: "marigoldstore.in",
+    category: "Retail Shop & Boutique",
+    business: "Shop",
+    blurb:
+      "A warm, editorial shopfront: a browsing carousel, a three-up product grid with prices, a lookbook split and a newsletter box that keeps people coming back.",
+    theme: "warm",
+    features: ["Product grid", "Basket-ready", "Lookbook", "Store hours"],
+    startingAt: "₹18,000",
+    design: {
+      display: "serif", case: "title", tracking: 0.005, radius: 4, border: 1,
+      hard: false, texture: "none",
+      page: "#FBF7F4", panel: "#FFFFFF", ink: "#1D1A19", muted: "#6E6560",
+      accent: "#B4472A", onAccent: "#FFFFFF", line: "#E8DED8",
+    },
+    sections: [
+      { kind: "nav", style: "pill", links: ["New in", "Kitchen", "Home", "Journal"], cta: "Basket · 2" },
+      { kind: "heroCarousel", title: "Made to be used daily.", sub: "Small-batch homeware from Indian workshops — stoneware, linen and brass that outlives the trend it arrived with.", cta: "Shop new in", filters: ["New in", "Kitchen", "Home", "Gifts"] },
+      { kind: "productGrid", title: "Best sellers", columns: 3, items: [
+        { title: "Ripple stoneware mug", price: "₹680" },
+        { title: "Handloom linen throw", price: "₹2,400" },
+        { title: "Brass serving spoon", price: "₹540" },
+        { title: "Sourdough baker", price: "₹1,150" },
+        { title: "Cedar chopping block", price: "₹1,700" },
+        { title: "Copper water jug", price: "₹1,320" },
+      ] },
+      { kind: "imageTextSplit", eyebrow: "The workshop", title: "Six makers, one street.", body: "Every piece is thrown, glazed and fired within four kilometres of the shop. We name the maker on the card that comes with it.", side: "left", chips: ["Small batch", "Made in India"] },
+      { kind: "collectionDark", title: "The autumn table", body: "Twelve pieces for long dinners — plates, bowls and the serving boat everyone asks about.", items: [
+        { title: "Dinner plate, set of 4", price: "₹3,200" },
+        { title: "Serving boat", price: "₹1,900" },
+        { title: "Wine carafe", price: "₹1,450" },
+      ], cta: "Shop the collection" },
+      { kind: "logoStrip", items: ["Vogue India", "Architectural Digest", "Condé Nast Traveller", "The Hindu"] },
+      { kind: "galleryMasonry", shots: 5, caption: "In the shop" },
+      { kind: "footerCta", title: "First look at every new batch.", cta: "Join the list", newsletter: true },
+      { kind: "footerBar", items: ["Marigold © 2026", "Shop hours", "Returns", "Find us"] },
+    ],
+  },
+
+  /* 23 ──────────────────────────────────────────────── clinic & healthcare */
+  {
+    id: "clinic",
+    name: "Northcare",
+    domain: "northcareclinic.in",
+    category: "Clinic & Healthcare",
+    business: "Clinic",
+    blurb:
+      "Calm, clinical and reassuring: an appointment bar above the fold, specialities, doctors with credentials, transparent fees and a page that loads fast on a phone.",
+    theme: "verdant",
+    features: ["Appointments", "Doctor profiles", "Fee list", "Directions"],
+    startingAt: "₹22,000",
+    design: {
+      display: "sans", case: "title", tracking: -0.01, radius: 18, border: 1,
+      hard: false, texture: "none",
+      page: "#F6FBFA", panel: "#FFFFFF", ink: "#0E2C2A", muted: "#5A7A77",
+      accent: "#0E9F6E", onAccent: "#FFFFFF", line: "#D7E8E4",
+    },
+    sections: [
+      { kind: "nav", style: "pill", links: ["Specialities", "Doctors", "Fees", "Visit"], cta: "Book appointment" },
+      { kind: "heroSplit", eyebrow: "Family clinic · Since 2009", title: "Care that runs on time.", body: "Same-day appointments, one doctor per visit, and a fee you know before you sit down.", cta: "Book an appointment", secondary: "Today's availability" },
+      { kind: "bookingBar", fields: ["Speciality", "Doctor", "Preferred date"], cta: "See open slots" },
+      { kind: "featureCards", columns: 3, items: [
+        { title: "General medicine", body: "Everyday care, chronic conditions, referrals" },
+        { title: "Paediatrics", body: "Newborn checks to teenage care" },
+        { title: "Diagnostics", body: "On-site lab, reports the same evening" },
+      ] },
+      { kind: "imageTextSplit", eyebrow: "Why patients stay", title: "The same doctor, every visit.", body: "No rotating panels, no re-explaining your history. Your notes are read before you walk in, and follow-ups are booked before you leave.", side: "right", chips: ["15-minute slots", "Insurance accepted"] },
+      { kind: "caseStudies", title: "Our doctors", items: [
+        { title: "Dr. Ananya Rao", meta: "General medicine · 14 years" },
+        { title: "Dr. Vikram Shetty", meta: "Paediatrics · 11 years" },
+        { title: "Dr. Farah Khan", meta: "Diagnostics · 9 years" },
+      ] },
+      { kind: "pricing", items: [
+        { title: "Consultation", price: "₹500", note: "Includes follow-up within 7 days" },
+        { title: "Family plan", price: "₹1,800 / yr", note: "Up to four members", featured: true },
+        { title: "Home visit", price: "₹1,200", note: "Within 6 km" },
+      ] },
+      { kind: "timeline", items: [
+        { when: "Arrive", title: "Check in at the desk", body: "Two minutes, no paperwork twice." },
+        { when: "See the doctor", title: "Fifteen unhurried minutes", body: "Your notes are already read." },
+        { when: "Before you leave", title: "Tests, scripts, follow-up", body: "All booked at reception." },
+      ] },
+      { kind: "footerCta", title: "Book the next available slot.", cta: "Book an appointment" },
+      { kind: "footerBar", items: ["Northcare © 2026", "Directions", "Fees", "Emergency"] },
+    ],
+  },
+
+  /* 24 ───────────────────────────────────────────── construction & interiors */
+  {
+    id: "interior",
+    name: "Atelier North",
+    domain: "ateliernorth.in",
+    category: "Construction & Interiors",
+    business: "Interiors",
+    blurb:
+      "A portfolio-first build for interior and fit-out studios: full-bleed hero, a numbers bar for credibility, the process, and a gallery that does the selling.",
+    theme: "graphite",
+    features: ["Project gallery", "Process steps", "Site survey form", "Brochure download"],
+    startingAt: "₹26,000",
+    design: {
+      display: "serif", case: "title", tracking: 0.01, radius: 0, border: 1,
+      hard: false, texture: "none",
+      page: "#F2EFEA", panel: "#FFFFFF", ink: "#221E19", muted: "#6B6357",
+      accent: "#8A6A3B", onAccent: "#FFFFFF", line: "#E0D8CC",
+    },
+    sections: [
+      { kind: "nav", style: "minimal", links: ["Projects", "Studio", "Process", "Contact"] },
+      { kind: "heroFullbleed", chip: "Residential · retail · hospitality", title: "Rooms that earn their keep.", sub: "Interior architecture and fit-out for homes, cafés and shops — drawn, built and finished by one team.", cta: "Start a project" },
+      { kind: "statBar", items: [{ value: "128", label: "Projects" }, { value: "14", label: "Years" }, { value: "3", label: "Cities" }, { value: "9", label: "In-house team" }] },
+      { kind: "imageTextSplit", eyebrow: "The studio", title: "One team from drawing to snag list.", body: "Designers, carpenters and site supervisors on the same payroll — so the drawing you approve is the room you get, down to the reveal on the skirting.", side: "right", chips: ["In-house carpentry", "Fixed quotations"] },
+      { kind: "windowCards", items: [
+        { title: "Survey", meta: "Week 1", body: "Measured drawings, constraints, budget bands." },
+        { title: "Design", meta: "Week 2–4", body: "Layouts, materials, one revision round." },
+        { title: "Build", meta: "Week 5–11", body: "Site managed daily, photos every Friday." },
+        { title: "Handover", meta: "Week 12", body: "Snag list closed, care guide, warranty." },
+      ] },
+      { kind: "galleryMasonry", shots: 6, caption: "Recent projects" },
+      { kind: "caseStudies", title: "Selected work", items: [
+        { title: "Café Kalā", meta: "Hospitality · 1,400 sq ft · Bengaluru" },
+        { title: "Bandra apartment", meta: "Residential · 3BHK · Mumbai" },
+        { title: "Form & Fold office", meta: "Workplace · 22 seats · Pune" },
+      ] },
+      { kind: "footerCta", title: "Send us the floor plan.", cta: "Request a survey" },
+      { kind: "footerBar", items: ["Atelier North © 2026", "Brochure", "Careers", "Contact"] },
+    ],
+  },
+
+  /* 25 ───────────────────────────────────────────────────────── travel agency */
+  {
+    id: "travel",
+    name: "Wayfare",
+    domain: "wayfare.travel",
+    category: "Travel Agency",
+    business: "Travel",
+    blurb:
+      "For agencies and tour operators: a destination-led hero, a search bar, packaged trips with prices, a booking enquiry and a wall of places to go.",
+    theme: "amber",
+    features: ["Trip cards", "Search bar", "Enquiry form", "Itineraries"],
+    startingAt: "₹20,000",
+    design: {
+      display: "sans", case: "upper", tracking: -0.02, radius: 14, border: 1,
+      hard: false, texture: "none",
+      page: "#F5F7FA", panel: "#FFFFFF", ink: "#101B2D", muted: "#5C6A80",
+      accent: "#EA580C", onAccent: "#FFFFFF", line: "#DDE4EE",
+    },
+    sections: [
+      { kind: "nav", style: "pill", links: ["Trips", "Destinations", "About", "Journal"], cta: "Plan my trip" },
+      { kind: "heroFullbleed", chip: "Summer 2026 departures", title: "Go somewhere you'll talk about.", sub: "Small-group trips with local guides, honest pricing and itineraries you can read before you pay.", cta: "See trips" },
+      { kind: "bookingBar", fields: ["Where to", "When", "Travellers"], cta: "Search trips" },
+      { kind: "featureCards", columns: 3, items: [
+        { title: "Flights + stays", body: "One price, nothing added at checkout" },
+        { title: "Visas & paperwork", body: "We file, you pack" },
+        { title: "Local guides", body: "Six to twelve travellers per group" },
+      ] },
+      { kind: "caseStudies", title: "Popular trips", items: [
+        { title: "Ladakh, nine days", meta: "from ₹48,000 · Jun–Sep" },
+        { title: "Vietnam north to south", meta: "from ₹76,000 · Oct–Mar" },
+        { title: "Kerala backwaters", meta: "from ₹32,000 · Nov–Feb" },
+      ] },
+      { kind: "imageTextSplit", eyebrow: "Why book with us", title: "A person answers, day one.", body: "You get one planner from enquiry to landing home. They know the hotels because they have slept in them, and they answer on WhatsApp at 11pm when the flight moves.", side: "left", chips: ["4.9 on Google", "Since 2011"] },
+      { kind: "statCards", items: [
+        { value: "1,900", label: "Travellers sent", note: "since 2011" },
+        { value: "38", label: "Itineraries" },
+        { value: "4.9", label: "Average rating" },
+      ] },
+      { kind: "galleryMasonry", shots: 6, caption: "Where we send you" },
+      { kind: "footerCta", title: "Tell us the dates and the budget.", cta: "Plan my trip", newsletter: true },
+      { kind: "footerBar", items: ["Wayfare © 2026", "Terms", "Visa help", "Contact"] },
+    ],
+  },
+
+  /* 26 ─────────────────────────────────────────────────────────── café & bakery */
+  {
+    id: "cafe",
+    name: "Butter & Rye",
+    domain: "butterandrye.cafe",
+    category: "Café & Bakery",
+    business: "Café",
+    blurb:
+      "The neighbourhood bakery done properly: a wordmark hero, a scrolling specials band, the menu with prices, and photographs of the actual bake.",
+    theme: "amber",
+    features: ["Menu with prices", "Opening hours", "Order ahead", "Instagram grid"],
+    startingAt: "₹12,000",
+    design: {
+      display: "serif", case: "upper", tracking: 0.06, radius: 8, border: 1,
+      hard: false, texture: "halftone",
+      page: "#FDF8F1", panel: "#FFFFFF", ink: "#2A1F17", muted: "#7A6A5C",
+      accent: "#C2410C", onAccent: "#FFFFFF", line: "#EFE2D3",
+    },
+    sections: [
+      { kind: "nav", style: "bar", links: ["Menu", "Bread", "Visit", "Orders"], cta: "Order ahead" },
+      { kind: "heroWordmark", word: "Butter & Rye", sub: "Bakery · coffee · since 2014", cta: "Today's bake", float: "Sourdough out of the oven at 8am, every morning" },
+      { kind: "marquee", items: ["Sourdough", "Cardamom buns", "Filter coffee", "Cinnamon knots", "Seeded rye", "Brown butter cookies"], tone: "accent" },
+      { kind: "menuList", title: "Counter menu", note: "Bread is baked twice a day; the second bake lands at 4pm", items: [
+        { label: "Sourdough loaf", value: "₹320" },
+        { label: "Cardamom bun", value: "₹180" },
+        { label: "Cinnamon knot", value: "₹190" },
+        { label: "Seeded rye, half", value: "₹240" },
+        { label: "Filter coffee", value: "₹160" },
+        { label: "Flat white", value: "₹220" },
+      ] },
+      { kind: "imageTextSplit", eyebrow: "The bake", title: "Started at four this morning.", body: "Three bakers, one stone oven, and a starter that has been fed daily since the shop opened. When the shelf is empty, it is empty — that is the whole point.", side: "right", chips: ["48-hour ferment", "Stone oven"] },
+      { kind: "galleryMasonry", shots: 5, caption: "From the counter" },
+      { kind: "featureCards", columns: 3, items: [
+        { title: "Order ahead", body: "Reserve tomorrow's loaf by 6pm" },
+        { title: "Takeaway boxes", body: "Six or twelve, for the office" },
+        { title: "Cake orders", body: "Three days' notice" },
+      ] },
+      { kind: "footerCta", title: "Come by before the shelf empties.", cta: "Order ahead" },
+      { kind: "footerBar", items: ["Butter & Rye © 2026", "7am–7pm daily", "Instagram", "Find us"] },
     ],
   },
 ];

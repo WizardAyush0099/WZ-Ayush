@@ -16,8 +16,12 @@ import {
   displayNameOf,
   isAdminUser,
   isAuthConfigured,
+  studioNeedsFirstAccount,
+  studioSignOut,
 } from "../../lib/auth";
 import { adminSetupHint } from "../../data/content";
+import { useStudioSession, type SessionUser } from "../../lib/studioAuth";
+import { StudioSignInPanel } from "./StudioSignInPanel";
 import { linkTo } from "../../lib/router";
 import { recordSignIn, recordSignOut } from "../../lib/telemetry";
 import { ApiAuthBridge } from "../../lib/apiAuth";
@@ -63,12 +67,20 @@ const appearance = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Wraps the app in Clerk — but only when a key exists. Without the key the
- * site still renders fully; auth surfaces explain what to configure instead
- * of throwing inside a provider that cannot be constructed.
+ * Wraps the app in Clerk when a key is present, and in nothing otherwise —
+ * the local studio provider runs without a provider and without Clerk.
  */
 export function AuthLayer({ children }: { children: ReactNode }) {
-  if (!isAuthConfigured) return <>{children}</>;
+  // Without a Clerk key the local studio provider is the whole auth story, so
+  // the tracker that records its sign-ins mounts here instead.
+  if (!isAuthConfigured) {
+    return (
+      <>
+        <StudioSessionTracker />
+        {children}
+      </>
+    );
+  }
 
   return (
     <ClerkProvider
@@ -82,6 +94,27 @@ export function AuthLayer({ children }: { children: ReactNode }) {
       {children}
     </ClerkProvider>
   );
+}
+
+/**
+ * Like SessionTracker but for the local studio provider when Clerk is absent,
+ * so the dashboard's logins panel sees this path too. Renders nothing.
+ */
+function StudioSessionTracker() {
+  const session = useStudioSession();
+  const previous = useRef<string | null>(null);
+
+  useEffect(() => {
+    const id = session ? session.id : null;
+    if (id && previous.current !== id && session) {
+      recordSignIn({ id: session.id, name: session.name || session.email, email: session.email });
+    } else if (!id && previous.current) {
+      recordSignOut();
+    }
+    previous.current = id;
+  }, [session]);
+
+  return null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -119,8 +152,45 @@ const CLERK_ENABLED = isAuthConfigured;
  * Rendered in the navbar (desktop and inside the mobile menu).
  */
 export default function AuthControls() {
-  if (!CLERK_ENABLED) return <AuthSetupNotice compact />;
-  return <ClerkControls />;
+  if (CLERK_ENABLED) return <ClerkControls />;
+  return <StudioAuthControls />;
+}
+
+/**
+ * The local studio path: an account menu once a session exists, and the
+ * dashboard's sign-in entry point before that.
+ */
+function StudioAuthControls() {
+  const session = useStudioSession();
+  if (!session) return <AuthSetupNotice compact />;
+  return <StudioControls session={session} />;
+}
+
+function StudioControls({ session }: { session: SessionUser }) {
+  return (
+    <div className="flex items-center gap-4">
+      {session.isAdmin && (
+        <a
+          href={linkTo("/admin")}
+          data-cursor="hover"
+          className="hidden font-body text-[11px] font-medium uppercase tracking-wide2 text-blood-400 transition-colors duration-300 hover:text-blood-300 md:inline"
+        >
+          Dashboard
+        </a>
+      )}
+      <span className="hidden max-w-[120px] truncate font-body text-[11px] text-bone-dim lg:inline">
+        {session.name || session.email}
+      </span>
+      <button
+        type="button"
+        data-cursor="hover"
+        onClick={studioSignOut}
+        className="border border-bone/15 px-4 py-2 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:border-bone/30 hover:text-bone"
+      >
+        Sign out
+      </button>
+    </div>
+  );
 }
 
 function ClerkControls() {
@@ -187,7 +257,7 @@ export function AuthSetupNotice({ compact = false }: { compact?: boolean }) {
       <a
         href="#/admin"
         data-cursor="hover"
-        title={`Set ${CLERK_KEY_ENV} to enable sign in`}
+        title="Sign in to the studio dashboard"
         className="hidden border border-bone/15 px-4 py-2 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-dim transition-colors hover:border-bone/30 hover:text-bone sm:inline-block"
       >
         Sign in
@@ -231,14 +301,69 @@ export function AuthSetupNotice({ compact = false }: { compact?: boolean }) {
  * real Clerk sign-in form; signed-in non-admins get a clear explanation.
  */
 export function AdminGate({ children }: { children: ReactNode }) {
-  if (!CLERK_ENABLED) {
+  if (!CLERK_ENABLED) return <StudioAdminGate>{children}</StudioAdminGate>;
+  return <ClerkAdminGate>{children}</ClerkAdminGate>;
+}
+
+/**
+ * Dashboard gate on the local studio path: the sign-in panel until a session
+ * exists, then the same allow-list check the Clerk path uses. The shared
+ * backend still authorises every privileged request on its own — this is the
+ * on-screen half of the gate.
+ */
+function StudioAdminGate({ children }: { children: ReactNode }) {
+  const session = useStudioSession();
+  const firstAccount = studioNeedsFirstAccount();
+
+  if (!session) {
     return (
-      <div className="shell py-28">
-        <AuthSetupNotice />
+      <div className="shell flex min-h-[85svh] flex-col items-center justify-center gap-8 py-24">
+        <div className="text-center">
+          <p className="font-body text-[11px] uppercase tracking-cinematic text-blood-500/80">Restricted</p>
+          <h1 className="display mt-4 text-4xl text-bone sm:text-5xl">Dashboard</h1>
+          <p className="mt-4 max-w-[46ch] font-body text-sm text-bone-muted">
+            {firstAccount
+              ? "No account exists in this browser yet. Create the owner account to open the dashboard."
+              : "Sign in to view growth, logins and image management."}
+          </p>
+        </div>
+        <StudioSignInPanel />
       </div>
     );
   }
-  return <ClerkAdminGate>{children}</ClerkAdminGate>;
+
+  if (!session.isAdmin) {
+    return (
+      <div className="shell flex min-h-[85svh] items-center justify-center py-24">
+        <div className="max-w-[560px] border border-bone/10 bg-ink-900 p-8 text-center">
+          <p className="font-body text-[11px] uppercase tracking-cinematic text-blood-500/80">Not authorised</p>
+          <h1 className="display mt-4 text-3xl text-bone">No dashboard access</h1>
+          <p className="mt-4 font-body text-sm leading-relaxed text-bone-muted">
+            You are signed in as <span className="text-bone">{session.name || session.email}</span>, but
+            this account is not on the admin list.
+          </p>
+          <p className="mt-4 font-body text-xs leading-relaxed text-bone-dim">{adminSetupHint}</p>
+          <div className="mt-7 flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={studioSignOut}
+              className="border border-bone/15 px-5 py-2.5 font-body text-[11px] uppercase tracking-wide2 text-bone-muted transition-colors hover:border-bone/30 hover:text-bone"
+            >
+              Sign out
+            </button>
+            <a
+              href={linkTo("/")}
+              className="border border-bone/15 px-5 py-2.5 font-body text-[11px] uppercase tracking-wide2 text-bone-muted transition-colors hover:border-bone/30 hover:text-bone"
+            >
+              Back to site
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 }
 
 function ClerkAdminGate({ children }: { children: ReactNode }) {

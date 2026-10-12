@@ -1,3 +1,4 @@
+import { studioAuth, type SessionUser } from "../lib/studioAuth";
 import { adminAllowlist } from "../data/content";
 
 /**
@@ -30,6 +31,8 @@ import { adminAllowlist } from "../data/content";
 const buildTimeKey =
   typeof __CLERK_PUBLISHABLE_KEY__ === "string" ? __CLERK_PUBLISHABLE_KEY__ : "";
 
+// Publishable keys are case-sensitive (they encode the Frontend API domain),
+// so the value is only trimmed — never re-cased.
 const raw = (import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || buildTimeKey || "").trim();
 
 /** Publishable key currently in use, or "" when auth is not configured yet. */
@@ -61,6 +64,61 @@ const allowlist = Array.from(
       .filter(Boolean),
   ),
 );
+
+let _studioLoaded = false;
+
+function ensureStudioLoaded(): void {
+  if (!_studioLoaded) {
+    _studioLoaded = true;
+    studioAuth.readDoc();
+  }
+}
+
+export function studioReady(): boolean {
+  ensureStudioLoaded();
+  return _studioLoaded;
+}
+
+export function studioIsSignedIn(): boolean {
+  ensureStudioLoaded();
+  return studioAuth.isSignedIn();
+}
+
+export function studioSession(): SessionUser | null {
+  ensureStudioLoaded();
+  return studioAuth.getSession();
+}
+
+export function studioSignOut(): void {
+  ensureStudioLoaded();
+  studioAuth.signOut();
+}
+
+export function studioNeedsFirstAccount(): boolean {
+  ensureStudioLoaded();
+  return studioAuth.needsFirstAccount();
+}
+
+export async function studioRegisterAccount(input: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<SessionUser> {
+  ensureStudioLoaded();
+  return studioAuth.registerAccount(input);
+}
+
+export async function studioSignIn(input: {
+  email: string;
+  password: string;
+}): Promise<SessionUser> {
+  ensureStudioLoaded();
+  return studioAuth.signIn(input);
+}
+
+export function studioFooterHint(): string {
+  return studioAuth.studioFooterHint();
+}
 
 type MaybeUser = {
   primaryEmailAddress?: { emailAddress?: string | null } | null;

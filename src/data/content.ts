@@ -123,9 +123,11 @@ export const mediaDefaults: MediaConfig = {
   // The opening frame doubles as the poster, so the stage is never blank
   // while the rest of the run loads.
   poster: `${heroSequenceDir}/000.jpg`,
-  // Roughly 2.6 screens of travel across the run — slow enough to read as a
-  // camera move, short enough that the visitor never feels stuck.
-  scrollLength: "360vh",
+  // Roughly 4.8 screens of travel across the run. Widened from 360vh so the
+  // camera move reads slowly — each scroll tick advances the film by less, so
+  // the sequence plays out over a longer, calmer stretch of scrolling while
+  // still covering every frame before the pin releases.
+  scrollLength: "480vh",
   sourceNote: "scene1.zip + scene2.zip — 421-frame merged render",
 };
 

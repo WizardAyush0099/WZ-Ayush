@@ -23,9 +23,13 @@ export function buildWhatsAppUrl(message: string): string {
   return `${base}?text=${encodeURIComponent(message)}`;
 }
 
-/** A short opener for the always-visible WhatsApp buttons. */
-export function introMessage(): string {
-  return `Hi ${meta.studio}, I found your portfolio and I'd like to talk about getting a website built.`;
+/**
+ * A short opener for the always-visible WhatsApp buttons. `about` names the
+ * concept the visitor was looking at, so the chat starts with context.
+ */
+export function introMessage(about?: string): string {
+  const base = `Hi ${meta.studio}, I found your portfolio and I'd like to talk about getting a website built.`;
+  return about ? `${base} I was looking at the ${about} concept.` : base;
 }
 
 /** The fields the builder hands over when composing the chat message. */
