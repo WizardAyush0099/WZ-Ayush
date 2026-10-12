@@ -59,7 +59,7 @@ function createContext(): AudioContext {
   limiter.connect(context.destination);
 
   const master = context.createGain();
-  master.gain.value = 0.9;
+  master.gain.value = 1;
   master.connect(limiter);
 
   const bus = context.createGain();
@@ -79,11 +79,14 @@ function createContext(): AudioContext {
 
   // Two independent sub-buses, so the bed and the effects have their own level.
   const effects = context.createGain();
-  effects.gain.value = 0.9;
+  effects.gain.value = 1;
   effects.connect(bus);
 
   const ambience = context.createGain();
-  ambience.gain.value = 0.42;
+  // Present but never in the way: the bed sits well under the effects, and
+  // both are loud enough to be obviously on — a toggle that produces nothing
+  // audible reads as broken.
+  ambience.gain.value = 0.55;
   ambience.connect(bus);
 
   sfxGain = effects;

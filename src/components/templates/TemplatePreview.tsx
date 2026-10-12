@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { SiteTemplate, TemplateDesign, TemplateSection } from "../../data/templates";
 import { defaultTemplatePhotos } from "../../data/photos";
+import { useTemplatePhotos } from "../../lib/siteData";
 
 /**
  * ============================================================================
@@ -1055,6 +1056,72 @@ function BookingBar({ section, ctx }: { section: Extract<TemplateSection, { kind
   );
 }
 
+/**
+ * A week of nights with the taken ones dimmed — the section has to show what
+ * a visitor can actually book rather than describe it. Used by the hotel and
+ * hospitality concepts; before this it rendered nothing at all, which left a
+ * hole in the middle of the page.
+ */
+function AvailabilityCard({ section, ctx }: { section: Extract<TemplateSection, { kind: "availabilityCard" }>; ctx: Ctx }) {
+  const { t } = ctx;
+  const nights = [
+    { day: "Mon", date: "12", open: true },
+    { day: "Tue", date: "13", open: true },
+    { day: "Wed", date: "14", open: true },
+    { day: "Thu", date: "15", open: true },
+    { day: "Fri", date: "16", open: false },
+    { day: "Sat", date: "17", open: false },
+    { day: "Sun", date: "18", open: true },
+  ];
+  return (
+    <div style={{ padding: `10px ${PAD}px 52px` }}>
+      <div
+        style={{
+          ...card(ctx),
+          borderRadius: Math.min(t.radius * 2, 22),
+          padding: "28px 34px",
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 28,
+        }}
+      >
+        <div style={{ minWidth: 240 }}>
+          <p style={label(ctx, 10)}>Availability</p>
+          <h3 style={{ ...head(ctx, 26), margin: "10px 0 0" }}>{styled(section.title, t)}</h3>
+          <p style={{ fontFamily: SANS, fontSize: 13, color: t.muted, margin: "8px 0 0", maxWidth: 420 }}>
+            {section.note}
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {nights.map((night) => (
+            <div
+              key={night.date}
+              style={{
+                width: 56,
+                textAlign: "center",
+                padding: "12px 0",
+                borderRadius: 10,
+                border: `1px solid ${night.open ? t.line : "transparent"}`,
+                background: night.open ? t.page : "transparent",
+                opacity: night.open ? 1 : 0.35,
+              }}
+            >
+              <span style={{ display: "block", fontFamily: SANS, fontSize: 11, color: t.muted }}>
+                {night.day}
+              </span>
+              <span style={{ display: "block", fontFamily: FONTS[t.display], fontSize: 19, color: t.ink, marginTop: 5 }}>
+                {night.date}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GalleryMasonry({ section, ctx }: { section: Extract<TemplateSection, { kind: "galleryMasonry" }>; ctx: Ctx }) {
   const { t } = ctx;
   const variants: ShotVariant[] = ["portrait", "food", "space", "scene", "product", "album"];
@@ -1176,7 +1243,7 @@ function Section({ section, ctx }: { section: TemplateSection; ctx: Ctx }) {
     case "iconRow": return <IconRow section={section} ctx={ctx} />;
     case "logoStrip": return <LogoStrip section={section} ctx={ctx} />;
     case "bookingBar": return <BookingBar section={section} ctx={ctx} />;
-    case "availabilityCard": return null;
+    case "availabilityCard": return <AvailabilityCard section={section} ctx={ctx} />;
     case "galleryMasonry": return <GalleryMasonry section={section} ctx={ctx} />;
     case "footerCta": return <FooterCta section={section} ctx={ctx} />;
     case "footerBar": return <FooterBar section={section} ctx={ctx} />;
@@ -1204,8 +1271,15 @@ type Props = {
 export default function TemplatePreview({ template, variant = "card", photos }: Props) {
   const t = template.design;
   const ctx: Ctx = { t };
-  // A template with no stored photography still gets real pictures.
-  const pool = photos && photos.length ? photos : defaultTemplatePhotos(template.id);
+  /*
+   * Photographs come from the dashboard's stored overrides first, so a picture
+   * the owner swaps in changes every place the concept appears — the gallery
+   * card and the builder card included, not just the full-page route. With
+   * nothing stored yet the shipped set is used, so a slot is never empty.
+   */
+  const stored = useTemplatePhotos(template.id);
+  const pool =
+    photos && photos.length ? photos : stored.length ? stored : defaultTemplatePhotos(template.id);
   const { ref: hostRef, width } = useMeasured<HTMLDivElement>();
   const innerRef = useRef<HTMLDivElement>(null);
   const [innerHeight, setInnerHeight] = useState(0);

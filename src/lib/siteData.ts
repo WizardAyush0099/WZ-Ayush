@@ -374,9 +374,16 @@ export function setTemplatePhoto(templateId: string, index: number, url: string)
 /** Restore every photograph of one template to the shipped default. */
 export function resetTemplatePhotos(templateId: string): void {
   ensureLoaded();
-  const next = { ...data.photos };
-  delete next[templateId];
-  updateConfig({ photos: next });
+  /*
+   * The shipped defaults are written back explicitly, rather than deleting the
+   * key: `updateConfig` merges the photo maps, so a missing key is simply
+   * restored from the current document and the override would survive. Because
+   * the stored values then equal the shipped ones, the dashboard still reports
+   * every slot as a default.
+   */
+  updateConfig({
+    photos: { ...data.photos, [templateId]: defaultTemplatePhotos(templateId) },
+  });
 }
 
 /** The photo URLs in use for a template — defaults where nothing is stored. */

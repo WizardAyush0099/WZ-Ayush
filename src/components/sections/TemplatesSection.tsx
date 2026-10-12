@@ -72,6 +72,7 @@ export default function TemplatesSection({
                 <button
                   key={option.id}
                   type="button"
+                  data-sfx="select"
                   onClick={() => onSelectTheme(option.id)}
                   aria-pressed={active}
                   title={option.blurb}
@@ -113,9 +114,21 @@ export default function TemplatesSection({
                     : "border-bone/10 bg-ink-950/60 hover:border-bone/30"
                 }`}
               >
-                {/* Each preview renders in its OWN palette. */}
+                {/* Each preview renders in its OWN palette. The miniature is
+                    itself the way in: tapping it opens the concept full size
+                    on its own page rather than showing the same thumbnail
+                    somewhere else. */}
                 <div data-theme={template.theme} className="relative overflow-hidden">
-                  <LazyPreview template={template} />
+                  <a
+                    href={linkTo(`/template/${template.id}`)}
+                    aria-label={`Open the ${template.name} concept at full size`}
+                    className="group/preview block"
+                  >
+                    <LazyPreview template={template} />
+                    <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-ink-950/88 py-2.5 font-body text-[10px] uppercase tracking-wide2 text-bone opacity-0 transition-opacity duration-300 group-hover/preview:opacity-100 group-focus-visible/preview:opacity-100">
+                      Open the full page <span aria-hidden="true">↗</span>
+                    </span>
+                  </a>
                   {active ? (
                     <span className="absolute right-3 top-3 z-10 border border-blood-500/70 bg-ink-950/85 px-2 py-1 font-body text-[9px] uppercase tracking-wide2 text-blood-300">
                       Selected
@@ -147,18 +160,28 @@ export default function TemplatesSection({
                     ))}
                   </ul>
 
-                  <button
-                    type="button"
-                    onClick={() => onSelectTemplate(template)}
-                    aria-pressed={active}
-                    className={`mt-auto border px-4 py-3 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
-                      active
-                        ? "border-blood-500/70 bg-blood-950/40 text-bone"
-                        : "border-bone/20 text-bone-muted hover:border-blood-500/60 hover:text-bone"
-                    }`}
-                  >
-                    {active ? "Chosen — continue below" : "Choose this template"}
-                  </button>
+                  <div className="mt-auto flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      data-sfx="select"
+                      onClick={() => onSelectTemplate(template)}
+                      aria-pressed={active}
+                      className={`border px-4 py-3 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
+                        active
+                          ? "border-blood-500/70 bg-blood-950/40 text-bone"
+                          : "border-bone/20 text-bone-muted hover:border-blood-500/60 hover:text-bone"
+                      }`}
+                    >
+                      {active ? "Chosen — continue below" : "Choose this template"}
+                    </button>
+                    <a
+                      href={linkTo(`/template/${template.id}`)}
+                      data-sfx="open"
+                      className="border border-bone/15 px-4 py-3 font-body text-[10px] uppercase tracking-wide2 text-bone-dim transition-colors duration-300 hover:border-bone/35 hover:text-bone"
+                    >
+                      Full page ↗
+                    </a>
+                  </div>
                   <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
                     Palette · {palette.name}
                   </span>

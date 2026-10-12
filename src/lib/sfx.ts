@@ -37,14 +37,14 @@ export type SfxName = "hover" | "click" | "open" | "close" | "select" | "success
 
 /** Per-sound trim, so the mix is deliberate rather than "all at 0.2". */
 const LEVEL: Record<SfxName, number> = {
-  hover: 0.09,
-  click: 0.3,
-  open: 0.3,
-  close: 0.26,
-  select: 0.32,
-  success: 0.34,
-  error: 0.3,
-  page: 0.24,
+  hover: 0.15,
+  click: 0.36,
+  open: 0.34,
+  close: 0.3,
+  select: 0.38,
+  success: 0.4,
+  error: 0.34,
+  page: 0.3,
 };
 
 /**
@@ -213,6 +213,24 @@ export function playSfx(name: SfxName, volume = 1): void {
 const CONTROL = 'a[href], button, [role="button"], input[type="submit"], summary, label';
 
 /**
+ * A control can name the sound it deserves with `data-sfx="…"` — choosing a
+ * template answers with the rising two-note "select" rather than the generic
+ * knock, so the sound says what happened instead of just "you clicked".
+ */
+function isSfxName(value: string | null | undefined): value is SfxName {
+  return (
+    value === "hover" ||
+    value === "click" ||
+    value === "open" ||
+    value === "close" ||
+    value === "select" ||
+    value === "success" ||
+    value === "error" ||
+    value === "page"
+  );
+}
+
+/**
  * Attach the interface sounds to the whole app with one delegated listener
  * pair — no component has to know sound exists. Mount once, in `App`.
  *
@@ -245,11 +263,13 @@ export function useUiSounds(): void {
       if (getSoundPref() && !audioLive()) void unlockAudio();
 
       const target = event.target as Element | null;
-      if (!target?.closest?.(CONTROL)) {
+      const control = target?.closest?.(CONTROL) as HTMLElement | null;
+      if (!control) {
         lastHover = null;
         return;
       }
-      playSfx("click");
+      const named = control.getAttribute("data-sfx");
+      playSfx(isSfxName(named) ? named : "click");
     };
 
     const onRoute = () => playSfx("page");

@@ -15,9 +15,9 @@ export function initSmoothScroll(enabled: boolean): () => void {
   if (!enabled || lenis) return () => {};
 
   lenis = new Lenis({
-    // A touch slower than the default glide so long scrolls read as a camera
-    // move rather than a jump cut.
-    duration: 1.45,
+    // Slower than the default glide, on purpose: long scrolls should read as a
+    // camera move rather than a jump cut.
+    duration: 1.75,
     wheelMultiplier: 1,
     touchMultiplier: 1.4,
     smoothWheel: true,
@@ -74,7 +74,7 @@ export function scrollTo(target: ScrollTarget, offsetY = 0): void {
   if (lenis) {
     // Passing the resolved element (rather than a selector string) is more
     // reliable and avoids a silent no-op if the node isn't found in time.
-    const opts = { offset: offsetY, duration: 1.6, easing: (t: number) => 1 - Math.pow(1 - t, 3) };
+    const opts = { offset: offsetY, duration: 1.95, easing: (t: number) => 1 - Math.pow(1 - t, 3) };
     if (el) lenis.scrollTo(el, opts);
     else if (typeof target === "number") lenis.scrollTo(target + offsetY, opts);
     return;

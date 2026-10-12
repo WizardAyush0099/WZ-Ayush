@@ -20,7 +20,7 @@ class AmbientEngine {
   private nodes: Array<OscillatorNode | AudioBufferSourceNode> = [];
   private gain: GainNode | null = null;
   private tremolo: OscillatorNode | null = null;
-  private volume = 0.075;
+  private volume = 0.15;
 
   get isPlaying(): boolean {
     return this.nodes.length > 0;
