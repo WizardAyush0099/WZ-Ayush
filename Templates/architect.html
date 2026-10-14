@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Syne:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-surface-variant":"#d1c5b8","primary-fixed-dim":"#e0c298","primary-fixed":"#fedeb2","surface-dim":"#121316","inverse-primary":"#725b38","on-secondary-fixed-variant":"#424750","on-tertiary-container":"#523d15","on-secondary-fixed":"#171c24","secondary":"#c2c7d1","background":"#121316","secondary-fixed-dim":"#c2c7d1","surface-container-highest":"#343538","secondary-fixed":"#dee2ed","surface-tint":"#e0c298","error":"#ffb4ab","primary":"#e2c399","surface-bright":"#38393c","on-surface":"#e3e2e6","tertiary-container":"#c6a876","on-tertiary-fixed":"#271900","error-container":"#93000a","on-primary-fixed-variant":"#584323","tertiary-fixed-dim":"#e2c28e","on-primary-fixed":"#281800","on-secondary":"#2b3139","surface":"#121316","secondary-container":"#424750","on-error-container":"#ffdad6","outline-variant":"#4d463c","on-background":"#e3e2e6","surface-container":"#1f1f23","on-tertiary-fixed-variant":"#59431b","on-error":"#690005","on-secondary-container":"#b0b5c0","tertiary":"#e3c38f","inverse-on-surface":"#2f3034","outline":"#998f83","surface-container-high":"#292a2d","surface-container-low":"#1b1b1f","on-primary-container":"#513d1d","tertiary-fixed":"#ffdea9","on-tertiary":"#402d06","surface-container-lowest":"#0d0e11","inverse-surface":"#e3e2e6","surface-variant":"#343538","primary-container":"#c5a880","on-primary":"#402d0f"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"margin-desktop":"4rem","gutter-desktop":"2.5rem","space-xl":"4rem","gutter":"1.5rem","space-2xl":"8rem","margin":"1.5rem","space-md":"1rem","space-sm":"0.5rem","space-lg":"2rem","space-xs":"0.25rem"},fontFamily:{"headline-sm":["Syne"],"title-editorial":["Hanken Grotesk"],"body-md":["Hanken Grotesk"],"headline-xl-mobile":["Syne"],"body-sm":["Hanken Grotesk"],"headline-xl":["Syne"],"headline-lg-mobile":["Syne"],"label-caps":["Space Grotesk"],"display-hero-mobile":["Syne"],"body-lg":["Hanken Grotesk"],"headline-lg":["Syne"],"meta-technical":["Space Grotesk"],"display-hero":["Syne"],"headline-md":["Syne"]},fontSize:{"headline-sm":["20px",{"lineHeight":"28px","letterSpacing":"0.02em","fontWeight":"600"}],"title-editorial":["18px",{"lineHeight":"26px","letterSpacing":"0.01em","fontWeight":"500"}],"body-md":["15px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"headline-xl-mobile":["36px",{"lineHeight":"42px","letterSpacing":"-0.01em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"400"}],"headline-xl":["56px",{"lineHeight":"64px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-lg-mobile":["28px",{"lineHeight":"34px","letterSpacing":"0em","fontWeight":"600"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.15em","fontWeight":"600"}],"display-hero-mobile":["44px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-lg":["18px",{"lineHeight":"30px","letterSpacing":"0.01em","fontWeight":"300"}],"headline-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.01em","fontWeight":"600"}],"meta-technical":["12px",{"lineHeight":"16px","letterSpacing":"0.08em","fontWeight":"400"}],"display-hero":["80px",{"lineHeight":"88px","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"0em","fontWeight":"500"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col justify-between"><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 w-full px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-md group" data-path="home" href="#"><img alt="Atelier Structura Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WPrM6WMnQUdAXcJCRXGZZozls1CP8LNU-co7JnlmeG-W-b8J-exwsiGFcX6uvI6n5ozu_p_7h-q3lRuGQELcIfTaXLKzZko_Zos-Pio435geycxn6KB1sdC7eUP_62l0vX8WPlYTkS2VCgNHac7oqQ1m_zP0DlSg2TaDUEUbcrxhELbtO0Or1pb2ETtA4G32qWeOZ6GLXdPx3Pi_S8ubqcgVv5TfMlWYzcCOMQgMnlPBZqzJkpzf3W52IJ"/><span class="font-label-caps text-label-caps uppercase text-on-surface tracking-[0.2em]">ATELIER STRUCTURA</span></a></div><nav class="hidden xl:flex items-center gap-space-lg" data-active-classes="text-primary border-b border-primary"><a aria-current="page" class="font-label-caps uppercase transition-colors py-space-xs text-primary border-b border-primary" data-path="home" href="#">Home</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" data-path="projects" href="#">Projects</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" data-path="services" href="#">Services</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" data-path="expertise" href="#">Expertise</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" data-path="about" href="#">About</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" data-path="approach" href="#">Approach</a><a class="font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors py-space-xs" data-path="contact" href="#">Contact</a></nav><div class="flex items-center gap-space-lg"><a class="inline-flex items-center justify-center bg-primary-container text-on-primary-container hover:bg-surface-bright hover:text-on-surface transition-colors px-space-lg py-3 font-label-caps text-label-caps uppercase tracking-[0.15em]" data-path="contact" href="#">Start a Project</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="flex flex-col w-full bg-surface text-on-surface antialiased overflow-hidden">
+<!-- =========================================================================
+       01. HERO SECTION
+       Cinematic bleed, minimal typography, structural datum markers
+       ========================================================================= -->
+<section class="relative w-full min-h-[92vh] -mt-20 flex flex-col justify-between p-margin md:p-margin-desktop bg-surface-container-lowest">
+<!-- Background Image Scrim & Canvas -->
+<div class="absolute inset-0 z-0">
+<img alt="Architectural twilight rendering of a glass and concrete cantilever residence" class="w-full h-full object-cover object-center filter brightness-[0.78] contrast-[1.08] saturate-[0.92]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx0HtJU6Eo390yg-6MR2CedzrZlvzADJft42aHDxbwz-_ETp35Khd2JbFv5VbaWDs-4D1e_FsRF1V75fWYYXDxRw-YV9ia0tBLMKOtrWa9t6Z95k58H4SoQGTlLJTUM1uABHAxwgL_Q66qLZTCmqQ4rasPg9JL-PUkmegzUP0nEGwxPx4rYpYcKsHjMLac8eKNdAIINkIsNTyWrWUORQFsUOz1mDAHSGT7Qj5gLd_0Z6GUswAbO63Hrw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-surface-container-lowest/60"></div>
+<div class="absolute inset-0 bg-surface-container-lowest/20 backdrop-blur-[0.5px]"></div>
+</div>
+<!-- Top Spacing clearance for Shell Nav -->
+<div class="relative z-10 pt-24 md:pt-28 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="inline-flex items-center gap-3 bg-surface-container-lowest/80 backdrop-blur-md px-4 py-2 border-l-2 border-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.25em]">EST. 2008 • ZÜRICH / TOKYO / NEW YORK</span>
+</div>
+<div class="hidden lg:flex items-center gap-6 font-meta-technical text-meta-technical text-on-surface-variant/80">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[15px]">straighten</span>
+          AXIS 47°22'37″ N • 8°32'30″ E
+        </span>
+<span class="w-px h-3 bg-outline-variant/40"></span>
+<span class="tracking-[0.18em] uppercase">Structural Practice • SIA 102</span>
+</div>
+</div>
+<!-- Hero Content Focus -->
+<div class="relative z-10 max-w-5xl my-auto py-12 md:py-20">
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.3em] block mb-4">Master Structural Architects</span>
+<h1 class="font-display-hero text-display-hero-mobile md:text-display-hero text-on-surface uppercase tracking-tight font-bold max-w-4xl leading-[0.95]">
+        DESIGNING THE FUTURE.<br/>
+<span class="text-primary font-normal italic font-headline-xl">ENGINEERING</span> THE POSSIBLE.
+      </h1>
+<p class="mt-6 md:mt-8 font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+        Atelier Structura converges pioneering computational engineering with poetic spatial minimalism, sculpting sustainable, enduring landmarks across six continents.
+      </p>
+<!-- Action Group -->
+<div class="mt-10 flex flex-wrap items-center gap-6">
+<a class="inline-flex items-center justify-center bg-primary text-surface-container-lowest font-label-caps text-label-caps uppercase tracking-[0.2em] px-8 py-4 transition-all duration-300 hover:bg-on-surface hover:text-surface-container-lowest shadow-xl" href="#portfolio">
+          Explore Our Projects
+        </a>
+<a class="inline-flex items-center gap-3 font-label-caps text-label-caps uppercase text-on-surface hover:text-primary transition-colors py-4 px-2" href="#process">
+<span>Studio Reel [02:40]</span>
+<span class="material-symbols-outlined text-[16px] text-primary transition-transform group-hover:translate-y-1">arrow_downward</span>
+</a>
+</div>
+</div>
+<!-- Bottom Structural Datum Bar -->
+<div class="relative z-10 pt-6 border-t border-outline-variant/30 flex flex-col md:flex-row md:items-end justify-between gap-4 font-meta-technical text-meta-technical text-on-surface-variant">
+<div class="flex items-center gap-4">
+<span class="text-primary font-bold">MONOGRAPH 2024</span>
+<span class="text-outline-variant">•</span>
+<span class="tracking-widest">LAT 47.3769° N • LON 8.5417° E</span>
+<span class="hidden sm:inline text-outline-variant">•</span>
+<span class="hidden sm:inline text-secondary">CARBON-NEUTRAL STRUCTURAL MATRIX</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-outline">SCROLL TO DISCOVER</span>
+<span class="material-symbols-outlined text-primary text-[18px] animate-bounce">arrow_downward</span>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       02. STATS SECTION (STRUCTURAL IMPACT METRICS)
+       High-contrast architectural data array
+       ========================================================================= -->
+<section class="w-full bg-surface-container-low px-margin md:px-margin-desktop py-space-xl border-y border-outline-variant/20">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter-desktop">
+<!-- Metric 01 -->
+<div class="flex flex-col justify-between p-6 bg-surface-container-lowest/60 hover:bg-surface-container transition-colors duration-300 border-l border-primary/40 group">
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em]">01 • EXECUTION</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-[20px]">apartment</span>
+</div>
+<div>
+<div class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-2">140<span class="text-primary">+</span></div>
+<div class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-[0.15em] mb-1">Completed International Works</div>
+<p class="font-body-sm text-body-sm text-outline">Across residential, commercial, civic, and museum topologies.</p>
+</div>
+</div>
+<!-- Metric 02 -->
+<div class="flex flex-col justify-between p-6 bg-surface-container-lowest/60 hover:bg-surface-container transition-colors duration-300 border-l border-primary/40 group">
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em]">02 • RECOGNITION</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-[20px]">military_tech</span>
+</div>
+<div>
+<div class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-2">28</div>
+<div class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-[0.15em] mb-1">Global Architectural Laurels</div>
+<p class="font-body-sm text-body-sm text-outline">RIBA Honors, Pritzker Nominee longlist, and Mies Crown Americas.</p>
+</div>
+</div>
+<!-- Metric 03 -->
+<div class="flex flex-col justify-between p-6 bg-surface-container-lowest/60 hover:bg-surface-container transition-colors duration-300 border-l border-primary/40 group">
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em]">03 • TERRITORIES</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-[20px]">public</span>
+</div>
+<div>
+<div class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-2">16</div>
+<div class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-[0.15em] mb-1">Countries with Built Works</div>
+<p class="font-body-sm text-body-sm text-outline">Zürich, Tokyo, Oslo, London, New York, Singapore, and Lisbon.</p>
+</div>
+</div>
+<!-- Metric 04 -->
+<div class="flex flex-col justify-between p-6 bg-surface-container-lowest/60 hover:bg-surface-container transition-colors duration-300 border-l border-primary/40 group">
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em]">04 • TECTONIC AUDIT</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors text-[20px]">eco</span>
+</div>
+<div>
+<div class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-2">100<span class="text-primary">%</span></div>
+<div class="font-label-caps text-label-caps uppercase text-on-surface-variant tracking-[0.15em] mb-1">Carbon-Optimized Matrices</div>
+<p class="font-body-sm text-body-sm text-outline">Certified net-zero structural life-cycle targets across all projects.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       03. SELECTED PROJECTS (PORTFOLIO GRID)
+       Swiss grid, asymmetric plates, interactive category switching
+       ========================================================================= -->
+<section class="w-full px-margin md:px-margin-desktop py-space-2xl bg-surface" id="portfolio">
+<!-- Header row -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-12 border-b border-outline-variant/30">
+<div>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.25em] block mb-2">01 / ARCHITECTURAL ARCHIVE</span>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface tracking-tight">
+          Selected Built Works &amp; Monoliths
+        </h2>
+</div>
+<!-- Interactive Filters -->
+<div class="flex flex-wrap items-center gap-2" id="portfolio-filters">
+<button class="portfolio-filter-btn px-4 py-2 font-label-caps text-label-caps uppercase tracking-[0.15em] bg-primary text-surface-container-lowest transition-all" data-category="all">All Disciplines</button>
+<button class="portfolio-filter-btn px-4 py-2 font-label-caps text-label-caps uppercase tracking-[0.15em] text-on-surface-variant hover:text-on-surface bg-surface-container-low transition-all" data-category="residential">Residential</button>
+<button class="portfolio-filter-btn px-4 py-2 font-label-caps text-label-caps uppercase tracking-[0.15em] text-on-surface-variant hover:text-on-surface bg-surface-container-low transition-all" data-category="commercial">Commercial</button>
+<button class="portfolio-filter-btn px-4 py-2 font-label-caps text-label-caps uppercase tracking-[0.15em] text-on-surface-variant hover:text-on-surface bg-surface-container-low transition-all" data-category="cultural">Cultural</button>
+<button class="portfolio-filter-btn px-4 py-2 font-label-caps text-label-caps uppercase tracking-[0.15em] text-on-surface-variant hover:text-on-surface bg-surface-container-low transition-all" data-category="high-rise">High-Rise</button>
+</div>
+</div>
+<!-- Portfolio Mosaic -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop mt-12">
+<!-- Project 01: Kyoto Pavilion (Hero Image) -->
+<div class="portfolio-card lg:col-span-7 flex flex-col group" data-category="residential">
+<div class="relative overflow-hidden aspect-[16/10] bg-surface-container-low">
+<img alt="The Cantilever Pavilion in Kyoto featuring illuminated glass curtain walls and calm reflecting water at dusk" class="w-full h-full object-cover transform duration-700 ease-out group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx0HtJU6Eo390yg-6MR2CedzrZlvzADJft42aHDxbwz-_ETp35Khd2JbFv5VbaWDs-4D1e_FsRF1V75fWYYXDxRw-YV9ia0tBLMKOtrWa9t6Z95k58H4SoQGTlLJTUM1uABHAxwgL_Q66qLZTCmqQ4rasPg9JL-PUkmegzUP0nEGwxPx4rYpYcKsHjMLac8eKNdAIINkIsNTyWrWUORQFsUOz1mDAHSGT7Qj5gLd_0Z6GUswAbO63Hrw"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1 font-meta-technical text-meta-technical uppercase text-primary tracking-widest">
+            PLATE 01 • RESIDENTIAL MONOGRAPH
+          </div>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest/90 px-3 py-1 font-label-caps text-label-caps uppercase text-on-surface tracking-wider">
+            KYOTO, JAPAN • 2024
+          </div>
+</div>
+<div class="pt-6 pb-2 flex flex-col md:flex-row md:items-baseline justify-between gap-3 border-b border-outline-variant/30">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">The Cantilever Pavilion</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Post-tensioned carbon concrete with monolithic floor-to-ceiling seismic glass screens.</p>
+</div>
+<span class="font-meta-technical text-meta-technical text-outline shrink-0">1,240 M² • COMPLETE</span>
+</div>
+</div>
+<!-- Project 02: Nordic Monolith -->
+<div class="portfolio-card lg:col-span-5 flex flex-col group" data-category="high-rise">
+<div class="relative overflow-hidden aspect-[16/10] lg:aspect-auto lg:h-[380px] bg-surface-container-low">
+<img class="w-full h-full object-cover transform duration-700 ease-out group-hover:scale-105" data-alt="A dramatic architectural elevation of a sleek timber and blackened steel skyscraper standing tall against a misty Norwegian fjord sky at twilight with warm light spilling from modular window bays, structural brutalism, architectural photography, cinematic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdbrXLASSvg6WRh6M5vUBulhgo-HbxTurb6lBszP_anzKNq4GBy3sBmlh9xUeg_6X5lRXC5bKVj3dB9o6PD63mB0oTOOUCqKFaUCbGP6Odhc4ntpb1rtZNw2oklD2tUy3VVIDB-Qgw3DM6IOwVFtV0CuF-y4QnE-bUNIOhlrbLfgzYHo6P3ZCOmxQU4ezTJW06-Hzk5Z-1WDsk1Au5XdK7M5xBjBmGdUxJK0IgOWHPVYL7v_TjCMDnHQ"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1 font-meta-technical text-meta-technical uppercase text-primary tracking-widest">
+            PLATE 02 • HIGH-RISE
+          </div>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest/90 px-3 py-1 font-label-caps text-label-caps uppercase text-on-surface tracking-wider">
+            OSLO, NORWAY • 2023
+          </div>
+</div>
+<div class="pt-6 pb-2 flex flex-col md:flex-row md:items-baseline justify-between gap-3 border-b border-outline-variant/30">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Nordic Monolith Tower</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">34-story timber-steel hybrid core with dynamic aerofoil drag dispersion.</p>
+</div>
+<span class="font-meta-technical text-meta-technical text-outline shrink-0">46,000 M² • COMPLETE</span>
+</div>
+</div>
+<!-- Project 03: Serra Da Estrela -->
+<div class="portfolio-card lg:col-span-5 flex flex-col group" data-category="residential">
+<div class="relative overflow-hidden aspect-[16/10] bg-surface-container-low">
+<img class="w-full h-full object-cover transform duration-700 ease-out group-hover:scale-105" data-alt="Brutalist architectural villa embedded into rocky granite mountain slopes in Portugal, featuring layered rammed earth walls, patinated bronze panels, warm sunset lighting, long geometric overhangs, architectural monograph quality" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSoeND4Lmz2AAdW5IPFogndXKd9kN-_XyiDsmKFa8sKs5SJKjexzPi-297ly20QRLIr1IAqOJs80Kl86fMvf_aw3gc11OmmZYm9BRbIGNV15JFUAbO_XcMcpdS3CZ8mWB_hGsfVRTL5vJspdpZHXMZU3JVp_g2P6ptQcm6yjaYR273LoUozXEYvCi6KwlKasXsty1yoduG1AhkkloRNpzik01bI3T5V8BQhIWslgjL13ZSALy0w3Q0iQ"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1 font-meta-technical text-meta-technical uppercase text-primary tracking-widest">
+            PLATE 03 • RESIDENTIAL
+          </div>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest/90 px-3 py-1 font-label-caps text-label-caps uppercase text-on-surface tracking-wider">
+            SINTRA, PORTUGAL • 2024
+          </div>
+</div>
+<div class="pt-6 pb-2 flex flex-col md:flex-row md:items-baseline justify-between gap-3 border-b border-outline-variant/30">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Serra Da Estrela Villa</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Continuous rammed-earth envelope anchored by custom patinated bronze brackets.</p>
+</div>
+<span class="font-meta-technical text-meta-technical text-outline shrink-0">880 M² • COMPLETE</span>
+</div>
+</div>
+<!-- Project 04: Helix Biosphere -->
+<div class="portfolio-card lg:col-span-7 flex flex-col group" data-category="cultural">
+<div class="relative overflow-hidden aspect-[16/10] bg-surface-container-low">
+<img class="w-full h-full object-cover transform duration-700 ease-out group-hover:scale-105" data-alt="A museum-grade institutional architectural pavilion with a kinetic tessellated facade and geometric glass ceiling overlooking a serene Swiss botanical park, soft atmospheric daylight, Swiss high modernism, editorial architecture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqpNoF0DfDnGpkLrYpuS8CjzkGo9nZqGUDMKupmZZNVEJFr-WyI9nouljJzBTZ_G4se91-Q85YSwwfhBzlzuTurGrtvlUr9LnfQa-2wIoBAfri4y8SsezZVSkBhlcdqWndAgc6E20eQTRNddHBL9yPk5zcADbYDi2NIFuuctWCWSMOu__UU3ALQuJNE23oERRCJOEeq4LG2aEmpdh4JdV6g0V2fYfu1njYmy5gs187sCWZAWA8fY0crQ"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest/80 backdrop-blur-md px-3 py-1 font-meta-technical text-meta-technical uppercase text-primary tracking-widest">
+            PLATE 04 • CULTURAL CIVIC
+          </div>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest/90 px-3 py-1 font-label-caps text-label-caps uppercase text-on-surface tracking-wider">
+            BASEL, SWITZERLAND • 2022
+          </div>
+</div>
+<div class="pt-6 pb-2 flex flex-col md:flex-row md:items-baseline justify-between gap-3 border-b border-outline-variant/30">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Helix Biosphere Center</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Parametric geodesic dome equipped with daylight-reactive photovoltaic bronze louvers.</p>
+</div>
+<span class="font-meta-technical text-meta-technical text-outline shrink-0">12,800 M² • COMPLETE</span>
+</div>
+</div>
+</div>
+<!-- Portfolio Footer Action -->
+<div class="mt-14 flex justify-between items-center pt-8 border-t border-outline-variant/20">
+<div class="font-meta-technical text-meta-technical text-outline">
+        SHOWING 04 OF 42 GLOBAL MONOGRAPHS
+      </div>
+<a class="inline-flex items-center gap-3 bg-surface-container-low hover:bg-surface-bright px-6 py-3 font-label-caps text-label-caps uppercase text-on-surface tracking-[0.2em] transition-all" href="#">
+        View All 42 Works
+        <span class="material-symbols-outlined text-[16px] text-primary">arrow_forward</span>
+</a>
+</div>
+</section>
+<!-- =========================================================================
+       04. OUR EXPERTISE (ELEGANT DISCIPLINE TILES)
+       Structural engineering and architectural synergy
+       ========================================================================= -->
+<section class="w-full px-margin md:px-margin-desktop py-space-2xl bg-surface-container-lowest">
+<div class="max-w-3xl mb-16">
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.25em] block mb-2">02 / DISCIPLINES</span>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface tracking-tight mb-4">
+        Integrated Architectural &amp; Structural Mastery
+      </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        We dismantle the partition between architectural envelope and structural skeleton. Every project is conceived as a singular, unified tectonic organism.
+      </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Discipline 1 -->
+<div class="p-8 bg-surface-container-low hover:bg-surface-container transition-all duration-300 border-t-2 border-primary group flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary">01 // SPATIAL</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[24px]">architecture</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Architecture</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Conceptual choreography, spatial proportions, contextual dialectics, and envelope optimization that honor topographic vernaculars.
+          </p>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/20 flex items-center justify-between font-meta-technical text-meta-technical text-outline">
+<span>PARAMETRIC DESIGN</span>
+<span class="text-primary">→</span>
+</div>
+</div>
+<!-- Discipline 2 -->
+<div class="p-8 bg-surface-container-low hover:bg-surface-container transition-all duration-300 border-t-2 border-primary group flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary">02 // TECTONIC</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[24px]">construction</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Structural Engineering</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Seismic resilience modeling, hyper-cantilever engineering, carbon truss design, and ultra-high-performance concrete composites.
+          </p>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/20 flex items-center justify-between font-meta-technical text-meta-technical text-outline">
+<span>FINITE ELEMENT ANALYSIS</span>
+<span class="text-primary">→</span>
+</div>
+</div>
+<!-- Discipline 3 -->
+<div class="p-8 bg-surface-container-low hover:bg-surface-container transition-all duration-300 border-t-2 border-primary group flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary">03 // MATERIALITY</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[24px]">texture</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Interior Architecture</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Bespoke millwork detailing, acoustic stone baffling, bronze articulation, and daylight sculpting for sensory stillness.
+          </p>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/20 flex items-center justify-between font-meta-technical text-meta-technical text-outline">
+<span>TACTILE HONESTY</span>
+<span class="text-primary">→</span>
+</div>
+</div>
+<!-- Discipline 4 -->
+<div class="p-8 bg-surface-container-low hover:bg-surface-container transition-all duration-300 border-t-2 border-primary group flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary">04 // TERRITORIAL</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[24px]">domain</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Urban Masterplanning</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Transit-oriented sustainable ecologies, micro-climate adaptation schemes, urban pedestrian arteries, and historic quarter retrofitting.
+          </p>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/20 flex items-center justify-between font-meta-technical text-meta-technical text-outline">
+<span>BIOCLIMATIC GRIDS</span>
+<span class="text-primary">→</span>
+</div>
+</div>
+<!-- Discipline 5 -->
+<div class="p-8 bg-surface-container-low hover:bg-surface-container transition-all duration-300 border-t-2 border-primary group flex flex-col justify-between md:col-span-2 lg:col-span-2">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<div class="flex items-center justify-between mb-8">
+<span class="font-meta-technical text-meta-technical text-primary">05 // COMPUTATIONAL</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[24px]">precision_manufacturing</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Consultancy &amp; Robotic BIM</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Full lifecycle structural BIM management, embodied carbon simulations, fabrication automation, and third-party peer audits for megastructures.
+            </p>
+</div>
+<div class="flex flex-col justify-between bg-surface-container p-6">
+<div>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-widest block mb-2">PRECISION CERTIFICATION</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">SIA 102/103 registered engineers with digital twin integration at 1:1 tolerance level.</p>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/30 flex items-center justify-between font-meta-technical text-meta-technical text-outline">
+<span>ZERO EMBODIED DEFICIT</span>
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       05. FEATURED PROJECT (EDITORIAL CASE STUDY: THE SOLARIUM VOID)
+       Asymmetrical editorial deep-dive
+       ========================================================================= -->
+<section class="w-full bg-surface-container-low py-space-2xl px-margin md:px-margin-desktop border-y border-outline-variant/20">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-stretch">
+<!-- Left: Visual Exhibition -->
+<div class="lg:col-span-7 flex flex-col justify-between relative group overflow-hidden">
+<div class="relative w-full h-[520px] lg:h-full min-h-[460px] bg-surface-container-lowest">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102" data-alt="Monolithic architectural concrete and glass villa poised right above the calm water of Lake Zurich with dramatic 24-meter post-tensioned cantilever deck, clean lines, warm interior lighting glowing against blue twilight sky, professional architectural photograph" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvnQMTYFZiEmvy_EvU3PW-f0ONRzvd2p5eNCSpJ5gtIJzR-j_lEluMVRs5rncL1tZSRy_z4EQ9I5lEBhYnEpgnVVEL0A9yy5nnN7PbEkieA3kUKCNZ6Pyvuycq5voLT-o6C7V1GYOxKuWoHE-DB1s4Apfl3DIPjXl8hQsxjNtSaxt103qsXdLWdmdZqliaCK4PaFUJsKKsLwEDlG-W9_q6iW7nn-opXFx7WRKho2lH3EWqsXS_9ZIlUg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+<!-- Technical Specs Overlay -->
+<div class="absolute bottom-6 left-6 right-6 p-4 bg-surface-container-lowest/90 backdrop-blur-md flex flex-wrap items-center justify-between gap-4 font-meta-technical text-meta-technical">
+<div>
+<span class="text-outline uppercase block">CANTILEVER PROJECTION</span>
+<span class="text-primary font-bold">24.2 METERS UNSUPPORTED</span>
+</div>
+<div class="w-px h-6 bg-outline-variant hidden sm:block"></div>
+<div>
+<span class="text-outline uppercase block">EMBODIED CARBON SAVINGS</span>
+<span class="text-on-surface font-bold">−42.8% VS CONVENTIONAL</span>
+</div>
+<div class="w-px h-6 bg-outline-variant hidden sm:block"></div>
+<div>
+<span class="text-outline uppercase block">THERMAL ENVELOPE</span>
+<span class="text-on-surface font-bold">PASSIVHAUS PREMIUM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Editorial Analysis & Metadata -->
+<div class="lg:col-span-5 flex flex-col justify-between p-6 lg:p-10 bg-surface-container-lowest">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 bg-primary"></span>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.2em]">FEATURED CASE STUDY • SPEC 09-44</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight leading-tight mb-4">
+            The Solarium Void — Lake Zürich
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-8">
+            A meditative concrete prism floating over the lakebed, engineered with a 24-meter post-tensioned cantilever without intermediate column support. Through deep geothermal stabilization and monolithic thermal massing, the structure generates more energy than it consumes.
+          </p>
+<!-- Spec Table -->
+<div class="space-y-4 border-t border-outline-variant/30 pt-6 mb-8 font-meta-technical text-meta-technical">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+<span class="text-outline uppercase">CLIENT</span>
+<span class="text-on-surface">Private Philanthropic Foundation</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+<span class="text-outline uppercase">LOCATION</span>
+<span class="text-on-surface">Küsnacht, Zürich, Switzerland</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+<span class="text-outline uppercase">TOTAL FLOOR AREA</span>
+<span class="text-on-surface">4,850 m² (52,200 sq ft)</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+<span class="text-outline uppercase">STRUCTURAL SYSTEM</span>
+<span class="text-primary font-bold">Post-Tensioned Carbon Concrete Core</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+<span class="text-outline uppercase">CHRONOLOGY</span>
+<span class="text-on-surface">2021 – 2024 (38 Months)</span>
+</div>
+</div>
+</div>
+<div class="pt-4">
+<a class="w-full inline-flex items-center justify-between bg-primary-container text-on-primary-container px-6 py-4 font-label-caps text-label-caps uppercase tracking-[0.2em] hover:bg-surface-bright hover:text-on-surface transition-all" href="#">
+<span>Explore Case Study [PDF / Interactive Tour]</span>
+<span class="material-symbols-outlined text-[18px]">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       06. OUR APPROACH (METHODOLOGY TIMELINE)
+       5-Phase horizontal pipeline with interactive state
+       ========================================================================= -->
+<section class="w-full px-margin md:px-margin-desktop py-space-2xl bg-surface" id="process">
+<div class="max-w-3xl mb-16">
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.25em] block mb-2">03 / METHODOLOGY</span>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface tracking-tight mb-4">
+        From Concept to Built Reality
+      </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Our five-phase execution protocol ensures mathematical integrity, environmental harmony, and zero aesthetic compromise at every junction.
+      </p>
+</div>
+<!-- 5-Phase Architectural Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<!-- Phase 1 -->
+<div class="p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors border-t border-primary/30 flex flex-col justify-between group">
+<div>
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em] block mb-6">PHASE 01</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Topographical Dialectics</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Geological core sampling, solar trajectory logging, wind tunnel modeling, and spatial philosophy mapping.
+          </p>
+</div>
+<div class="mt-8 font-meta-technical text-meta-technical text-outline">
+          WEEKS 01 – 08
+        </div>
+</div>
+<!-- Phase 2 -->
+<div class="p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors border-t border-primary/30 flex flex-col justify-between group">
+<div>
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em] block mb-6">PHASE 02</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Computational Simulation</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Generative algorithm exploration, parametric load balancing, and 100% embodied carbon minimization algorithms.
+          </p>
+</div>
+<div class="mt-8 font-meta-technical text-meta-technical text-outline">
+          WEEKS 09 – 16
+        </div>
+</div>
+<!-- Phase 3 -->
+<div class="p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors border-t border-primary/30 flex flex-col justify-between group">
+<div>
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em] block mb-6">PHASE 03</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Material Sourcing</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Quarry selection, raw aggregate inspection, patinated alloy metallurgy, and 1:1 acoustic prototype mockups.
+          </p>
+</div>
+<div class="mt-8 font-meta-technical text-meta-technical text-outline">
+          WEEKS 17 – 26
+        </div>
+</div>
+<!-- Phase 4 -->
+<div class="p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors border-t border-primary/30 flex flex-col justify-between group">
+<div>
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em] block mb-6">PHASE 04</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Seismic Stressing</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Finite Element Modeling against seismic zones 4+, resonant vibration damping, and wind-shear resilience testing.
+          </p>
+</div>
+<div class="mt-8 font-meta-technical text-meta-technical text-outline">
+          WEEKS 27 – 40
+        </div>
+</div>
+<!-- Phase 5 -->
+<div class="p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors border-t border-primary/30 flex flex-col justify-between group">
+<div>
+<span class="font-meta-technical text-meta-technical text-primary tracking-[0.2em] block mb-6">PHASE 05</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-3 group-hover:text-primary transition-colors">Robotic Fabrication</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            On-site master builder direction, automated post-tensioning calibration, and digital-twin sensor installation.
+          </p>
+</div>
+<div class="mt-8 font-meta-technical text-meta-technical text-outline">
+          EXECUTION
+        </div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       07. ABOUT US & TEAM ARCHITECTURE
+       The studio philosophy and leadership
+       ========================================================================= -->
+<section class="w-full bg-surface-container-lowest px-margin md:px-margin-desktop py-space-2xl border-t border-outline-variant/20">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop mb-16 items-start">
+<div class="lg:col-span-5">
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.25em] block mb-2">04 / THE STUDIO</span>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface tracking-tight mb-6">
+          The Collective Behind the Geometry
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed mb-6">
+          “We believe structure is not merely support; it is the poetic definition of space itself. Our practice operates on the premise that engineering calculation and artistic vision are the same creative impulse.”
+        </p>
+<div class="flex items-center gap-4 text-outline font-meta-technical text-meta-technical">
+<span>ACCREDITED: SIA • RIBA • AIA INT.</span>
+<span>•</span>
+<span>ISO 14001 SUSTAINABILITY</span>
+</div>
+</div>
+<div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
+<!-- Partner 1 -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between group">
+<div class="relative aspect-square overflow-hidden mb-6 bg-surface-container-high">
+<img class="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500" data-alt="Black and white portrait of Elena Vaneck, prestigious female European architect with sharp tailored styling, standing in a minimalist concrete studio with architectural models behind her, dramatic high-contrast studio portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP9848G5Fe9_-jDOsn_eBM5T_U0TM324lUBseteZQvzVvN63CfZaWvQ1U_jn9jlRPBmG1mVG6-N9I0WOyx1a7lCFse7Y9L80jLcmzP4skkh_njfMvrR-6CxIYIuLqrVzYdNw0hlpth9e8uduWLTonCrW8EBQ-jjcttevAg7yp9Xm7r719JjGl2JJYTbZQdszf4b3d9KOLoXhPV6tvHggc6J-sRpgoR4-oYHsJdX_ssaB3P8VDM7t3PTw"/>
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/80 px-2 py-0.5 font-meta-technical text-[10px] text-primary">
+              FOUNDER
+            </div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Elena Vaneck</h3>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-widest block mb-3">Dipl. Arch. ETH • SIA</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lead Designer presiding over global monolith projects and conceptual typologies.</p>
+</div>
+</div>
+<!-- Partner 2 -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between group">
+<div class="relative aspect-square overflow-hidden mb-6 bg-surface-container-high">
+<img class="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500" data-alt="Monochrome portrait of Dr. Kenzo Takahashi, distinguished Japanese structural engineer examining an engineering blueprint, clean modernist background, dramatic lighting, high architectural aesthetics" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdVcYkqCmERirdqZ9UQ3ubGC2xnDmu9qm2YmOFrk1kgyNNffIaLHFEmJkpNqnmqf8Usv0KSFeitsRjZt0Vr6q4VsqHZHE2kkZ599eePLaV9SLrTdh_8c2_6xz00sG1WtFK00bpZDNG_xXINhPTVHG0eFkrT0ju7NzYVFVSHafspzrvUhPjOyZbX1TNhfeRdSspd3RcBsOGja3ZhANF3a6UrPOgv6kaLTkPfFBlNY5Moib_1Ag0g_-KAA"/>
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/80 px-2 py-0.5 font-meta-technical text-[10px] text-primary">
+              PARTNER
+            </div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Dr. Kenzo Takahashi</h3>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-widest block mb-3">Dr. sc. techn. • Tokyo Univ</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Director of Seismic Computations, high-rise wind dynamics and post-tensioned spans.</p>
+</div>
+</div>
+<!-- Partner 3 -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between group">
+<div class="relative aspect-square overflow-hidden mb-6 bg-surface-container-high">
+<img class="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500" data-alt="Portrait of Marc Aurel, European architect and sustainability director in a charcoal turtleneck standing against raw concrete walls holding architectural material samples, fine art portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQvHcG8t_0YvN7qqwpyOkb6iyL31P1U_-8MZ3LjERMS7JByY1u-mgrItFNdE52XzCbMOYP4ZwKrfIMmg4L39BLOQnKDZ-W1ccCUGTTpBx7skx1byeR1AWDwuWdm_FtCNpqPDVEk-pNMDk5rIxPx8RapBQCdsAACR725xXGPhQqjNksZOzFiuDnSJPN4M89JNnOXiJjX1hatideZ7e8u-9exnmVnmQJVl8lD_0byghbKmXkhqbPGWDhNg"/>
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/80 px-2 py-0.5 font-meta-technical text-[10px] text-primary">
+              PARTNER
+            </div>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Marc Aurel</h3>
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-widest block mb-3">SIA • Passivhaus Lead</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Heads carbon auditing, sustainable timber hybrids, and circular material lifecycles.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       08. CLIENT TESTIMONIALS & CRITICAL ACCLAIM
+       Patron commentary & institutional endorsements
+       ========================================================================= -->
+<section class="w-full bg-surface-container-low py-space-xl px-margin md:px-margin-desktop border-y border-outline-variant/20">
+<div class="flex items-center justify-between pb-8 mb-8 border-b border-outline-variant/20">
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.2em]">05 / CRITICAL ACCLAIM • PATRON VOICES</span>
+<span class="font-meta-technical text-meta-technical text-outline">PEER EVALUATIONS 2023–2024</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-desktop">
+<!-- Quote 1 -->
+<div class="p-8 bg-surface-container-lowest flex flex-col justify-between border-l-2 border-primary">
+<p class="font-title-editorial text-title-editorial text-on-surface italic mb-8 leading-relaxed">
+          “Atelier Structura transformed our precarious coastal escarpment into an engineering marvel that feels completely organic to the Mediterranean cliffside. Their command over raw concrete and seismic physics is unmatched in contemporary architecture.”
+        </p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary/20 flex items-center justify-center font-label-caps text-primary">AV</div>
+<div>
+<div class="font-label-caps text-label-caps uppercase text-on-surface tracking-wider">Lord Alistair Vance</div>
+<div class="font-meta-technical text-meta-technical text-outline">Chair, National Foundation for Contemporary Arts</div>
+</div>
+</div>
+</div>
+<!-- Quote 2 -->
+<div class="p-8 bg-surface-container-lowest flex flex-col justify-between border-l-2 border-primary">
+<p class="font-title-editorial text-title-editorial text-on-surface italic mb-8 leading-relaxed">
+          “Their structural clarity reduced our civic museum’s embodied carbon footprint by 38% while achieving a soaring, column-free 60-meter gallery silhouette that has redefined the waterfront skyline.”
+        </p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary/20 flex items-center justify-center font-label-caps text-primary">SH</div>
+<div>
+<div class="font-label-caps text-label-caps uppercase text-on-surface tracking-wider">Dr. Sophie H.</div>
+<div class="font-meta-technical text-meta-technical text-outline">Director of Urban Development • Basel Innovation District</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       09. CONTACT & PROJECT INITIATION CTA
+       High-impact architectural inquiry interface
+       ========================================================================= -->
+<section class="w-full bg-surface-container-lowest py-space-2xl px-margin md:px-margin-desktop relative" id="contact">
+<div class="relative z-10 max-w-5xl mx-auto">
+<div class="text-center max-w-3xl mx-auto mb-16">
+<span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.3em] block mb-4">INITIATE COMMISSION</span>
+<h2 class="font-headline-xl text-headline-xl-mobile md:text-headline-xl text-on-surface uppercase tracking-tight mb-6">
+          LET’S BUILD SOMETHING EXTRAORDINARY.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+          Accepting select architectural commissions, public competitions, and complex structural engineering challenges worldwide for 2025–2027.
+        </p>
+</div>
+<!-- Direct Action Module -->
+<div class="bg-surface-container p-8 md:p-12 border-t-2 border-primary shadow-2xl">
+<form class="grid grid-cols-1 md:grid-cols-2 gap-8" onsubmit="event.preventDefault(); alert('Inquiry recorded in Atelier Structura registry.');">
+<div class="space-y-6">
+<div>
+<label class="font-label-caps text-label-caps uppercase text-outline block mb-2">PRINCIPAL NAME / ENTITY *</label>
+<input class="w-full bg-surface-container-low px-4 py-3 text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-outline-variant" placeholder="e.g., Jean-Luc Meyer / Meyer Holding AG" required="" type="text"/>
+</div>
+<div>
+<label class="font-label-caps text-label-caps uppercase text-outline block mb-2">COMMISSION EMAIL *</label>
+<input class="w-full bg-surface-container-low px-4 py-3 text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-outline-variant" placeholder="patron@foundation.ch" required="" type="email"/>
+</div>
+<div>
+<label class="font-label-caps text-label-caps uppercase text-outline block mb-2">TYPOLOGY &amp; ESTIMATED GFA</label>
+<select class="w-full bg-surface-container-low px-4 py-3 text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary">
+<option value="res">Private Residential Monolith (&gt;800 m²)</option>
+<option value="civic">Cultural / Museum / Educational</option>
+<option value="highrise">Commercial &amp; High-Rise Tectonics</option>
+<option value="urban">Urban Masterplanning &amp; Infrastructure</option>
+<option value="consultancy">Structural Feasibility &amp; Peer Review</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col justify-between space-y-6">
+<div>
+<label class="font-label-caps text-label-caps uppercase text-outline block mb-2">PROJECT LOCATION &amp; OBJECTIVES</label>
+<textarea class="w-full bg-surface-container-low p-4 text-on-surface font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-outline-variant resize-none" placeholder="Describe topographical context, expected timeline, zoning parameters, and structural ambition..." rows="4"></textarea>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
+<button class="w-full sm:w-auto flex-1 bg-primary text-surface-container-lowest hover:bg-on-surface transition-colors py-4 px-8 font-label-caps text-label-caps uppercase tracking-[0.2em] font-bold" type="submit">
+                Submit Dossier
+              </button>
+<a class="w-full sm:w-auto text-center border border-outline-variant/40 hover:border-primary text-on-surface hover:text-primary transition-colors py-4 px-6 font-label-caps text-label-caps uppercase tracking-[0.15em]" href="#">
+                Request 2024 Monograph
+              </a>
+</div>
+</div>
+</form>
+<!-- Studio Quick Coordinates -->
+<div class="mt-12 pt-8 border-t border-outline-variant/30 grid grid-cols-1 sm:grid-cols-3 gap-6 font-meta-technical text-meta-technical text-on-surface-variant">
+<div>
+<span class="text-primary block font-bold mb-1">DIRECT INQUIRIES</span>
+<span>+41 44 288 90 00</span><br/>
+<span class="text-outline">inquire@atelierstructura.com</span>
+</div>
+<div>
+<span class="text-primary block font-bold mb-1">CONFIDENTIAL COMMISSIONS</span>
+<span>press@atelierstructura.com</span><br/>
+<span class="text-outline">PGP KEY F821 09C1 332A</span>
+</div>
+<div>
+<span class="text-primary block font-bold mb-1">CENTRAL ARCHIVE</span>
+<span>Gotthardstrasse 26, 8002 Zürich</span><br/>
+<span class="text-outline">Visits by appointment only</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<script>
+  // Interactive category filter script for Selected Projects
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.portfolio-filter-btn');
+    const cards = document.querySelectorAll('.portfolio-card');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        const category = this.getAttribute('data-category');
+
+        // Toggle active button style
+        filterButtons.forEach(btn => {
+          btn.classList.remove('bg-primary', 'text-surface-container-lowest');
+          btn.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        });
+        this.classList.add('bg-primary', 'text-surface-container-lowest');
+        this.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+
+        // Filter cards
+        cards.forEach(card => {
+          if (category === 'all' || card.getAttribute('data-category') === category) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script></main><footer class="w-full bg-surface-container-lowest mt-space-2xl"><div class="w-full px-margin-desktop py-space-2xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-gutter-desktop"><div class="lg:col-span-4 flex flex-col justify-between space-y-space-lg"><div><span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.2em] block mb-space-sm">Structural Practice</span><h3 class="font-headline-md text-headline-md text-on-surface mb-space-md">Atelier Structura</h3><p class="font-body-md text-body-md text-on-surface-variant max-w-sm">International practice operating at the intersection of monumental stillness, tectonic material honesty, and advanced structural engineering.</p></div><div><span class="font-meta-technical text-meta-technical text-outline block mb-space-xs">GEODETIC DATUM</span><span class="font-meta-technical text-meta-technical text-on-surface-variant">LAT 47.3769° N · LON 8.5417° E</span></div></div><div class="lg:col-span-3"><span class="font-label-caps text-label-caps uppercase text-outline block mb-space-lg tracking-[0.15em]">Offices &amp; Coordinates</span><div class="space-y-space-md"><div class="group"><span class="font-label-caps text-label-caps text-primary uppercase block">01 · Zurich</span><p class="font-body-sm text-body-sm text-on-surface-variant">Gotthardstrasse 26, 8002 Zürich<br/><span class="font-meta-technical text-meta-technical text-outline">T +41 44 288 90 00</span></p></div><div class="group"><span class="font-label-caps text-label-caps text-primary uppercase block">02 · Tokyo</span><p class="font-body-sm text-body-sm text-on-surface-variant">5-7-2 Minami-Aoyama, Minato-ku, Tokyo<br/><span class="font-meta-technical text-meta-technical text-outline">T +81 3 5468 1120</span></p></div><div class="group"><span class="font-label-caps text-label-caps text-primary uppercase block">03 · New York</span><p class="font-body-sm text-body-sm text-on-surface-variant">520 West 28th St, Chelsea, NY 10001<br/><span class="font-meta-technical text-meta-technical text-outline">T +1 212 929 4400</span></p></div><div class="group"><span class="font-label-caps text-label-caps text-primary uppercase block">04 · London</span><p class="font-body-sm text-body-sm text-on-surface-variant">14 Clerkenwell Close, London EC1R 0AA<br/><span class="font-meta-technical text-meta-technical text-outline">T +44 20 7490 8820</span></p></div></div></div><div class="lg:col-span-2"><span class="font-label-caps text-label-caps uppercase text-outline block mb-space-lg tracking-[0.15em]">Practices</span><ul class="space-y-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"><a data-path="services" href="#">Structural Synthesis</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"><a data-path="services" href="#">High-Rise Tectonics</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"><a data-path="services" href="#">Kinetic Facades</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"><a data-path="services" href="#">Adaptive Heritage</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"><a data-path="services" href="#">Parametric Systems</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors"><a data-path="services" href="#">Environmental Physics</a></li></ul></div><div class="lg:col-span-3 flex flex-col justify-between"><div class="bg-surface-container-low p-space-lg"><span class="font-label-caps text-label-caps uppercase text-primary tracking-[0.15em] block mb-space-xs">Monograph Dispatch</span><p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">Receive periodic theoretical treatises, engineering papers, and project documentation.</p><form class="flex flex-col gap-space-sm"><div class="relative"><input class="w-full bg-surface-container-lowest px-space-md py-3 text-on-surface placeholder:text-outline font-meta-technical text-meta-technical uppercase focus:outline-none focus:ring-1 focus:ring-primary" placeholder="ARCHITECTURAL SPEC EMAIL" type="email"/><button class="mt-space-sm w-full bg-primary-container text-on-primary-container hover:bg-surface-bright hover:text-on-surface transition-colors py-2 font-label-caps text-label-caps uppercase tracking-[0.15em]" type="submit">Subscribe</button></div></form></div><div class="pt-space-lg"><span class="font-label-caps text-label-caps uppercase text-outline block mb-space-xs tracking-[0.15em]">Archives &amp; Index</span><div class="flex items-center gap-space-md font-meta-technical text-meta-technical text-on-surface-variant"><a class="hover:text-primary transition-colors" href="#">INDEX-2024</a><span>/</span><a class="hover:text-primary transition-colors" href="#">SPEC-REGISTRY</a><span>/</span><a class="hover:text-primary transition-colors" href="#">TECTONICA</a></div></div></div></div><div class="mt-space-2xl pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md font-meta-technical text-meta-technical text-outline"><div class="flex items-center gap-space-lg"><span>© 2024 ATELIER STRUCTURA AG. ALL RIGHTS RESERVED.</span><span class="hidden md:inline">·</span><span class="hidden md:inline">MASTER BUILDERS CODE 09.44.12</span></div><div class="flex items-center gap-space-lg"><span>SWISS REGISTER CH-020.3.031.982</span><span>ISO 9001 / SIA 102 CERTIFIED</span></div></div></div></footer></body></html>
