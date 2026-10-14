@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "error-container": "#ffdad6", "on-tertiary-fixed-variant": "#4f4443", "secondary-container": "#fe642c", "tertiary": "#4c413f", "tertiary-container": "#645857", "on-primary-fixed": "#410006", "on-tertiary-container": "#e0cfcd", "on-primary-fixed-variant": "#93001a", "on-primary": "#ffffff", "on-surface-variant": "#5b403f", "secondary": "#ac3400", "on-surface": "#1e1b13", "on-error": "#ffffff", "surface-container-highest": "#e9e2d3", "inverse-surface": "#343026", "on-secondary": "#ffffff", "on-secondary-container": "#5a1700", "on-secondary-fixed-variant": "#832600", "error": "#ba1a1a", "background": "#fff8ef", "surface-container-lowest": "#ffffff", "outline": "#8f6f6e", "surface": "#fff8ef", "on-error-container": "#93000a", "tertiary-fixed": "#f0dfdc", "secondary-fixed-dim": "#ffb59d", "primary": "#8c0018", "on-primary-container": "#ffc5c2", "outline-variant": "#e4bebb", "on-tertiary-fixed": "#221a18", "primary-fixed": "#ffdad8", "surface-container-low": "#fbf3e4", "inverse-on-surface": "#f8f0e1", "surface-dim": "#e1d9cb", "surface-container-high": "#efe7d9", "on-tertiary": "#ffffff", "on-secondary-fixed": "#390b00", "surface-container": "#f5edde", "primary-fixed-dim": "#ffb3b0", "inverse-primary": "#ffb3b0", "surface-variant": "#e9e2d3", "tertiary-fixed-dim": "#d3c3c1", "secondary-fixed": "#ffdbd0", "surface-bright": "#fff8ef", "surface-tint": "#ba172a", "primary-container": "#b51227", "on-background": "#1e1b13" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xs": "0.375rem", "space-sm": "0.75rem", "margin": "1.25rem", "space-xl": "3.5rem", "space-md": "1.25rem", "gutter": "1.5rem", "margin-lg": "5rem", "margin-md": "2.5rem", "space-lg": "2rem", "gutter-lg": "2.5rem" }, "fontFamily": { "body-md": [ "Plus Jakarta Sans" ], "headline-sm": [ "Playfair Display" ], "body-lg": [ "Plus Jakarta Sans" ], "title-editorial": [ "Playfair Display" ], "headline-md": [ "Playfair Display" ], "body-sm": [ "Plus Jakarta Sans" ], "display-hero-mobile": [ "Playfair Display" ], "label-caps": [ "Plus Jakarta Sans" ], "headline-lg-mobile": [ "Playfair Display" ], "headline-lg": [ "Playfair Display" ], "price-tag": [ "Plus Jakarta Sans" ], "display-hero": [ "Playfair Display" ] }, "fontSize": { "body-md": [ "15px", { "lineHeight": "24px", "fontWeight": "400" } ], "headline-sm": [ "24px", { "lineHeight": "30px", "fontWeight": "600" } ], "body-lg": [ "18px", { "lineHeight": "28px", "fontWeight": "400" } ], "title-editorial": [ "20px", { "lineHeight": "26px", "letterSpacing": "0.01em", "fontWeight": "600" } ], "headline-md": [ "32px", { "lineHeight": "38px", "fontWeight": "700" } ], "body-sm": [ "13px", { "lineHeight": "20px", "fontWeight": "400" } ], "display-hero-mobile": [ "42px", { "lineHeight": "46px", "letterSpacing": "-0.02em", "fontWeight": "900" } ], "label-caps": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.14em", "fontWeight": "700" } ], "headline-lg-mobile": [ "32px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" } ], "headline-lg": [ "48px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" } ], "price-tag": [ "20px", { "lineHeight": "24px", "letterSpacing": "-0.02em", "fontWeight": "800" } ], "display-hero": [ "72px", { "lineHeight": "76px", "letterSpacing": "-0.03em", "fontWeight": "900" } ] } } } };</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_-8px_rgba(181,12,39,0.18)] transition-all"><div class="h-20 max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><a class="flex items-center gap-space-sm" data-path="menu" href="#"><img alt="EMBER &amp; CRUST Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VmwsaFwW5zZW7si4QkDZp_SbZmfgAhIsBypxxbqYP0n1UG1DbG0ebWisZjqospB0LisvLbHdt2DIbvKNIJ7oAMT09NMZyS2yf-9E91ZqDn0yFfi2mqfmukgedwoXvUvoNTlpEjNFrctStfFPoDXtU5qDZXLU7CHmzGBW0-K3CFXVrkthyTX-nJbstKI4rh3snFkhYBVMFCY8A0rI3oyy5ebTx-_-dV0gjAFsZ3pNDFjnJNAObnTKGvypI"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight leading-none">EMBER &amp; CRUST</span><span class="font-label-caps text-label-caps uppercase text-secondary-fixed tracking-widest">Woodfire &amp; Hearth</span></div></a></div><nav class="hidden xl:flex items-center gap-gutter" data-active-classes="text-secondary-fixed border-b-2 border-secondary-container"><a aria-current="page" class="font-label-caps uppercase transition-colors py-1 text-secondary-fixed border-b-2 border-secondary-container" data-path="menu" href="#">Menu</a><a class="font-label-caps text-label-caps uppercase text-on-primary-container hover:text-on-primary transition-colors py-1" data-path="our-story" href="#">Our Story</a><a class="font-label-caps text-label-caps uppercase text-on-primary-container hover:text-on-primary transition-colors py-1" data-path="culinary-craft" href="#">Culinary Craft</a><a class="font-label-caps text-label-caps uppercase text-on-primary-container hover:text-on-primary transition-colors py-1" data-path="chefs" href="#">Chefs</a><a class="font-label-caps text-label-caps uppercase text-on-primary-container hover:text-on-primary transition-colors py-1" data-path="reviews" href="#">Reviews</a><a class="font-label-caps text-label-caps uppercase text-on-primary-container hover:text-on-primary transition-colors py-1" data-path="private-dining" href="#">Private Dining</a></nav><div class="flex items-center gap-space-md"><a class="hidden lg:flex items-center gap-space-xs text-on-primary-container hover:text-on-primary transition-colors" href="tel:15557823623"><span class="material-symbols-outlined text-[18px]">call</span><span class="font-body-sm text-body-sm tracking-wide">+1 (555) 782-3623</span></a><a class="bg-secondary-container text-on-secondary hover:bg-secondary transition-all font-label-caps text-label-caps uppercase px-space-md py-space-sm rounded-full shadow-[0_4px_12px_rgba(172,52,0,0.35)] hover:-translate-y-0.5 active:translate-y-0" data-path="reservations" href="#">Reserve Table</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background"><div class="flex flex-col w-full selection:bg-secondary-container selection:text-on-secondary">
+<!-- =========================================================================
+       HERO SECTION: Deep Scarlet (#b51227) / Sensory Fire & Wagyu Centerpiece
+       ========================================================================= -->
+<section class="relative w-full overflow-hidden bg-primary-container text-on-primary">
+<!-- Atmospheric Ambient Glows & Embers -->
+<div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[850px] h-[850px] rounded-full bg-secondary-container/20 blur-[130px]"></div>
+<div class="pointer-events-none absolute -bottom-32 right-10 w-[600px] h-[600px] rounded-full bg-secondary/30 blur-[140px]"></div>
+<div class="pointer-events-none absolute top-1/4 left-10 w-[350px] h-[350px] rounded-full bg-on-primary-fixed-variant/40 blur-[100px]"></div>
+<!-- Fine Grid Grain Texture Overlay -->
+<div class="pointer-events-none absolute inset-0 opacity-[0.07] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<div class="relative max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg pt-12 md:pt-16 pb-16 lg:pb-24">
+<!-- Top Meta Badge -->
+<div class="flex items-center justify-center gap-space-xs mb-6">
+<span class="inline-flex items-center gap-2 bg-on-primary/10 backdrop-blur-md px-4 py-1.5 rounded-full text-secondary-fixed font-label-caps text-label-caps uppercase tracking-widest shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-ping"></span>
+          Artisanal Live-Fire Gastronomy • Michelin Guide 2024
+        </span>
+</div>
+<!-- Hero Typography Cluster -->
+<div class="text-center max-w-5xl mx-auto mb-10 lg:mb-14">
+<h1 class="font-display-hero text-display-hero-mobile md:text-display-hero text-on-primary tracking-tight leading-none mb-4 drop-shadow-md">
+          TASTE THE <span class="italic font-normal font-headline-lg text-secondary-fixed-dim">DIFFERENCE</span>
+</h1>
+<p class="font-label-caps text-label-caps uppercase tracking-[0.28em] text-on-primary-container font-extrabold flex items-center justify-center gap-3">
+<span>FLAME</span>
+<span class="text-secondary-container text-xs">◆</span>
+<span>FLAVOR</span>
+<span class="text-secondary-container text-xs">◆</span>
+<span>FERMENTATION</span>
+</p>
+</div>
+<!-- Epic Floating Burger Centerpiece Stage -->
+<div class="relative w-full max-w-4xl mx-auto my-6 lg:my-10 flex items-center justify-center">
+<!-- Backlit Radial Halo -->
+<div class="absolute inset-0 m-auto w-72 h-72 sm:w-96 sm:h-96 md:w-[480px] md:h-[480px] rounded-full bg-gradient-to-tr from-secondary via-secondary-container to-secondary-fixed-dim opacity-40 blur-3xl scale-95 pointer-events-none"></div>
+<!-- Floating Burger Media -->
+<div class="relative z-10 w-full max-w-md sm:max-w-lg md:max-w-xl group">
+<div class="relative overflow-hidden rounded-full shadow-[0_32px_80px_-16px_rgba(26,18,17,0.7)] transform transition-transform duration-700 hover:scale-[1.03]">
+<img alt="Epic gourmet Wagyu burger with fire sparks and suspended ingredients" class="w-full h-auto object-cover aspect-square" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk7rOxcaVQs5BKsASFGH1jU41JaN0EvnUT4FiipvPMoQc8JzZ2uEUqoDJ92up8ZxDBLEGp8sL-krC7GHdQDSZYTPSb3xcQ-6kcau0j5lp-ZZS8mxhVsUgCaKq3t1L2RzboS0rb6vCXsvj4jTHm9jkCKMEhDSzFHgFlIjGL4r2tIS0syxsyyVE9860M5SXwuBNcH9j1diOuE2meApe1uq6CRkBE_RVdS7N1cFRy4u2hYqwnWey2xKg4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent pointer-events-none"></div>
+</div>
+<!-- Floating Badge 1: Top Left -->
+<div class="absolute -top-3 -left-4 sm:-left-8 z-20 bg-surface-container-lowest/95 backdrop-blur-md text-on-surface px-4 py-2.5 rounded-full shadow-[0_16px_32px_rgba(0,0,0,0.35)] flex items-center gap-2 transform -rotate-3 hover:rotate-0 transition-transform cursor-default">
+<span class="material-symbols-outlined text-secondary-container text-[18px]">workspace_premium</span>
+<div>
+<p class="font-label-caps text-label-caps uppercase text-secondary font-bold">Provenance</p>
+<p class="font-body-sm text-body-sm font-bold text-on-surface">100% A5 Miyazaki Wagyu</p>
+</div>
+</div>
+<!-- Floating Badge 2: Right Middle -->
+<div class="absolute top-1/2 -right-4 sm:-right-10 -translate-y-1/2 z-20 bg-inverse-surface/95 text-inverse-on-surface px-4 py-2.5 rounded-full shadow-[0_16px_32px_rgba(0,0,0,0.4)] flex items-center gap-2 transform rotate-6 hover:rotate-0 transition-transform cursor-default">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">local_fire_department</span>
+<div>
+<p class="font-label-caps text-label-caps uppercase text-secondary-fixed font-bold">Hearth Brioche</p>
+<p class="font-body-sm text-body-sm font-bold text-inverse-on-surface">Oak-Smoked &amp; Charred</p>
+</div>
+</div>
+<!-- Floating Badge 3: Bottom Left -->
+<div class="absolute -bottom-4 left-6 sm:left-12 z-20 bg-surface-container-lowest/95 backdrop-blur-md text-on-surface px-4 py-2 rounded-full shadow-[0_16px_32px_rgba(0,0,0,0.3)] flex items-center gap-2 transform -rotate-2 hover:rotate-0 transition-transform cursor-default">
+<span class="material-symbols-outlined text-primary text-[18px]">hourglass_top</span>
+<span class="font-label-caps text-label-caps uppercase text-primary font-bold">48-Hr Fermented Crust</span>
+</div>
+<!-- Floating Gastronomy Accents -->
+<div class="hidden md:flex absolute -bottom-6 -right-2 z-20 bg-secondary-container text-on-secondary px-3.5 py-1.5 rounded-full shadow-lg font-price-tag text-price-tag items-center gap-1">
+<span>$26</span>
+<span class="font-body-sm text-xs opacity-90 font-normal">/ Reserve Cut</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-space-md mt-10 z-20 relative">
+<a class="w-full sm:w-auto text-center bg-secondary-container hover:bg-secondary text-on-secondary font-label-caps text-label-caps uppercase px-8 py-4 rounded-full shadow-[0_12px_32px_rgba(254,100,44,0.45)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group" href="#menu-catalog">
+<span>Order Online for Pickup / Delivery</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">shopping_bag</span>
+</a>
+<a class="w-full sm:w-auto text-center bg-on-primary/10 hover:bg-on-primary text-on-primary hover:text-primary font-label-caps text-label-caps uppercase px-8 py-4 rounded-full backdrop-blur-sm transition-all flex items-center justify-center gap-2 group" href="#tasting-craft">
+<span>Explore Tasting Menu</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- Quick Trust Badges -->
+<div class="mt-12 flex flex-wrap items-center justify-center gap-6 text-on-primary-container font-body-sm text-body-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">stars</span>
+<span>4.9 Star Rating (1,800+ Hearth Lovers)</span>
+</div>
+<span class="opacity-40">•</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">timer</span>
+<span>Fresh Woodfire Dispatch in 25 Mins</span>
+</div>
+<span class="opacity-40">•</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">verified</span>
+<span>Zero Seed Oils • 100% Wagyu Tallow</span>
+</div>
+</div>
+</div>
+<!-- Micro-Banner Ticker Strip -->
+<div class="w-full bg-inverse-surface py-3 text-secondary-fixed overflow-hidden whitespace-nowrap shadow-inner">
+<div class="inline-flex items-center gap-8 animate-[marquee_28s_linear_infinite] font-label-caps text-label-caps uppercase tracking-[0.2em]">
+<span>✦ WOOD-FIRED AT 900°F</span>
+<span>✦ 48-HOUR SOURDOUGH FERMENTATION</span>
+<span>✦ 2024 MICHELIN GUIDE RECOGNITION</span>
+<span>✦ FARM-DIRECT HEIRLOOM INGREDIENTS</span>
+<span>✦ CHARRED TO PERFECTION</span>
+<span>✦ ZERO SEED OILS</span>
+<span>✦ WHITE OAK &amp; PEACHWOOD SMOKE</span>
+<span>✦ 60-DAY DRY AGED PRIMAL CUTS</span>
+<!-- Duplicated for seamless marquee loop -->
+<span>✦ WOOD-FIRED AT 900°F</span>
+<span>✦ 48-HOUR SOURDOUGH FERMENTATION</span>
+<span>✦ 2024 MICHELIN GUIDE RECOGNITION</span>
+<span>✦ FARM-DIRECT HEIRLOOM INGREDIENTS</span>
+<span>✦ CHARRED TO PERFECTION</span>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 1: FEATURED MASTERPIECES (Cards & Signature Gallery)
+       ========================================================================= -->
+<section class="w-full bg-surface py-space-xl md:py-28" id="featured-dishes">
+<div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary font-bold">Artisanal Signatures</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-2 tracking-tight">Crafted by Fire, Perfected by Patience</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+          Each culinary creation undergoes extreme flame roasting, wild yeast hydration, or custom Himalayan dry-curing.
+        </p>
+</div>
+<!-- Signature Grid (3 Masterpieces) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-lg">
+<!-- Dish 1: The Truffle & Bone Marrow Smash -->
+<article class="group bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-8px_rgba(181,18,39,0.08),0_4px_12px_rgba(26,18,17,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(26,18,17,0.16)] transition-all duration-300 flex flex-col overflow-hidden">
+<div class="relative overflow-hidden aspect-[4/3] bg-surface-container">
+<img alt="The Truffle and Bone Marrow Smash Burger" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk7rOxcaVQs5BKsASFGH1jU41JaN0EvnUT4FiipvPMoQc8JzZ2uEUqoDJ92up8ZxDBLEGp8sL-krC7GHdQDSZYTPSb3xcQ-6kcau0j5lp-ZZS8mxhVsUgCaKq3t1L2RzboS0rb6vCXsvj4jTHm9jkCKMEhDSzFHgFlIjGL4r2tIS0syxsyyVE9860M5SXwuBNcH9j1diOuE2meApe1uq6CRkBE_RVdS7N1cFRy4u2hYqwnWey2xKg4"/>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-lowest/90 backdrop-blur-md text-secondary font-label-caps text-label-caps uppercase px-3 py-1 rounded-full shadow-sm font-bold">Oak Smoked</span>
+<span class="bg-primary text-on-primary font-label-caps text-label-caps uppercase px-3 py-1 rounded-full font-bold">Aged 60 Days</span>
+</div>
+<div class="absolute bottom-3 right-3 bg-inverse-surface text-inverse-on-surface font-price-tag text-price-tag px-3 py-1 rounded-lg shadow-md">
+              $26
+            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 text-secondary-container mb-2">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1 font-semibold">4.9 (420+ reviews)</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors">The Truffle &amp; Bone Marrow Smash</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                Double 60-day dry aged smash patties, roasted bone marrow melt, smoked taleggio, black winter truffle aioli, pickled shallots on hearth brioche.
+              </p>
+</div>
+<div class="pt-6 mt-6 bg-surface-container-low/50 -mx-6 -mb-6 p-6 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-outline font-medium">Hearth Grate No. 04</span>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-caps text-label-caps uppercase px-4 py-2.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm active:scale-95" onclick="quickAdd('The Truffle &amp; Bone Marrow Smash', 26)" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add to Order</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Dish 2: Charred Olive-Wood Prime Ribeye -->
+<article class="group bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-8px_rgba(181,18,39,0.08),0_4px_12px_rgba(26,18,17,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(26,18,17,0.16)] transition-all duration-300 flex flex-col overflow-hidden">
+<div class="relative overflow-hidden aspect-[4/3] bg-surface-container">
+<img alt="Charred Olive-Wood Prime Ribeye sliced on cutting board" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXMpHN01ZDlqScoL491NtDktqQTEwkvqSs8EYqY-q7-Mb66ojk5kAfp0Ls5FVkimlLkIAjriQc9ydLf2WIp0-Evz6T0vCxtsopgVXmxpzpKE0lZ6t5G-idXIdHUG4HBTrOOLHS61cOTkvfN73vz2O-Getc5368NJ18ifBLKMJ9guVgZbqu62966X-rlFLRQl_2jOtpCpKKah28ofUjlyLvASHBtF1GQRRfgQlPV_RCv2se2n4IRkuZ"/>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-lowest/90 backdrop-blur-md text-secondary font-label-caps text-label-caps uppercase px-3 py-1 rounded-full shadow-sm font-bold">Olive Wood</span>
+<span class="bg-inverse-surface text-secondary-fixed font-label-caps text-label-caps uppercase px-3 py-1 rounded-full font-bold">Chef's Reserve</span>
+</div>
+<div class="absolute bottom-3 right-3 bg-inverse-surface text-inverse-on-surface font-price-tag text-price-tag px-3 py-1 rounded-lg shadow-md">
+              $68
+            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 text-secondary-container mb-2">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1 font-semibold">5.0 (310+ reviews)</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors">Charred Olive-Wood Prime Ribeye</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                45-day dry-aged 22oz bone-in ribeye, seared over screaming coals, smoked garlic head emulsion, Maldon smoked flakes, charred rosemary reduction.
+              </p>
+</div>
+<div class="pt-6 mt-6 bg-surface-container-low/50 -mx-6 -mb-6 p-6 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-outline font-medium">Primal Cellar Cut</span>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-caps text-label-caps uppercase px-4 py-2.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm active:scale-95" onclick="quickAdd('Charred Olive-Wood Prime Ribeye', 68)" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add to Order</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Dish 3: San Marzano Leopard Crust Pizza -->
+<article class="group bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-8px_rgba(181,18,39,0.08),0_4px_12px_rgba(26,18,17,0.03)] hover:shadow-[0_24px_48px_-12px_rgba(26,18,17,0.16)] transition-all duration-300 flex flex-col overflow-hidden">
+<div class="relative overflow-hidden aspect-[4/3] bg-surface-container">
+<img alt="Neapolitan Pizza with charred leopard spotted crust fresh out of wood oven" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWsfTrv5euKkOqnhWq3B0wZY1xnz9jhMxOUmYi8HeY6MBwrikBEz3Od_wEntB0n82ISacEsMkSvQAzQyYnayYw6BLI0-owpftnY6j9W0qO98gCHP9PK0c0n3Oj2RmCcRUPb76JRb-lIiJgBZdILp0hyED6qU9l6MrSOaNXXoS3LrKtx2HSl84zczdDl2-traWAfLaAGDNtBWeDO8Cco3eDrWt_wwdpuQ0BLA3CPWx1L0znC8GPXkMp"/>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-lowest/90 backdrop-blur-md text-secondary font-label-caps text-label-caps uppercase px-3 py-1 rounded-full shadow-sm font-bold">900°F Blister</span>
+<span class="bg-secondary text-on-secondary font-label-caps text-label-caps uppercase px-3 py-1 rounded-full font-bold">Fermented 48H</span>
+</div>
+<div class="absolute bottom-3 right-3 bg-inverse-surface text-inverse-on-surface font-price-tag text-price-tag px-3 py-1 rounded-lg shadow-md">
+              $24
+            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 text-secondary-container mb-2">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star_half</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-1 font-semibold">4.8 (640+ reviews)</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2 group-hover:text-primary transition-colors">San Marzano Leopard Crust</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">
+                Heritage stone-milled sourdough crust, San Marzano D.O.P. crushed tomatoes, buffalo stracciatella, blistered holy basil, chili-infused hot honey drizzle.
+              </p>
+</div>
+<div class="pt-6 mt-6 bg-surface-container-low/50 -mx-6 -mb-6 p-6 flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-outline font-medium">Stone Hearth Bake</span>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-caps text-label-caps uppercase px-4 py-2.5 rounded-full transition-all flex items-center gap-1.5 shadow-sm active:scale-95" onclick="quickAdd('San Marzano Leopard Crust', 24)" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Add to Order</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 2: LAYERED EDITORIAL STORY & HEARTH STATS
+       ========================================================================= -->
+<section class="w-full bg-surface-container py-space-xl md:py-32 relative overflow-hidden" id="tasting-craft">
+<!-- Editorial Watermark Background -->
+<div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 pointer-events-none select-none opacity-5 font-headline-lg text-[220px] font-black text-on-surface">
+      HEARTH
+    </div>
+<div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
+<!-- Left: Overlapping Asymmetric Photographic Montage -->
+<div class="lg:col-span-6 relative">
+<!-- Main Hero Image: Oven Hearth -->
+<div class="relative rounded-xl overflow-hidden shadow-[0_24px_48px_-12px_rgba(26,18,17,0.22)] w-[88%] aspect-[4/3] bg-surface-dim">
+<img alt="Chef pulling sourdough pizza from blazing woodfire hearth" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWsfTrv5euKkOqnhWq3B0wZY1xnz9jhMxOUmYi8HeY6MBwrikBEz3Od_wEntB0n82ISacEsMkSvQAzQyYnayYw6BLI0-owpftnY6j9W0qO98gCHP9PK0c0n3Oj2RmCcRUPb76JRb-lIiJgBZdILp0hyED6qU9l6MrSOaNXXoS3LrKtx2HSl84zczdDl2-traWAfLaAGDNtBWeDO8Cco3eDrWt_wwdpuQ0BLA3CPWx1L0znC8GPXkMp"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 text-inverse-on-surface">
+<p class="font-label-caps text-label-caps uppercase tracking-wider text-secondary-fixed">Live Oak Hearth</p>
+<p class="font-title-editorial text-title-editorial">Reaching 900°F Peak Flame</p>
+</div>
+</div>
+<!-- Overlapping Secondary Image: Sliced Prime Steak -->
+<div class="absolute -bottom-10 right-0 w-[58%] aspect-square rounded-xl overflow-hidden shadow-[0_28px_56px_-10px_rgba(181,18,39,0.25)] border-4 border-surface-container-lowest">
+<img alt="Artisanal ribeye resting on rustic olive wood platter" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXMpHN01ZDlqScoL491NtDktqQTEwkvqSs8EYqY-q7-Mb66ojk5kAfp0Ls5FVkimlLkIAjriQc9ydLf2WIp0-Evz6T0vCxtsopgVXmxpzpKE0lZ6t5G-idXIdHUG4HBTrOOLHS61cOTkvfN73vz2O-Getc5368NJ18ifBLKMJ9guVgZbqu62966X-rlFLRQl_2jOtpCpKKah28ofUjlyLvASHBtF1GQRRfgQlPV_RCv2se2n4IRkuZ"/>
+</div>
+<!-- Overlapping Micro-Floating Badge -->
+<div class="absolute -top-4 right-12 bg-secondary text-on-secondary px-4 py-2 rounded-full font-label-caps text-label-caps uppercase tracking-widest shadow-lg">
+            Ancient Wood Tradition
+          </div>
+</div>
+<!-- Right: Editorial Narrative prose -->
+<div class="lg:col-span-6 flex flex-col justify-center mt-12 lg:mt-0 lg:pl-6">
+<div class="flex items-center gap-2 text-secondary font-label-caps text-label-caps uppercase tracking-widest mb-3">
+<span class="w-6 h-0.5 bg-secondary"></span>
+<span>A World of Flavors in Every Bite</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mb-6">
+            Where Primitive Flame Meets <span class="italic font-normal text-primary">Modern Gastronomy</span>
+</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed">
+            At EMBER &amp; CRUST, fire is not treated simply as a heat source; it is our most vital ingredient. Our dual white-oak ovens burn non-stop, imparting intense caramelization, fragrant wood smoke, and blistering crust structures that cannot be replicated by gas or steel.
+          </p>
+<p class="font-body-md text-body-md text-tertiary mb-10 leading-relaxed">
+            From heirloom grain starters fermented over 48 hours to primal wagyu cuts slow-rested over fruitwood char, our kitchen celebrates the harmony of raw natural elements and Michelin-level precision.
+          </p>
+<!-- Stat Counters Bento Row -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm">
+<span class="font-headline-md text-headline-md text-primary block font-bold">900°F</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Hearth Temp</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm">
+<span class="font-headline-md text-headline-md text-secondary block font-bold">48 Hrs</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Wild Ferment</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm">
+<span class="font-headline-md text-headline-md text-on-surface block font-bold">60 Days</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Dry Aging</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm">
+<span class="font-headline-md text-headline-md text-primary-container block font-bold">100%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Pasture Raised</span>
+</div>
+</div>
+<div class="mt-8 flex items-center gap-4">
+<a class="inline-flex items-center gap-2 text-primary font-label-caps text-label-caps uppercase tracking-wider hover:text-primary-container transition-colors font-bold group" href="#menu-catalog">
+<span>Read Our Full Grain &amp; Wood Manifesto</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">east</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 3: CURATED SEASONAL MENU (Tabbed Interactive Explorer)
+       ========================================================================= -->
+<section class="w-full bg-surface py-space-xl md:py-28" id="menu-catalog">
+<div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg">
+<!-- Section Titles -->
+<div class="text-center max-w-3xl mx-auto mb-12">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary font-bold">Autumn Hearth Provisions</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-2 tracking-tight">The Curated Seasonal Menu</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-3">
+          Sourced directly from regenerative family farms and fire-roasted over seasonal cordwood.
+        </p>
+</div>
+<!-- Tab Buttons Switcher -->
+<div class="flex items-center justify-center gap-2 overflow-x-auto pb-4 mb-10 no-scrollbar">
+<button class="menu-tab-btn bg-primary text-on-primary font-label-caps text-label-caps uppercase px-5 py-2.5 rounded-full shadow-sm whitespace-nowrap transition-all" onclick="switchCategory('all', this)" type="button">All Provisions</button>
+<button class="menu-tab-btn bg-surface-container hover:bg-surface-container-high text-on-surface font-label-caps text-label-caps uppercase px-5 py-2.5 rounded-full whitespace-nowrap transition-all" onclick="switchCategory('burgers', this)" type="button">Wood-Fired Burgers</button>
+<button class="menu-tab-btn bg-surface-container hover:bg-surface-container-high text-on-surface font-label-caps text-label-caps uppercase px-5 py-2.5 rounded-full whitespace-nowrap transition-all" onclick="switchCategory('steaks', this)" type="button">Hearth Steaks &amp; Chops</button>
+<button class="menu-tab-btn bg-surface-container hover:bg-surface-container-high text-on-surface font-label-caps text-label-caps uppercase px-5 py-2.5 rounded-full whitespace-nowrap transition-all" onclick="switchCategory('pizzas', this)" type="button">Neapolitan Pizzas</button>
+<button class="menu-tab-btn bg-surface-container hover:bg-surface-container-high text-on-surface font-label-caps text-label-caps uppercase px-5 py-2.5 rounded-full whitespace-nowrap transition-all" onclick="switchCategory('small', this)" type="button">Small Plates &amp; Char</button>
+</div>
+<!-- Menu Items Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-lg" id="menu-grid">
+<!-- Item 1: Burger -->
+<div class="menu-item burgers flex items-start justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="pr-4 flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-title-editorial text-title-editorial text-on-surface font-bold">The Inferno Wagyu Smash</h4>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-caps text-[10px] uppercase px-2 py-0.5 rounded font-extrabold">Spicy</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+              Double dry-aged smash patties, fire-roasted habanero glaze, smoked provolone, crispy shallots, charred garlic aioli on black sesame brioche.
+            </p>
+<div class="flex items-center gap-3 text-tertiary font-body-sm text-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span> Flame Level: High</span>
+<span>•</span>
+<span class="italic text-secondary">Pairing: Smoked Chili Mezcalita</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between self-stretch">
+<span class="font-price-tag text-price-tag text-on-surface font-bold">$25</span>
+<button class="mt-4 w-9 h-9 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" onclick="quickAdd('The Inferno Wagyu Smash', 25)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Item 2: Steaks -->
+<div class="menu-item steaks flex items-start justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="pr-4 flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-title-editorial text-title-editorial text-on-surface font-bold">White Oak Tomahawk (38oz)</h4>
+<span class="bg-primary-fixed text-on-primary-fixed font-label-caps text-[10px] uppercase px-2 py-0.5 rounded font-extrabold">Serves 2-3</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+              Prime Black Angus, 45-day Himalayan salt dry-aged, charred over aged oak logs, served with bone marrow butter and fire-blistered shallots.
+            </p>
+<div class="flex items-center gap-3 text-tertiary font-body-sm text-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span> Flame Level: Medium Char</span>
+<span>•</span>
+<span class="italic text-secondary">Pairing: 2018 Barolo Serralunga</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between self-stretch">
+<span class="font-price-tag text-price-tag text-on-surface font-bold">$145</span>
+<button class="mt-4 w-9 h-9 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" onclick="quickAdd('White Oak Tomahawk (38oz)', 145)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Item 3: Pizzas -->
+<div class="menu-item pizzas flex items-start justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="pr-4 flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-title-editorial text-title-editorial text-on-surface font-bold">Black Truffle &amp; Wild Chanterelle</h4>
+<span class="bg-surface-container text-on-surface-variant font-label-caps text-[10px] uppercase px-2 py-0.5 rounded font-extrabold">Vegetarian</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+              Fior di latte, foraged chanterelle mushrooms, black winter truffle fonduta, thyme flowers, cold-pressed olive oil, 900° leopard blister.
+            </p>
+<div class="flex items-center gap-3 text-tertiary font-body-sm text-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span> 60-Second Bake</span>
+<span>•</span>
+<span class="italic text-secondary">Pairing: Pet-Nat Sparkling Rosé</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between self-stretch">
+<span class="font-price-tag text-price-tag text-on-surface font-bold">$28</span>
+<button class="mt-4 w-9 h-9 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" onclick="quickAdd('Black Truffle &amp; Wild Chanterelle', 28)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Item 4: Small Plates -->
+<div class="menu-item small flex items-start justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="pr-4 flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-title-editorial text-title-editorial text-on-surface font-bold">Ember-Charred Spanish Octopus</h4>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-caps text-[10px] uppercase px-2 py-0.5 rounded font-extrabold">Hearth Favorite</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+              Braised then quick-charred over hot coals, saffron potato purée, pickled mustard seeds, smoked pimentón vinaigrette, charred lemon cheek.
+            </p>
+<div class="flex items-center gap-3 text-tertiary font-body-sm text-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span> High Sear</span>
+<span>•</span>
+<span class="italic text-secondary">Pairing: Albariño de Fefiñanes</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between self-stretch">
+<span class="font-price-tag text-price-tag text-on-surface font-bold">$23</span>
+<button class="mt-4 w-9 h-9 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" onclick="quickAdd('Ember-Charred Spanish Octopus', 23)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Item 5: Small Plates -->
+<div class="menu-item small flex items-start justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="pr-4 flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-title-editorial text-title-editorial text-on-surface font-bold">Burrata with Charred Peach &amp; Hot Honey</h4>
+<span class="bg-surface-container text-on-surface-variant font-label-caps text-[10px] uppercase px-2 py-0.5 rounded font-extrabold">Seasonal</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+              Pugliese burrata, flame-blistered Palisade peaches, wild arugula, pine nut brittle, toasted sourdough hearth bread.
+            </p>
+<div class="flex items-center gap-3 text-tertiary font-body-sm text-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span> Peachwood Char</span>
+<span>•</span>
+<span class="italic text-secondary">Pairing: Negroni Bianco</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between self-stretch">
+<span class="font-price-tag text-price-tag text-on-surface font-bold">$21</span>
+<button class="mt-4 w-9 h-9 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" onclick="quickAdd('Burrata with Charred Peach', 21)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<!-- Item 6: Burger -->
+<div class="menu-item burgers flex items-start justify-between p-6 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-shadow">
+<div class="pr-4 flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="font-title-editorial text-title-editorial text-on-surface font-bold">The Classic Hearth Cheeseburger</h4>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-caps text-[10px] uppercase px-2 py-0.5 rounded font-extrabold">Signature</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3">
+              Two 4oz chuck-brisket blend patties, aged Wisconsin sharp cheddar, house dill pickles, ember sauce, griddled white onion, potato brioche.
+            </p>
+<div class="flex items-center gap-3 text-tertiary font-body-sm text-xs">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">local_fire_department</span> Cast Iron Sear</span>
+<span>•</span>
+<span class="italic text-secondary">Pairing: Smoked Amber Ale</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between self-stretch">
+<span class="font-price-tag text-price-tag text-on-surface font-bold">$19</span>
+<button class="mt-4 w-9 h-9 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" onclick="quickAdd('The Classic Hearth Cheeseburger', 19)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Live Order Drawer Notification (Toast) -->
+<div class="fixed bottom-6 right-6 z-50 bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 translate-y-32 transition-transform duration-300" id="cart-toast">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<div>
+<p class="font-body-sm text-body-sm font-bold" id="toast-title">Added to order</p>
+<p class="font-body-sm text-xs text-surface-container-highest">Bag updated with live hearth dispatch</p>
+</div>
+<a class="ml-2 bg-secondary-container hover:bg-secondary text-on-secondary font-label-caps text-xs px-3 py-1.5 rounded-lg uppercase" href="#ordering-hub">View Bag</a>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 4: THE FIRE MASTERS & KITCHEN ETHOS
+       ========================================================================= -->
+<section class="w-full bg-inverse-surface text-inverse-on-surface py-space-xl md:py-28 relative overflow-hidden" id="fire-masters">
+<div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg">
+<div class="max-w-3xl mb-16">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary-container font-bold">The Alchemists of Char</span>
+<h2 class="font-headline-lg text-headline-lg text-inverse-on-surface mt-2 tracking-tight">Led by Fire Masters Marco Valenti &amp; Elena Vance</h2>
+<p class="font-body-lg text-body-lg text-surface-container-highest mt-4">
+          “Flame is not just heat—it is an unpredictable ingredient that imprints soul, smoke, and primal memory into every single bite.”
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-lg">
+<!-- Chef 1 -->
+<div class="bg-tertiary/40 backdrop-blur-sm p-8 rounded-xl flex flex-col sm:flex-row gap-6 items-center sm:items-start shadow-inner">
+<div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden shrink-0 shadow-md">
+<img class="w-full h-full object-cover" data-alt="Culinary portrait of Executive Chef Marco Valenti in chef jacket with warm embers glowing in the background of a rustic Michelin kitchen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcU_zipi28IrqXGhnzbghPr6r1Qh0nnIdsaEqRMfWxnLtp89-F6FGX299vR8VyATAowiWhWYYHsNBQOyvslQzqDSfMj-0LneS8iCoCVuG0lfqk7jId8-1lDkLZ1EEEBfYcSl0woY0i5Tlmu7YVN44m7ydhdN7fyVYLAsstjllzBZI6SDmhOIepRqM8XMsUcDKBAhRSM_3JoJiZEcte_jrZRpWHYgXSLsxZH4d_nHQ-v6fAvH3aOcvL"/>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-sm text-headline-sm text-inverse-on-surface">Marco Valenti</h3>
+<span class="bg-secondary-container text-on-secondary font-label-caps text-[10px] uppercase px-2 py-0.5 rounded">Exec Chef</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-fixed mb-3">James Beard Nominee • Former Osteria Francescana</p>
+<p class="font-body-sm text-body-sm text-surface-container-highest mb-4">
+              Pioneered 48-hour levain sourdough hydration and custom cast-iron hearth searing techniques honed across Northern Italy and Basque charcoal parillas.
+            </p>
+<div class="flex items-center gap-2 text-xs font-label-caps uppercase text-on-tertiary-container tracking-wider">
+<span>Hearth Special: Dry-Aged Smoked Ribeye</span>
+</div>
+</div>
+</div>
+<!-- Chef 2 -->
+<div class="bg-tertiary/40 backdrop-blur-sm p-8 rounded-xl flex flex-col sm:flex-row gap-6 items-center sm:items-start shadow-inner">
+<div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden shrink-0 shadow-md">
+<img class="w-full h-full object-cover" data-alt="Close up culinary portrait of Pitmaster Elena Vance examining wood char embers with intense focus and glowing ambient light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvq-xHdNDLUhO6clJntiykx0Q1hBVpIpqgdiW2_Z02eV82HgjoKLC0oUrcZ007YIRS-7OoAlVyj-y37sjMFUy3uzFPikkkxYd6ykiaCeZKWjlayI5sAWaYHHT8PIwau_Agr-VgXsbCmtT7BLcHcwvQ8CWljC0wK1wUuFtQj-vZx7XB710EhtxfzGd0jeUofi1OG6UnQqJbMfVL7_ndePH_vToxZYLFAGXG3hmvI9Fg4JUEG5yvyiwB"/>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-sm text-headline-sm text-inverse-on-surface">Elena Vance</h3>
+<span class="bg-primary text-on-primary font-label-caps text-[10px] uppercase px-2 py-0.5 rounded">Master Pitmaster</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-fixed mb-3">Food &amp; Wine Best New Pitmaster • Whole Animal Specialist</p>
+<p class="font-body-sm text-body-sm text-surface-container-highest mb-4">
+              Oversees our curated wood cellar—blending seasoned post oak, hickory, and dried applewood to calibrate the subtle vapor profile of every cut.
+            </p>
+<div class="flex items-center gap-2 text-xs font-label-caps uppercase text-on-tertiary-container tracking-wider">
+<span>Hearth Special: Bone Marrow Wagyu Smash</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 5: CRITIC & PATRON ACCOLADES (Testimonials)
+       ========================================================================= -->
+<section class="w-full bg-surface-container-low py-space-xl md:py-28" id="accolades">
+<div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg">
+<div class="flex flex-col md:flex-row items-baseline justify-between mb-16 gap-6">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary font-bold">The Critical Verdict</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-2 tracking-tight">Recognized by the World's Culinary Elite</h2>
+</div>
+<!-- Aggregate Rating Pill -->
+<div class="bg-surface-container-lowest px-6 py-4 rounded-xl shadow-sm flex items-center gap-4">
+<div class="text-3xl font-extrabold text-primary font-price-tag">4.9</div>
+<div>
+<div class="flex text-secondary-container">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-medium">Over 1,800+ Verified Critic &amp; Diner Reviews</p>
+</div>
+</div>
+</div>
+<!-- Testimonial Editorial Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter-lg">
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_32px_-8px_rgba(181,18,39,0.06)] flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 text-secondary-container mb-4">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-title-editorial text-title-editorial text-on-surface mb-4">
+              “The double Wagyu smash burger is nothing short of revelation. The bone marrow melt and smoked brioche redefine luxury fast-casual dining.”
+            </p>
+</div>
+<div class="pt-6 mt-4 border-t border-surface-container">
+<p class="font-body-md text-body-md font-bold text-on-surface">Pete Wells</p>
+<p class="font-body-sm text-body-sm text-outline">The New York Times Dining Review</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_32px_-8px_rgba(181,18,39,0.06)] flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 text-secondary-container mb-4">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-title-editorial text-title-editorial text-on-surface mb-4">
+              “A masterclass in fire control. The blistered sourdough pizza crust carries a light, airy fermented crumb with genuine woodsmoke depth.”
+            </p>
+</div>
+<div class="pt-6 mt-4 border-t border-surface-container">
+<p class="font-body-md text-body-md font-bold text-on-surface">Michelin Guide Inspector</p>
+<p class="font-body-sm text-body-sm text-outline">Michelin Selection 2024</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_12px_32px_-8px_rgba(181,18,39,0.06)] flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-1 text-secondary-container mb-4">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-title-editorial text-title-editorial text-on-surface mb-4">
+              “The smoky aroma catches you three blocks away. Sitting at the chef counter facing the white-oak hearth is the best culinary seat in town.”
+            </p>
+</div>
+<div class="pt-6 mt-4 border-t border-surface-container">
+<p class="font-body-md text-body-md font-bold text-on-surface">Eater National</p>
+<p class="font-body-sm text-body-sm text-outline">Essential Dining Destination</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 6: THE HEARTH EXPERIENCE & ONLINE ORDERING HUB
+       ========================================================================= -->
+<section class="w-full bg-surface-container py-space-xl md:py-28" id="ordering-hub">
+<div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg">
+<div class="bg-primary text-on-primary rounded-xl overflow-hidden shadow-2xl relative">
+<!-- Background Lighting Flare -->
+<div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 md:p-14 items-center">
+<div class="lg:col-span-7">
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary-fixed font-bold">Fast Hearth Dispatch</span>
+<h2 class="font-headline-lg text-headline-lg text-on-primary mt-2 tracking-tight">Order Online for Curbside Pickup or White-Glove Courier</h2>
+<p class="font-body-lg text-body-lg text-on-primary-container mt-4 max-w-xl">
+              Packaged in custom insulated venting containers to guarantee that your wood-fired crust stays blister-crisp and your Wagyu patties stay intensely juicy.
+            </p>
+<div class="mt-8 flex flex-wrap gap-4">
+<button class="bg-secondary-container hover:bg-secondary text-on-secondary font-label-caps text-label-caps uppercase px-8 py-3.5 rounded-full transition-all flex items-center gap-2 shadow-lg" type="button">
+<span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+<span>Start Takeout Order</span>
+</button>
+<button class="bg-on-primary text-primary hover:bg-surface-container-lowest font-label-caps text-label-caps uppercase px-8 py-3.5 rounded-full transition-all flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+<span>Reserve VIP Hearth Table</span>
+</button>
+</div>
+</div>
+<!-- Quick Order Summary Widget -->
+<div class="lg:col-span-5 bg-surface-container-lowest text-on-surface p-6 rounded-xl shadow-xl">
+<div class="flex items-center justify-between pb-4 border-b border-surface-container">
+<span class="font-title-editorial text-title-editorial font-bold">Hearth Order Bag</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-caps text-xs px-2 py-0.5 rounded font-bold" id="item-count-badge">2 Items</span>
+</div>
+<div class="py-4 space-y-3 font-body-sm text-body-sm" id="bag-items-list">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-bold">1x The Truffle &amp; Bone Marrow Smash</p>
+<p class="text-xs text-outline">Oak-Smoked Brioche • Medium Rare</p>
+</div>
+<span class="font-bold font-price-tag text-base">$26</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-bold">1x San Marzano Leopard Crust</p>
+<p class="text-xs text-outline">Stone-Milled Sourdough • Extra Stracciatella</p>
+</div>
+<span class="font-bold font-price-tag text-base">$24</span>
+</div>
+</div>
+<div class="pt-4 border-t border-surface-container">
+<div class="flex justify-between font-body-sm mb-1 text-on-surface-variant">
+<span>Subtotal</span>
+<span>$50.00</span>
+</div>
+<div class="flex justify-between font-body-sm mb-3 text-on-surface-variant">
+<span>Estimated Prep</span>
+<span class="text-secondary font-bold">18-22 mins</span>
+</div>
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-caps text-label-caps uppercase py-3 rounded-full transition-colors font-bold shadow-md" type="button">
+                Proceed to Checkout ($50.00)
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =========================================================================
+       SECTION 7: THE SOCIETY OF SMOKE & FIRE (VIP Club)
+       ========================================================================= -->
+<section class="w-full bg-surface py-space-xl md:py-24" id="society">
+<div class="max-w-4xl mx-auto px-margin md:px-margin-md text-center">
+<div class="w-12 h-12 bg-secondary-fixed text-secondary mx-auto rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-[24px]">local_fire_department</span>
+</div>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-secondary font-bold">Inner Guild Access</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-2 tracking-tight">The Society of Smoke &amp; Fire</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-4 max-w-xl mx-auto">
+        Join our inner circle for unlisted off-menu smoke cuts, sommelier private barrel releases, and invitations to secret monthly chef counter seatings.
+      </p>
+<form class="mt-8 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onsubmit="event.preventDefault(); alert('Welcome to the Guild. Check your inbox for your secret access cipher.');">
+<input class="bg-surface-container-lowest text-on-surface placeholder:text-outline px-5 py-3.5 rounded-full flex-1 font-body-sm text-body-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter your private email address" required="" type="email"/>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-label-caps text-label-caps uppercase px-8 py-3.5 rounded-full transition-all shadow-md whitespace-nowrap active:scale-95" type="submit">
+          Request Access
+        </button>
+</form>
+<p class="font-body-sm text-xs text-outline mt-4">
+        Strictly curated. Zero spam. Members receive early access to Friday reserve steaks.
+      </p>
+</div>
+</section>
+</div>
+<!-- Client-side Interactive Script -->
+<script>
+  // Simple interactive tab switcher for seasonal menu
+  function switchCategory(category, buttonEl) {
+    const buttons = document.querySelectorAll('.menu-tab-btn');
+    buttons.forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-on-primary');
+      btn.classList.add('bg-surface-container', 'text-on-surface');
+    });
+    buttonEl.classList.remove('bg-surface-container', 'text-on-surface');
+    buttonEl.classList.add('bg-primary', 'text-on-primary');
+
+    const items = document.querySelectorAll('.menu-item');
+    items.forEach(item => {
+      if (category === 'all' || item.classList.contains(category)) {
+        item.style.display = 'flex';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  // Quick add to cart interaction
+  let orderCount = 2;
+  function quickAdd(itemName, price) {
+    orderCount++;
+    const badge = document.getElementById('item-count-badge');
+    if (badge) badge.innerText = orderCount + ' Items';
+
+    const toast = document.getElementById('cart-toast');
+    const toastTitle = document.getElementById('toast-title');
+    if (toast && toastTitle) {
+      toastTitle.innerText = 'Added "' + itemName + '" ($' + price + ')';
+      toast.classList.remove('translate-y-32');
+      setTimeout(() => {
+        toast.classList.add('translate-y-32');
+      }, 3500);
+    }
+  }
+</script></main><footer class="w-full bg-inverse-surface text-inverse-on-surface pt-space-xl pb-space-lg"><div class="max-w-7xl mx-auto px-margin md:px-margin-md lg:px-margin-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-gutter-lg pb-space-xl border-b border-tertiary-container/40"><div class="lg:col-span-4 flex flex-col gap-space-md"><div class="flex items-center gap-space-sm"><img alt="EMBER &amp; CRUST Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VmwsaFwW5zZW7si4QkDZp_SbZmfgAhIsBypxxbqYP0n1UG1DbG0ebWisZjqospB0LisvLbHdt2DIbvKNIJ7oAMT09NMZyS2yf-9E91ZqDn0yFfi2mqfmukgedwoXvUvoNTlpEjNFrctStfFPoDXtU5qDZXLU7CHmzGBW0-K3CFXVrkthyTX-nJbstKI4rh3snFkhYBVMFCY8A0rI3oyy5ebTx-_-dV0gjAFsZ3pNDFjnJNAObnTKGvypI"/><span class="font-headline-sm text-headline-sm text-inverse-on-surface">EMBER &amp; CRUST</span></div><p class="font-body-md text-body-md text-surface-container-highest max-w-sm">Artisanal live-fire gastronomy guided by seasonal wood selection, charred prime cuts, and heirloom ingredients roasted to primal perfection.</p><div class="flex items-center gap-space-xs text-secondary-fixed"><span class="material-symbols-outlined text-[20px]">star</span><span class="font-label-caps text-label-caps uppercase tracking-wider">Michelin Selected 2024</span></div></div><div class="lg:col-span-4 flex flex-col gap-space-sm"><span class="font-label-caps text-label-caps uppercase text-secondary-container tracking-widest">Society of Smoke &amp; Fire</span><h4 class="font-headline-sm text-headline-sm text-inverse-on-surface">Private Cellar &amp; Tasting Access</h4><p class="font-body-sm text-body-sm text-surface-container-highest">Receive invitations to exclusive chef tables, off-menu smoke cuts, and cellar releases.</p><form class="flex flex-col sm:flex-row gap-space-xs mt-space-xs"><input class="bg-tertiary text-on-tertiary placeholder:text-outline-variant px-space-md py-space-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-secondary-container flex-1 font-body-sm text-body-sm" placeholder="Enter your email address" type="email"/><button class="bg-primary-container text-on-primary font-label-caps text-label-caps uppercase px-space-md py-space-sm rounded-lg hover:bg-primary transition-colors whitespace-nowrap" type="button">Join Guild</button></form></div><div class="lg:col-span-2 flex flex-col gap-space-xs"><span class="font-label-caps text-label-caps uppercase text-secondary-container tracking-widest">Locations</span><div class="mt-space-xs"><p class="font-title-editorial text-title-editorial text-inverse-on-surface">SoHo NYC</p><p class="font-body-sm text-body-sm text-surface-container-highest">482 Broome St, New York</p><p class="font-body-sm text-body-sm text-outline-variant">Dinner Daily: 5PM - 11PM</p></div><div class="mt-space-sm"><p class="font-title-editorial text-title-editorial text-inverse-on-surface">West Loop Chicago</p><p class="font-body-sm text-body-sm text-surface-container-highest">914 W Randolph St, Chicago</p><p class="font-body-sm text-body-sm text-outline-variant">Wed - Sun: 4:30PM - Midnight</p></div></div><div class="lg:col-span-2 flex flex-col gap-space-xs"><span class="font-label-caps text-label-caps uppercase text-secondary-container tracking-widest">Follow Hearth</span><div class="flex flex-col gap-space-xs mt-space-xs"><a class="font-body-sm text-body-sm text-surface-container-highest hover:text-secondary-fixed transition-colors" href="#">Instagram: @emberandcrust</a><a class="font-body-sm text-body-sm text-surface-container-highest hover:text-secondary-fixed transition-colors" href="#">TikTok: @embercrustgrill</a><a class="font-body-sm text-body-sm text-surface-container-highest hover:text-secondary-fixed transition-colors" href="#">Spotify: Hearth Ambient Playlist</a><a class="font-body-sm text-body-sm text-surface-container-highest hover:text-secondary-fixed transition-colors" href="#">Press &amp; Inquiries</a></div></div></div><div class="pt-space-md flex flex-col md:flex-row items-center justify-between gap-space-sm text-surface-container-highest font-body-sm text-body-sm"><p>© 2024 EMBER &amp; CRUST Hospitality Group. Live-Fire Culinary Artistry. All rights reserved.</p><div class="flex items-center gap-space-md"><a class="hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a><a class="hover:text-secondary-fixed transition-colors" href="#">Terms of Hospitality</a><a class="hover:text-secondary-fixed transition-colors" href="#">Accessibility</a></div></div></div></footer></body></html>
