@@ -15,6 +15,7 @@ import {
   publishSiteData,
   resetSiteData,
   updateConfig,
+  updateStudio,
   useSiteData,
 } from "../../lib/siteData";
 import { frameUrl } from "../media/ScrollMedia";
@@ -64,6 +65,16 @@ export default function MediaPanel() {
     setBusy(true);
     setStatus(null);
     updateConfig({ assets, media });
+    /*
+     * The hero's run length is one number with two doors onto it: this field,
+     * and the Studio tab's Motion panel (which is where the film's own feel
+     * lives). Writing it through `updateStudio` keeps them from ever
+     * disagreeing about how long the opening run lasts.
+     */
+    const vh = Number.parseFloat(media.scrollLength);
+    if (Number.isFinite(vh) && vh > 0) {
+      updateStudio({ motion: { ...site.studio.motion, heroScrollVh: vh } });
+    }
     if (!publish) {
       setStatus({ ok: true, detail: "Saved in this browser. Publish to reach every visitor." });
       setBusy(false);

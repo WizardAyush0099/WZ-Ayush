@@ -69,7 +69,7 @@ export function StudioSignInPanel({ onDone }: { onDone?: () => void }) {
       </h2>
       <p className="mt-2 font-body text-xs leading-relaxed text-bone-dim">
         {registering
-          ? "This account lives in this browser only. Use the admin email to unlock the dashboard."
+          ? "The dashboard belongs to one address: ayushdanthta@gmail.com. Create the account with it — any other address is refused at this step, and it is the only address that can open the dashboard. The account lives in this browser."
           : "Sign in with the account you created in this browser."}
       </p>
 

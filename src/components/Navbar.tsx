@@ -4,7 +4,8 @@ import { linkTo } from "../lib/router";
 import { getLenis, resumeSmoothScroll, scrollToId } from "../lib/scroll";
 import SoundToggle from "./SoundToggle";
 import ThemeToggle from "./theme/ThemeToggle";
-import AuthControls from "./auth/AuthLayer";
+import AuthControls, { MobileAccountBlock } from "./auth/AuthLayer";
+import StudioMark from "./brand/StudioMark";
 
 /**
  * The header.
@@ -107,6 +108,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
         button is always visible and tappable while the menu is open.
       */}
       <header
+        data-tune="item-navbar"
         className={`fixed inset-x-0 top-0 z-[90] transition-all duration-700 ease-silk ${
           scrolled || open
             ? "border-b border-bone/10 bg-ink-950/70 backdrop-blur-md"
@@ -121,16 +123,18 @@ export default function Navbar({ ready }: { ready: boolean }) {
               e.preventDefault();
               go("home");
             }}
-            className="group relative z-10 flex items-baseline gap-2"
+            className="group relative z-10 flex items-center gap-2.5"
             aria-label={`${hero.title} — home`}
           >
+            {/* The house seal — the same drawing as the tab icon. */}
+            <StudioMark className="h-6 w-6 shrink-0 text-bone-muted transition-colors duration-500 group-hover:text-bone" />
             <span className="display text-[15px] tracking-[0.28em] text-bone transition-colors duration-300 group-hover:text-blood-400 sm:text-lg">
               {hero.title}
             </span>
             <span className="font-accent text-[10px] tracking-[0.3em] text-blood-500/70">{hero.accent}</span>
           </a>
 
-          {/* Seven destinations plus the account cluster only fit from 1280px
+          {/* Five destinations plus the account cluster only fit from 1280px
               up; below that the overlay menu takes over rather than letting
               the bar squash. */}
           <nav className="hidden items-center gap-5 xl:flex xl:gap-7" aria-label="Primary">
@@ -226,7 +230,18 @@ export default function Navbar({ ready }: { ready: boolean }) {
           }`}
         />
 
-        <div className="shell pointer-events-none relative flex min-h-full flex-col justify-center py-24">
+        {/*
+         * `safe center` rather than plain centring (set inline, because a
+         * browser that does not understand the keyword then falls back to
+         * top-alignment — the outcome we want — instead of centring): the menu
+         * stacks six links, the CTA, the appearance row, the account block and
+         * the footer line, which on a short phone is taller than the viewport.
+         * Plain centring would clip the first link above the scroll origin.
+         */}
+        <div
+          className="shell pointer-events-none relative flex min-h-full flex-col py-24"
+          style={{ justifyContent: "safe center" }}
+        >
           <span className="eyebrow mb-6">Navigate</span>
           <nav className="pointer-events-auto flex flex-col gap-1" aria-label="Mobile">
             {nav.map((item, i) => (
@@ -272,9 +287,14 @@ export default function Navbar({ ready }: { ready: boolean }) {
           </a>
 
           <div className="pointer-events-auto mt-8 flex items-center justify-between gap-6 border-t border-bone/10 pt-6">
+            <span className="eyebrow">Appearance</span>
             <ThemeToggle align="left" />
-            <AuthControls />
           </div>
+
+          {/* Who is signed in — and the way in or out. Built for a narrow
+              column rather than reusing the desktop bar's one-liner, whose
+              controls were width-hidden exactly where this menu opens. */}
+          <MobileAccountBlock onNavigate={() => setOpen(false)} />
 
           {/* Explicit close control — always visible, independent of the header. */}
           <div className="pointer-events-auto mt-7 flex items-center justify-between">

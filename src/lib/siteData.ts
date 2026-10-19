@@ -7,10 +7,21 @@ import {
   type MediaConfig,
   type Project,
 } from "../data/content";
-import { defaultTemplatePhotos, templatePhotoSlots } from "../data/photos";
-import { templates } from "../data/templates";
+import {
+  ANIMATION_ORDER,
+  IMAGE_SECTIONS,
+  SLOTS_PER_SECTION,
+  defaultSlotMap,
+  imageSlotDefaults,
+  slotId,
+  type ImageSectionId,
+  type ImageSlot,
+  type SlotAnimation,
+  type SlotFilm,
+} from "../data/imageSlots";
+import { cloneDefaultStudio, normaliseStudio, type StudioDoc } from "./studio";
+import { normaliseAssetPath } from "./assetPath";
 import { authHeaders } from "./apiAuth";
-import { useStoredImages } from "./imageStore";
 import { dataApiUrl, getVisitorId } from "./telemetry";
 
 /**
@@ -24,6 +35,14 @@ import { dataApiUrl, getVisitorId } from "./telemetry";
  *    • media    — the cinematic scroll media: procedural scene, video, or
  *                 scroll-scrubbed image sequence (see docs/ASSET_WORKFLOW.md)
  *    • projects — the project cards shown on the homepage
+ *    • slots    — every picture on the page, section by section: the still or
+ *                 scroll film it draws, plus its animation, opacity, blur,
+ *                 background colour, width, height and crop (src/data/imageSlots.ts)
+ *    • studio   — the visual editor's document: a box per point the owner has
+ *                 touched (crop, size, position, opacity), the page order and
+ *                 which sections are switched off, the 3D runs ("stages") and
+ *                 their dimensions and speed, the motion speeds and the effect
+ *                 switches (src/lib/studio.ts)
  *
  *  Persistence is layered, and the site never blocks on any of it:
  *
@@ -40,21 +59,20 @@ import { dataApiUrl, getVisitorId } from "./telemetry";
 export type SiteConfig = {
   assets: Record<AssetKey, string>;
   media: MediaConfig;
-  /**
-   * Template photography, keyed by template id then slot index. Only templates
-   * the owner has touched appear here; everything else uses the defaults in
-   * `src/data/photos.ts`. An empty string means "fall back to the default".
-   */
-  photos: Record<string, string[]>;
 };
 
-export type SiteData = SiteConfig & { projects: Project[] };
+export type SiteData = SiteConfig & {
+  projects: Project[];
+  slots: ImageSlot[];
+  studio: StudioDoc;
+};
 
 export const DEFAULT_SITE_DATA: SiteData = {
   assets: { ...assetDefaults },
   media: { ...mediaDefaults },
-  photos: {},
   projects: defaultProjects.map((p) => ({ ...p })),
+  slots: imageSlotDefaults.map((s) => ({ ...s, film: s.film ? { ...s.film } : null })),
+  studio: cloneDefaultStudio(),
 };
 
 /*
@@ -68,8 +86,27 @@ export const DEFAULT_SITE_DATA: SiteData = {
  * of the run for every returning visitor — so the key moves forward again and
  * the new default reaches them. Dashboard edits made from here on persist
  * normally.
+ *
+ * v4: image slots arrived — every picture on the page became a numbered slot
+ * inside a section, editable from #/admin → Images. A v3 document has no
+ * `slots` at all, and normalising it would fall back to the committed
+ * defaults anyway, but the key moves so a stale cached document can never
+ * shadow the new section-wise editor.
+ *
+ * v5: the Archive's tiles went back to empty. A v4 document — written by the
+ * build that filled all six tiles with a scroll film of a render that has since
+ * been deleted — would keep pointing those tiles at frames that no longer
+ * exist, so every returning visitor would see six broken frames. The key moves
+ * so the new defaults (three stills, six empty slots) reach them.
+ *
+ * v6: a new band arrived — the kinetic statement, directly after the approach
+ * copy. A v5 document has no `statement` in its order, and the normaliser would
+ * append it at the very end of the page instead, so the one section written to
+ * be read right after the hero would sit above the footer for every returning
+ * visitor. The key moves so the committed order (and the band's place in it)
+ * reaches them. Dashboard edits made from here on persist normally.
  */
-const STORAGE_KEY = "wz.site.v3";
+const STORAGE_KEY = "wz.site.v6";
 const CHANGE_EVENT = "wz:site-changed";
 
 type Listener = () => void;
@@ -85,25 +122,6 @@ const listeners = new Set<Listener>();
 
 function asString(value: unknown, fallback: string): string {
   return typeof value === "string" ? value : fallback;
-}
-
-function normaliseAssetPath(value: unknown, fallback: string): string {
-  const text = asString(value, "").trim();
-  if (!text) return fallback;
-  /*
-   * Accept five shapes and store one:
-   *   assets/foo.webp          → BASE_URL + assets/foo.webp  (in-repo file)
-   *   /WZ-Ayush/assets/foo.webp→ used as-is                  (absolute path)
-   *   https://cdn…/foo.webp    → used as-is                  (external)
-   *   data:image/webp;base64,… → used as-is                  (inlined upload)
-   *   idb:<image id>           → used as-is (upload held in IndexedDB by
-   *                              `src/lib/imageStore.ts`; resolved at render
-   *                              time, so the site document stays tiny)
-   */
-  if (/^(https?:)?\/\//.test(text)) return text;
-  if (/^(data|blob|idb):/.test(text)) return text;
-  if (text.startsWith("/")) return text;
-  return `${import.meta.env.BASE_URL}${text.replace(/^\.?\//, "")}`;
 }
 
 function normaliseAssets(input: unknown, base: Record<AssetKey, string>) {
@@ -141,57 +159,135 @@ export function normaliseMedia(input: unknown, base: MediaConfig): MediaConfig {
   };
 }
 
-/**
- * Template photographs. Only the slots a template actually has are kept, and
- * each value is normalised like any other asset path — so a pasted CDN URL, a
- * repo path, or an uploaded data URL are all stored in the one shape the
- * renderer understands. Unknown ids are dropped rather than carried along.
- */
-function normalisePhotos(input: unknown, base: Record<string, string[]>): Record<string, string[]> {
-  const source = (input ?? {}) as Record<string, unknown>;
-  const next: Record<string, string[]> = {};
-  (Object.keys(base) as string[]).forEach((id) => {
-    const value = source[id];
-    if (!Array.isArray(value)) return;
-    const defaults = base[id];
-    const list = defaults.map((fallback, i) => {
-      const raw = value[i];
-      if (typeof raw !== "string" || !raw.trim()) return fallback;
-      return normaliseAssetPath(raw, fallback);
-    });
-    next[id] = list;
-  });
-  return next;
+function clampNumber(value: unknown, min: number, max: number, fallback: number): number {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.max(min, Math.min(max, n));
 }
 
-/** The committed default photo pools, as a plain id → URLs map. */
-function defaultPhotoMap(): Record<string, string[]> {
-  const map: Record<string, string[]> = {};
-  templates.forEach((template) => {
-    map[template.id] = defaultTemplatePhotos(template.id);
+const FRAME_EXTS = ["jpg", "jpeg", "webp", "png", "avif"] as const;
+
+/** A frame run, or null when the slot has no film. */
+function normaliseFilm(input: unknown, fallback: SlotFilm | null): SlotFilm | null {
+  if (input === null) return null;
+  if (!input || typeof input !== "object") return fallback;
+  const source = input as Record<string, unknown>;
+  const dir = asString(source.dir, "").trim();
+  if (!dir) return null;
+  const rawExt = asString(source.ext, fallback?.ext ?? "jpg").replace(/^\./, "").toLowerCase();
+  const ext = (FRAME_EXTS as readonly string[]).includes(rawExt)
+    ? (rawExt as SlotFilm["ext"])
+    : (fallback?.ext ?? "jpg");
+  return {
+    dir: normaliseAssetPath(dir, fallback?.dir ?? dir),
+    count: Math.round(clampNumber(source.count, 1, 600, fallback?.count ?? 1)),
+    ext,
+  };
+}
+
+/**
+ * Image slots. Anything can come back from the network or an old cache, so
+ * every field is re-derived here, slot by slot, and the result is always the
+ * canonical shape: nine slots per section, in order.
+ */
+function normaliseSlots(input: unknown, base: ImageSlot[]): ImageSlot[] {
+  const byId = new Map<string, ImageSlot>();
+  const fallbacks = defaultSlotMap();
+  base.forEach((entry) => byId.set(entry.id, entry));
+  fallbacks.forEach((entry, id) => {
+    if (!byId.has(id)) byId.set(id, entry);
   });
-  return map;
+
+  if (Array.isArray(input)) {
+    input.forEach((raw) => {
+      if (!raw || typeof raw !== "object") return;
+      const entry = raw as Record<string, unknown>;
+      const section = asString(entry.section, "") as ImageSectionId;
+      if (!IMAGE_SECTIONS.some((candidate) => candidate.id === section)) return;
+      const index = Math.round(clampNumber(entry.index, 1, SLOTS_PER_SECTION, 0));
+      if (!index) return;
+      const id = slotId(section, index);
+      const fallback = byId.get(id);
+      if (!fallback) return;
+
+      const animation = asString(entry.animation, fallback.animation) as SlotAnimation;
+      const from = clampNumber(entry.filmFrom, 0, 1, fallback.filmFrom);
+      const to = clampNumber(entry.filmTo, 0, 1, fallback.filmTo);
+      const film = normaliseFilm(entry.film === undefined ? fallback.film : entry.film, fallback.film);
+
+      byId.set(id, {
+        id,
+        section,
+        index,
+        src: normaliseAssetPath(entry.src, ""),
+        film,
+        caption: asString(entry.caption, fallback.caption),
+        alt: asString(entry.alt, fallback.alt),
+        animation: ANIMATION_ORDER.includes(animation) ? animation : fallback.animation,
+        opacity: clampNumber(entry.opacity, 0.1, 1, fallback.opacity),
+        blur: clampNumber(entry.blur, 0, 24, fallback.blur),
+        background: asString(entry.background, fallback.background).trim(),
+        width: clampNumber(entry.width, 20, 100, fallback.width),
+        height: Math.round(clampNumber(entry.height, 0, 1600, fallback.height)),
+        // The crop trio: how far the picture is enlarged inside its frame and
+        // which part of it survives the crop.
+        zoom: clampNumber(entry.zoom, 1, 4, fallback.zoom),
+        posX: clampNumber(entry.posX, 0, 100, fallback.posX),
+        posY: clampNumber(entry.posY, 0, 100, fallback.posY),
+        radius: clampNumber(entry.radius, 0, 64, fallback.radius),
+        // A reversed window would make the run play backwards mid-tile.
+        filmFrom: Math.min(from, to),
+        filmTo: Math.max(from, to),
+        enabled: entry.enabled === undefined ? fallback.enabled : Boolean(entry.enabled),
+      });
+    });
+  }
+
+  return IMAGE_SECTIONS.flatMap((section) =>
+    Array.from({ length: SLOTS_PER_SECTION }, (_, i) => byId.get(slotId(section.id, i + 1))).filter(
+      (entry): entry is ImageSlot => Boolean(entry),
+    ),
+  );
 }
 
 function normaliseProjects(input: unknown, base: Project[]): Project[] {
   if (!Array.isArray(input)) return base;
   const list = input
     .filter((p): p is Record<string, unknown> => Boolean(p) && typeof p === "object")
-    .map((p, i) => ({
-      id: asString(p.id, `project-${i + 1}`),
-      index: asString(p.index, String(i + 1).padStart(2, "0")),
-      title: asString(p.title, `Project ${i + 1}`),
-      accent: asString(p.accent, ""),
-      category: asString(p.category, ""),
-      description: asString(p.description, ""),
-      image: normaliseAssetPath(p.image, ""),
-      highlights: Array.isArray(p.highlights) ? p.highlights.map((h) => String(h)) : [],
-      stack: Array.isArray(p.stack) ? p.stack.map((s) => String(s)) : [],
-      href: asString(p.href, "").trim() || undefined,
-      live: Boolean(p.live),
-      parent: asString(p.parent, "").trim() || undefined,
-      showInLiveStrip: p.showInLiveStrip === undefined ? true : Boolean(p.showInLiveStrip),
-    }))
+    .map((p, i) => {
+      const id = asString(p.id, `project-${i + 1}`);
+      // Older stored documents predate `pages` / `showInArchive`; falling back
+      // to the committed default (not a blanket `true`) keeps the E-books
+      // Store out of The Archive for visitors with an old copy cached.
+      const fallback = base.find((b) => b.id === id);
+      return {
+        id,
+        index: asString(p.index, String(i + 1).padStart(2, "0")),
+        title: asString(p.title, `Project ${i + 1}`),
+        accent: asString(p.accent, ""),
+        category: asString(p.category, ""),
+        description: asString(p.description, ""),
+        image: normaliseAssetPath(p.image, ""),
+        highlights: Array.isArray(p.highlights) ? p.highlights.map((h) => String(h)) : [],
+        stack: Array.isArray(p.stack) ? p.stack.map((s) => String(s)) : [],
+        href: asString(p.href, "").trim() || undefined,
+        live: Boolean(p.live),
+        parent: asString(p.parent, "").trim() || undefined,
+        pages: Array.isArray(p.pages)
+          ? p.pages
+              .filter((pg): pg is Record<string, unknown> => Boolean(pg) && typeof pg === "object")
+              .map((pg) => ({
+                label: asString(pg.label, "").trim(),
+                href: asString(pg.href, "").trim(),
+              }))
+              .filter((pg) => pg.label && pg.href)
+          : fallback?.pages,
+        showInArchive:
+          p.showInArchive === undefined
+            ? (fallback ? fallback.showInArchive : true)
+            : Boolean(p.showInArchive),
+      };
+    })
     .filter((p) => p.title.trim().length > 0);
   return list.length ? list : base;
 }
@@ -215,8 +311,9 @@ function applyDocument(doc: Partial<SiteData> | null): void {
   data = {
     assets: normaliseAssets(doc.assets, DEFAULT_SITE_DATA.assets),
     media: normaliseMedia(doc.media, DEFAULT_SITE_DATA.media),
-    photos: normalisePhotos(doc.photos, defaultPhotoMap()),
     projects: normaliseProjects(doc.projects, DEFAULT_SITE_DATA.projects),
+    slots: normaliseSlots(doc.slots, DEFAULT_SITE_DATA.slots),
+    studio: normaliseStudio(doc.studio),
   };
 }
 
@@ -225,7 +322,55 @@ function ensureLoaded(): void {
   loaded = true;
   applyDocument(safeParse(window.localStorage.getItem(STORAGE_KEY)));
   void pullRemote();
+  ensureChannel();
   window.addEventListener(CHANGE_EVENT, () => notify());
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Cross-context sync                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The dashboard's Studio tab shows the site in a frame, and the site itself is
+ * often open in another tab. Those are separate JavaScript contexts reading the
+ * same document, so a write in one has to reach the others or the frame would
+ * sit there showing the version before the last slider moved. One
+ * BroadcastChannel carries the document across; the receiving side applies it
+ * *without* committing, so two contexts can never bounce it back and forth.
+ *
+ * Guarded, because the channel is a nicety: where it does not exist the site
+ * still works, it simply does not follow another tab.
+ */
+const CHANNEL_NAME = "wz:site-data";
+let channel: BroadcastChannel | null = null;
+
+function ensureChannel(): void {
+  if (channel || typeof BroadcastChannel === "undefined") return;
+  try {
+    channel = new BroadcastChannel(CHANNEL_NAME);
+  } catch {
+    channel = null;
+    return;
+  }
+  channel.onmessage = (event: MessageEvent) => {
+    applyDocument(event.data as Partial<SiteData>);
+    notify();
+  };
+}
+
+function broadcast(): void {
+  if (!channel) return;
+  try {
+    channel.postMessage({
+      assets: data.assets,
+      media: data.media,
+      projects: data.projects,
+      slots: data.slots,
+      studio: data.studio,
+    });
+  } catch {
+    /* The document was not cloneable — the tab simply does not follow. */
+  }
 }
 
 function notify(): void {
@@ -244,6 +389,7 @@ function commit(next: SiteData, { push = true }: { push?: boolean } = {}): void 
   data = next;
   persist();
   notify();
+  broadcast();
   if (push) void pushRemote();
 }
 
@@ -268,12 +414,16 @@ export async function pullRemote(): Promise<void> {
   try {
     const res = await fetch(dataApiUrl, { headers: { accept: "application/json" } });
     if (!res.ok) throw new Error(String(res.status));
-    const raw = (await res.json()) as { config?: Partial<SiteConfig>; projects?: unknown };
+    const raw = (await res.json()) as {
+      config?: Partial<SiteConfig> & { slots?: unknown; studio?: unknown };
+      projects?: unknown;
+    };
     const next: SiteData = {
       assets: normaliseAssets(raw.config?.assets, data.assets),
       media: normaliseMedia(raw.config?.media, data.media),
-      photos: normalisePhotos(raw.config?.photos, defaultPhotoMap()),
       projects: normaliseProjects(raw.projects, data.projects),
+      slots: normaliseSlots(raw.config?.slots, data.slots),
+      studio: normaliseStudio(raw.config?.studio ?? data.studio),
     };
     data = next;
     remoteApplied = true;
@@ -294,7 +444,12 @@ async function pushRemote(): Promise<boolean> {
       headers: { "content-type": "application/json", ...authHeaders() },
       body: JSON.stringify({
         visitor: getVisitorId(),
-        config: { assets: data.assets, media: data.media, photos: data.photos },
+        config: {
+          assets: data.assets,
+          media: data.media,
+          slots: data.slots,
+          studio: data.studio,
+        },
         projects: data.projects,
       }),
     });
@@ -353,88 +508,66 @@ export function updateConfig(patch: Partial<SiteConfig>): void {
     ...data,
     assets: normaliseAssets({ ...data.assets, ...patch.assets }, DEFAULT_SITE_DATA.assets),
     media: normaliseMedia({ ...data.media, ...patch.media }, data.media),
-    photos: normalisePhotos({ ...data.photos, ...patch.photos }, defaultPhotoMap()),
   });
-}
-
-/**
- * Replace one template photograph. `url` is normalised, so a pasted CDN link,
- * a repo path and an uploaded data URL all work. Pass an empty string to put
- * the default back for that slot.
- */
-export function setTemplatePhoto(templateId: string, index: number, url: string): void {
-  ensureLoaded();
-  const defaults = defaultTemplatePhotos(templateId);
-  const current = data.photos[templateId] ?? defaults;
-  const next = current.slice();
-  next[index] = url;
-  updateConfig({ photos: { ...data.photos, [templateId]: next } });
-}
-
-/** Restore every photograph of one template to the shipped default. */
-export function resetTemplatePhotos(templateId: string): void {
-  ensureLoaded();
-  /*
-   * The shipped defaults are written back explicitly, rather than deleting the
-   * key: `updateConfig` merges the photo maps, so a missing key is simply
-   * restored from the current document and the override would survive. Because
-   * the stored values then equal the shipped ones, the dashboard still reports
-   * every slot as a default.
-   */
-  updateConfig({
-    photos: { ...data.photos, [templateId]: defaultTemplatePhotos(templateId) },
-  });
-}
-
-/** The photo URLs in use for a template — defaults where nothing is stored. */
-export function getTemplatePhotos(templateId: string): string[] {
-  return getSiteData().photos[templateId] ?? defaultTemplatePhotos(templateId);
-}
-
-/**
- * React binding for the photo pool of one template.
- *
- * A slot may point at an image uploaded from the dashboard (`idb:<id>`), which
- * lives in this browser's IndexedDB rather than in the site document — so the
- * document stays small enough for localStorage and the backend. Those are
- * resolved here, and an unresolved slot falls back to the stand-in artwork
- * instead of a broken image.
- */
-export function useTemplatePhotos(templateId: string): string[] {
-  const site = useSiteData();
-  const { images } = useStoredImages();
-  const stored = site.photos[templateId];
-  const raw = useMemo(
-    () => stored ?? defaultTemplatePhotos(templateId),
-    // `stored` is a stable array reference from the store, so this is cheap.
-    [stored, templateId],
-  );
-
-  return useMemo(
-    () =>
-      raw.map((url) => {
-        if (!url.startsWith("idb:")) return url;
-        return images.find((image) => image.id === url.slice(4))?.dataUrl ?? "";
-      }),
-    [raw, images],
-  );
-}
-
-/** Editable slot descriptors (label + current value) for the dashboard. */
-export function templatePhotoEditorState(templateId: string) {
-  const stored = getTemplatePhotos(templateId);
-  return templatePhotoSlots(templateId).map((slot, i) => ({
-    key: slot.key,
-    label: slot.label,
-    url: stored[i] ?? slot.url,
-    isDefault: stored[i] === slot.url,
-  }));
 }
 
 /** Replace the project list (dashboard table editor). */
 export function replaceProjects(list: Project[]): void {
   ensureLoaded();
   commit({ ...data, projects: normaliseProjects(list, data.projects) });
+}
+
+/** Replace the whole image-slot document (the section-wise image manager). */
+export function replaceSlots(list: ImageSlot[]): void {
+  ensureLoaded();
+  commit({ ...data, slots: normaliseSlots(list, data.slots) });
+}
+
+/* -------------------------------------------------------------------------- */
+/*  The studio document                                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Publishing every slider tick would be a request per pixel dragged, so the
+ * studio's own edits are written locally at once and pushed once the owner
+ * stops moving things — the page never waits for the network either way.
+ */
+let studioPushTimer = 0;
+
+function scheduleStudioPush(): void {
+  if (!dataApiUrl || typeof window === "undefined") return;
+  if (studioPushTimer) window.clearTimeout(studioPushTimer);
+  studioPushTimer = window.setTimeout(() => {
+    studioPushTimer = 0;
+    void pushRemote();
+  }, 900);
+}
+
+/** Replace the whole studio document — the visual editor's own state. */
+export function replaceStudio(doc: StudioDoc): void {
+  ensureLoaded();
+  commit({ ...data, studio: normaliseStudio(doc) }, { push: false });
+  scheduleStudioPush();
+}
+
+/** Patch the studio document: boxes, order, hidden sections, stages, motion. */
+export function updateStudio(patch: Partial<StudioDoc>): void {
+  ensureLoaded();
+  replaceStudio({ ...data.studio, ...patch });
+}
+
+/** React helper — the studio document. */
+export function useStudio(): StudioDoc {
+  return useSiteData().studio;
+}
+
+/**
+ * Patch one slot by id — what the manager's fields call on every edit. The id
+ * is honoured, so a stale index can never write to the wrong slot.
+ */
+export function updateSlot(id: string, patch: Partial<ImageSlot>): void {
+  ensureLoaded();
+  replaceSlots(data.slots.map((entry) => (entry.id === id ? { ...entry, ...patch, id, index: entry.index, section: entry.section } : entry)));
 }
 
 export function addProject(project: Project): void {
@@ -447,21 +580,23 @@ export function removeProject(id: string): void {
   replaceProjects(data.projects.filter((p) => p.id !== id));
 }
 
-/** Restore the committed defaults from src/data/content.ts. */
+/** Restore the committed defaults from src/data/content.ts and imageSlots.ts. */
 export function resetSiteData(): void {
   ensureLoaded();
   commit({
     assets: { ...DEFAULT_SITE_DATA.assets },
     media: { ...DEFAULT_SITE_DATA.media },
-    photos: {},
     projects: DEFAULT_SITE_DATA.projects.map((p) => ({ ...p })),
+    slots: DEFAULT_SITE_DATA.slots.map((s) => ({ ...s, film: s.film ? { ...s.film } : null })),
+    studio: cloneDefaultStudio(),
   });
 }
 
 /**
- * The dashboard's escape hatch: the exact JSON to paste into
- * `src/data/content.ts` so a change becomes permanent in the repository for
- * every hosting target, with no backend required.
+ * The dashboard's escape hatch: the exact JSON to paste into the repository so
+ * a change becomes permanent for every hosting target, with no backend
+ * required — `assetDefaults` / `mediaDefaults` / `projects` into
+ * `src/data/content.ts`, and `imageSlotDefaults` into `src/data/imageSlots.ts`.
  */
 export function exportSiteDataJson(): string {
   const current = getSiteData();
@@ -469,12 +604,45 @@ export function exportSiteDataJson(): string {
     {
       assetDefaults: current.assets,
       mediaDefaults: current.media,
-      photos: current.photos,
       projects: current.projects,
+      imageSlotDefaults: current.slots,
+      studioDefaults: current.studio,
     },
     null,
     2,
   );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Image slots — the read side                                            */
+/* -------------------------------------------------------------------------- */
+
+/** Every slot of a section, in order, switched-off ones included. */
+export function slotsOf(slots: ImageSlot[], section: ImageSectionId): ImageSlot[] {
+  return slots
+    .filter((entry) => entry.section === section)
+    .sort((a, b) => a.index - b.index);
+}
+
+/**
+ * The slots a section should actually draw: switched on and holding something,
+ * either a still or a film. Empty slots exist in the document so the manager
+ * can show all nine; they render nothing on the page.
+ */
+export function liveSlots(slots: ImageSlot[], section: ImageSectionId): ImageSlot[] {
+  return slotsOf(slots, section).filter((entry) => entry.enabled && Boolean(entry.src || entry.film));
+}
+
+/** React helper — the slots one section of the page should draw. */
+export function useImageSlots(section: ImageSectionId): ImageSlot[] {
+  const site = useSiteData();
+  return useMemo(() => liveSlots(site.slots, section), [site.slots, section]);
+}
+
+/** React helper — every slot of one section, for the manager. */
+export function useSectionSlots(section: ImageSectionId): ImageSlot[] {
+  const site = useSiteData();
+  return useMemo(() => slotsOf(site.slots, section), [site.slots, section]);
 }
 
 /** React helper — the scroll-media config alone. */
@@ -483,4 +651,4 @@ export function useMediaConfig(): MediaConfig {
   return useMemo(() => site.media, [site.media]);
 }
 
-export type { AssetKey, MediaConfig, Project };
+export type { AssetKey, ImageSectionId, ImageSlot, MediaConfig, Project, SlotAnimation, SlotFilm };

@@ -1,18 +1,29 @@
 import { useEffect, useRef } from "react";
 import { capabilities } from "../../data/content";
 import { gsap } from "../../lib/gsap";
-import { usePrefersReducedMotion } from "../../lib/hooks";
+import { usePrefersReducedMotion, useSpotlight } from "../../lib/hooks";
 import { RevealText } from "../common/Reveal";
+import SplitReveal from "../fx/SplitReveal";
 
 /**
- * A quiet, three-column statement of what I actually do. It sits between the
- * pinned reel and the archive so the page breathes after the heaviest moment,
+ * A quiet, three-column statement of what I actually do. It sits right after
+ * the pinned templates shelf so the page breathes after the heaviest moment,
  * and each card lifts in real 3D on pointer move.
+ *
+ * It carries two effects, both of them the owner's to switch off by editing the
+ * card: the 3D lean (below, one listener for the row) and the light that follows
+ * the pointer across the card (`useSpotlight`). The lean is written straight to
+ * `style.transform` and the light to `style.setProperty`, so neither costs a
+ * React render while the pointer moves — which is the only reason it is safe to
+ * run both at once.
  */
 export default function CapabilitySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
   const reduced = usePrefersReducedMotion();
+
+  /** The light under the pointer, on both the cards and the heading rule. */
+  useSpotlight(sectionRef);
 
   // Pointer-tracked tilt — one listener, rAF-free (CSS handles the easing).
   useEffect(() => {
@@ -70,29 +81,38 @@ export default function CapabilitySection() {
     <section
       ref={sectionRef}
       id="capability"
+      data-tune="sec-capability"
       className="relative z-10 overflow-hidden bg-ink-950 py-24 md:py-32"
       aria-labelledby="capability-title"
     >
       <div className="shell">
         <RevealText stagger className="flex flex-col gap-5">
           <span className="eyebrow">{capabilities.eyebrow}</span>
-          <h2 id="capability-title" className="display text-[12vw] leading-[0.9] sm:text-6xl lg:text-7xl">
-            {capabilities.title}
-          </h2>
+          <SplitReveal
+            as="h2"
+            id="capability-title"
+            text={capabilities.title}
+            type="words"
+            className="display text-[12vw] leading-[0.9] sm:text-6xl lg:text-7xl"
+          />
           <p className="max-w-[50ch] font-body text-base text-bone-muted">{capabilities.body}</p>
         </RevealText>
 
         <div data-rule className="mt-12 h-px w-full origin-left bg-bone/10 md:mt-16" />
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
+        <div data-tune="item-capability-grid" className="mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
           {capabilities.items.map((item, i) => (
             <div
               key={item.key}
               ref={(el) => {
                 cardRefs.current[i] = el;
               }}
-              className="group relative border border-bone/10 bg-ink-900/60 p-7 transition-[transform,border-color] duration-500 ease-silk will-change-transform hover:border-blood-700/50"
+              data-spotlight
+              className="spotlight halo group relative border border-bone/10 bg-ink-900/60 p-7 transition-[transform,border-color] duration-500 ease-silk will-change-transform hover:border-blood-700/50"
             >
+              {/* The light that circles the frame on hover. */}
+              <span className="halo-rim" aria-hidden="true" />
+
               <span className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/70">
                 {item.key}
               </span>

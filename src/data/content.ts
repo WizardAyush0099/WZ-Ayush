@@ -3,15 +3,16 @@
  *  SITE CONTENT — single source of truth
  * ============================================================================
  *  Everything editable lives here: identity, contact, nav, projects, gallery
- *  and the builder questionnaire. The twenty website concepts are in
- *  `src/data/templates.ts` because each one is a full design definition.
+ *  and the builder questionnaire. The six website templates are in
+ *  `src/data/templates.ts` because each one points at a full HTML site.
  *
  *  Asset paths are prefixed with `import.meta.env.BASE_URL`, so the same build
  *  works at the domain root (Vercel), under a sub-path (GitHub Pages project
  *  site: /WZ-Ayush/) and inside the preview.
  *
  *  Admin-editable overrides (artwork paths, cinematic scroll media, project
- *  cards) live in src/lib/siteData.ts and layer on top of the defaults below.
+ *  cards, and the section-wise image slots) live in src/lib/siteData.ts and
+ *  layer on top of the defaults below and in src/data/imageSlots.ts.
  * ============================================================================
  */
 
@@ -131,6 +132,17 @@ export const mediaDefaults: MediaConfig = {
   sourceNote: "scene1.zip + scene2.zip — 421-frame merged render",
 };
 
+/*
+ * The Archive's own 240-frame run used to live here — 240 stills of a sharingan
+ * render that shipped as an archive at the repository root — and the six grid
+ * tiles each played a passage of it. Both are gone: at tile size the render read
+ * as a dark smudge, and the archive was never anything but clutter, so it has
+ * been deleted from the repository. The tiles start empty and wait for the
+ * owner's own pictures (imageSlotDefaults → the `archive` section). A sharingan
+ * survives only as the small vector mark in the theme control and in the
+ * Archive's statement — see `SharinganMark`.
+ */
+
 export const mediaLabels: Record<ScrollMediaMode, string> = {
   scene: "Procedural 3D scene (works with zero setup)",
   video: "Looping video — MP4 or WebM",
@@ -146,13 +158,13 @@ export type NavItem = { label: string; id?: string; route?: string };
 
 export const nav: NavItem[] = [
   { label: "Home", id: "home" },
-  { label: "Work", id: "work" },
-  { label: "Websites", id: "websites" },
   { label: "Studio", id: "story" },
+  // The six templates, as the pinned shelf — now the first thing past Studio.
+  { label: "Templates", id: "templates" },
+  // The Archive itself: the sequence frame and the stills.
   { label: "Archive", id: "gallery" },
-  // The template library lives on its own page (/builder), not a homepage
-  // section — so this is a route, not a scroll target.
-  { label: "Themes", route: "/builder" },
+  // The deployments, in their own section below the Archive.
+  { label: "Projects", id: "projects" },
   { label: "Contact", id: "contact" },
 ];
 
@@ -192,14 +204,51 @@ export const story = {
   ],
   stats: [
     { value: "04", label: "Live Products" },
-    { value: "20", label: "Site Concepts" },
+    { value: "06", label: "Ready Templates" },
     { value: "3D", label: "Real-time Web" },
   ],
-  image: `${base}assets/gallery/03.svg`,
+  /**
+   * No picture by default, deliberately: this band sits directly under the
+   * hero, and a second dark render there read as two openings in a row. The
+   * frame beside the copy is Studio slot 01 in #/admin → Images — give it a
+   * path (or a scroll film) and it renders at the size and crop you set; while
+   * it is empty, the copy takes the full width (see `StorySection`).
+   */
+  image: "",
 };
 
 /* ==========================================================================
- *  FEATURED WORK — the four verified live deployments
+ *  STATEMENT — the kinetic band
+ *  Rendered by src/components/sections/StatementBand: the line is split into
+ *  words and revealed word by word as the band crosses the screen (the scroll
+ *  position is the playhead, so scrolling back up rewinds it), with the ticker
+ *  running underneath. Short, declarative and true — nothing about clients,
+ *  awards or numbers that are not already on this page.
+ * ========================================================================== */
+
+export const statement = {
+  eyebrow: "02 — Statement",
+  line:
+    "Motion is not decoration. It is how a website tells you, in the first two seconds, that it was made by someone who cares.",
+  attribution: "Ayush Danthta — WZ Studio",
+  note: "No template shop, no effects rented: every band on this page is motion written for it.",
+  /** The ticker under the line. Short entries only — it never stops moving. */
+  ticker: [
+    "Cinematic scroll",
+    "Hand-built motion",
+    "React & TypeScript",
+    "Real-time 3D",
+    "Sub-second loads",
+    "Design systems",
+    "WhatsApp-first",
+    "Content you own",
+    "Built to be remembered",
+  ],
+} as const;
+
+/* ==========================================================================
+ *  LIVE PROJECTS — the verified deployments
+ *  Rendered once, inside The Archive (src/components/sections/GallerySection).
  * ========================================================================== */
 
 export type Project = {
@@ -219,13 +268,21 @@ export type Project = {
   live: boolean;
   /** Parent project, used to show the Study Hub hierarchy. */
   parent?: string;
-  /** Whether it appears in the "Live on the web" strip. */
-  showInLiveStrip: boolean;
+  /**
+   * Other live pages belonging to this project. They render as quick links
+   * on the project's Archive card — "Visit" opens the project itself, these
+   * open its sibling pages.
+   */
+  pages?: { label: string; href: string }[];
+  /** Whether the project appears in The Archive on the homepage. */
+  showInArchive: boolean;
 };
 
 /**
  * The four live pages, with the exact URLs verified for this project.
- * Study Hub is the parent; the other three are its flagship pages.
+ * Study Hub is the parent; the other three are its flagship pages. The
+ * Archive shows the three the owner asked for — the E-books Store lives on
+ * Study Hub's card as one of its pages, so nothing is listed twice.
  */
 export const projects: Project[] = [
   {
@@ -245,7 +302,14 @@ export const projects: Project[] = [
     stack: ["React", "TypeScript", "Vite"],
     href: "https://study-hub-kappa.vercel.app/",
     live: true,
-    showInLiveStrip: true,
+    // The project's sibling pages — kept as quick links on its card so the
+    // E-books Store stays reachable without being a card of its own.
+    pages: [
+      { label: "Guitar Theory Lab", href: "https://study-hub-kappa.vercel.app/index.guitar-theory" },
+      { label: "FitLife Blueprint", href: "https://study-hub-kappa.vercel.app/index.health" },
+      { label: "E-books Store", href: "https://study-hub-kappa.vercel.app/index.e-books" },
+    ],
+    showInArchive: true,
   },
   {
     id: "guitar-theory",
@@ -265,7 +329,7 @@ export const projects: Project[] = [
     href: "https://study-hub-kappa.vercel.app/index.guitar-theory",
     live: true,
     parent: "Study Hub",
-    showInLiveStrip: true,
+    showInArchive: true,
   },
   {
     id: "fitlife",
@@ -285,7 +349,7 @@ export const projects: Project[] = [
     href: "https://study-hub-kappa.vercel.app/index.health",
     live: true,
     parent: "Study Hub",
-    showInLiveStrip: true,
+    showInArchive: true,
   },
   {
     id: "ebook-store",
@@ -305,61 +369,88 @@ export const projects: Project[] = [
     href: "https://study-hub-kappa.vercel.app/index.e-books",
     live: true,
     parent: "Study Hub",
-    showInLiveStrip: true,
+    // Reachable from Study Hub's card — the Archive lists it only once, as a
+    // page of the parent rather than a fourth card.
+    showInArchive: false,
   },
 ];
 
-export const featuredSection = {
-  eyebrow: "02 — Selected Work",
-  title: "Featured",
+export const archiveSection = {
+  eyebrow: "Gallery",
+  title: "The Archive",
   lede:
-    "Study Hub and the three flagship pages that carry it — each one live on the web right now. Open any of them and use it, rather than looking at a screenshot of it.",
-  openLabel: "Visit Live Website",
-} as const;
-
-export const liveWebsitesSection = {
-  eyebrow: "03 — Live on the Web",
-  title: "Live on the Web",
-  lede:
-    "These are running deployments, not mockups. Every button below opens the real thing in a new tab.",
+    "The frames — the work, and the pieces I keep coming back to. Open any one of them full-screen.",
+  /** Copy beside the mark. Short and in the display face: see the section. */
+  sequenceLabel: "In motion",
+  sequenceTitle: "The work, in motion.",
+  sequenceBody:
+    "The mark turns the way you scroll — down and it winds one way, back up and it unwinds. The frames below are the work itself.",
+  framesLabel: "Archive frames",
+  stillsLabel: "More stills",
+  framesNote: "Select any still to open it full-screen.",
 } as const;
 
 /* ==========================================================================
- *  ARCHIVE GALLERY + HORIZONTAL REEL
+ *  LIVE PROJECTS — the verified deployments
+ *  Rendered once, in their own section (src/components/sections/LiveProjects),
+ *  directly below The Archive.
  * ========================================================================== */
 
-export type GalleryFrame = {
+export const liveProjectsSection = {
+  eyebrow: "Live on the web",
+  title: "Live Projects",
+  lede:
+    "The sites I've built and actually shipped — live on the web right now. Open any of them and use it, rather than looking at a screenshot of it.",
+  projectsLabel: "Live projects",
+  visitLabel: "Visit live site",
+  note: "Live on the web",
+} as const;
+
+/* ==========================================================================
+ *  ARCHIVE — gallery stills
+ * ========================================================================== */
+
+/**
+ * The three stills supplied in the repo's `Archive Images` folder, optimised to
+ * WebP and shipped in `public/assets/archive/`. They fill the three bigger
+ * frames under the sequence frame.
+ */
+export type ArchiveImage = {
   src: string;
   alt: string;
   caption: string;
-  span: "tall" | "wide" | "square";
-  rotate: number;
+  /** Small category line under the caption. */
+  kind: string;
 };
 
-export const gallery: GalleryFrame[] = [
-  { src: `${base}assets/gallery/01.svg`, alt: "Crimson moon rising over a ridge", caption: "Moonrise", span: "tall", rotate: -1.4 },
-  { src: `${base}assets/horizontal/02.svg`, alt: "Crows scattering through smoke", caption: "Murmuration", span: "wide", rotate: 1.1 },
-  { src: `${base}assets/gallery/03.svg`, alt: "A dead forest in low red light", caption: "Deadwood", span: "square", rotate: -0.8 },
-  { src: `${base}assets/gallery/04.svg`, alt: "Embers drifting upward in darkness", caption: "Embers", span: "wide", rotate: 1.6 },
-  { src: `${base}assets/gallery/05.svg`, alt: "Rain falling through a dark frame", caption: "Rainfall", span: "tall", rotate: 0.9 },
-  { src: `${base}assets/gallery/06.svg`, alt: "A lone figure on a cliff edge", caption: "Vantage", span: "square", rotate: -1.2 },
+export const archiveImages: ArchiveImage[] = [
+  {
+    src: `${base}assets/archive/3d-website.webp`,
+    alt: "A three-dimensional website interface",
+    caption: "3D Website",
+    kind: "Web · Motion",
+  },
+  {
+    src: `${base}assets/archive/business.webp`,
+    alt: "A business website layout",
+    caption: "Business Site",
+    kind: "Web · Corporate",
+  },
+  {
+    src: `${base}assets/archive/food.webp`,
+    alt: "A food and drink website layout",
+    caption: "Food & Drink",
+    kind: "Web · Hospitality",
+  },
 ];
 
-export type HorizontalFrame = {
-  src: string;
-  alt: string;
-  index: string;
-  title: string;
-  scale: "sm" | "md" | "lg";
-};
-
-export const horizontal: HorizontalFrame[] = [
-  { src: `${base}assets/horizontal/01.svg`, alt: "Concentric rings glowing in the dark", index: "I", title: "Perception", scale: "lg" },
-  { src: `${base}assets/horizontal/02.svg`, alt: "Crows drifting through red mist", index: "II", title: "Flight", scale: "md" },
-  { src: `${base}assets/horizontal/03.svg`, alt: "A torii gate at night", index: "III", title: "Gate", scale: "sm" },
-  { src: `${base}assets/horizontal/04.svg`, alt: "A cloaked figure lit from behind", index: "IV", title: "Cloak", scale: "lg" },
-  { src: `${base}assets/horizontal/05.svg`, alt: "Shapes dissolving into shadow", index: "V", title: "Feather", scale: "md" },
-];
+/*
+ * The six `assets/gallery/*.svg` + `assets/horizontal/*.svg` placeholder
+ * vectors that used to fill the Archive's grid are gone from the code, and so
+ * is the scroll film that briefly replaced them. Those six frames are now
+ * empty image slots, defined in `imageSlotDefaults` (src/data/imageSlots.ts)
+ * and filled from #/admin → Images.
+ */
 
 /* ==========================================================================
  *  CAPABILITY + ABOUT
@@ -404,19 +495,18 @@ export const about = {
 } as const;
 
 /* ==========================================================================
- *  THEMES — the pointer to the library page
+ *  THE BRIEF BAND — the pointer from the page to the commission flow
  * ==========================================================================
- *  The twenty concepts themselves are on /#/builder, where they can be
- *  browsed and opened without the homepage turning into a catalogue. What
- *  stays here is this one band, so "where do I pick a starting point?" has an
- *  answer on the page people actually land on.
+ *  The six templates live on the homepage as the pinned shelf. This band is
+ *  the bridge to /#/builder, where a choice becomes a brief — so "how do I get
+ *  one?" has an answer on the page people actually land on.
  * ========================================================================== */
 
 export const themesCta = {
-  eyebrow: "Themes",
-  title: "Twenty Starting Points",
+  eyebrow: "The Brief",
+  title: "Six Starting Points, One Brief",
   body:
-    "Every concept has its own layout, type and palette — pick the one that feels closest, then tell me what to build from it. Nothing here is charged, and the brief takes a few minutes.",
+    "Every template on this page is a complete site you can open full size — pick the closest, then tell me what to build from it. Nothing here is charged, and the brief takes a few minutes.",
   action: "Start Building",
 } as const;
 
@@ -433,7 +523,7 @@ export const order = {
     {
       key: "01",
       title: "Pick a template",
-      body: "Pick the closest starting point on the themes page, or in step 3 of the brief below. It repaints this page in its palette first, so you can see it before you commit.",
+      body: "Pick the closest of the six in the templates section, or in step 3 of the brief below. It repaints this page in its palette first, so you can see it before you commit.",
     },
     {
       key: "02",

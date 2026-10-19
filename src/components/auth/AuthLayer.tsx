@@ -248,6 +248,182 @@ function ClerkControls() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  The hamburger's account block                                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * What the account row of the mobile menu shows.
+ *
+ * The header's `AuthControls` is built for a single row of a desktop bar, and
+ * every piece of it is width-driven: the signed-out button was `hidden` below
+ * 640px and the signed-in name only appeared from `lg` up, so on the device
+ * that actually opens the hamburger the account area was either invisible or
+ * a lone "Sign out". This block is the phone's own version — avatar, name,
+ * email, dashboard and the way back out, stacked so it fits a narrow column.
+ *
+ * Both providers are covered: the studio account (no Clerk key — the default
+ * here) and Clerk when a publishable key is present. `onNavigate` closes the
+ * menu before the route changes, exactly as the menu's own links do.
+ */
+export function MobileAccountBlock({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <div className="pointer-events-auto mt-6">
+      <span className="eyebrow">Account</span>
+      <div className="mt-4">
+        {CLERK_ENABLED ? <ClerkMenuAccount onNavigate={onNavigate} /> : <StudioMenuAccount onNavigate={onNavigate} />}
+      </div>
+    </div>
+  );
+}
+
+/** A round initial, so there is something to look at even without a picture. */
+function Avatar({ name, imageUrl }: { name: string; imageUrl?: string | null }) {
+  if (imageUrl) {
+    return (
+      <img
+        src={imageUrl}
+        alt=""
+        className="h-10 w-10 shrink-0 rounded-full border border-bone/20 object-cover"
+      />
+    );
+  }
+  return (
+    <span
+      aria-hidden="true"
+      className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-blood-600/60 bg-blood-600/20 font-display text-base uppercase text-bone"
+    >
+      {(name.trim()[0] || "A").toUpperCase()}
+    </span>
+  );
+}
+
+function StudioMenuAccount({ onNavigate }: { onNavigate?: () => void }) {
+  const session = useStudioSession();
+
+  if (!session) {
+    return (
+      <div className="flex flex-col gap-3">
+        <p className="max-w-[40ch] font-body text-[11px] leading-relaxed text-bone-dim">
+          Studio access is a local account kept in this browser. The first account created
+          is the owner's.
+        </p>
+        <a
+          href={linkTo("/admin")}
+          onClick={onNavigate}
+          data-cursor="hover"
+          className="inline-flex items-center justify-between gap-3 border border-blood-600/70 bg-blood-600/15 px-5 py-3 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-300 hover:border-blood-500 hover:bg-blood-600/25"
+        >
+          Sign in
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    );
+  }
+
+  const label = session.name || session.email;
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <Avatar name={label} />
+        <div className="min-w-0">
+          <p className="truncate font-body text-sm text-bone">{label}</p>
+          <p className="truncate font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
+            {session.email}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        {session.isAdmin && (
+          <a
+            href={linkTo("/admin")}
+            onClick={onNavigate}
+            data-cursor="hover"
+            className="border border-blood-600/70 bg-blood-600/15 px-4 py-2.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-300 hover:border-blood-500"
+          >
+            Open dashboard
+          </a>
+        )}
+        <button
+          type="button"
+          data-cursor="hover"
+          onClick={() => {
+            studioSignOut();
+            onNavigate?.();
+          }}
+          className="border border-bone/15 px-4 py-2.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:border-bone/30 hover:text-bone"
+        >
+          Sign out
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ClerkMenuAccount({ onNavigate }: { onNavigate?: () => void }) {
+  const { isLoaded, isSignedIn, user } = useUser();
+
+  if (!isLoaded) {
+    return <span className="block h-10 w-40 animate-pulse bg-bone/5" aria-hidden="true" />;
+  }
+
+  if (!isSignedIn || !user) {
+    return (
+      <div className="flex flex-wrap gap-3">
+        <SignInButton mode="modal">
+          <button
+            type="button"
+            data-cursor="hover"
+            className="border border-bone/15 px-5 py-3 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-300 hover:border-bone/30 hover:text-bone"
+          >
+            Sign in
+          </button>
+        </SignInButton>
+        <SignUpButton mode="modal">
+          <button
+            type="button"
+            data-cursor="hover"
+            className="border border-blood-600/70 bg-blood-600/15 px-5 py-3 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-300 hover:border-blood-500"
+          >
+            Sign up
+          </button>
+        </SignUpButton>
+      </div>
+    );
+  }
+
+  const name = displayNameOf(user);
+  const email = user.primaryEmailAddress?.emailAddress ?? "";
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <Avatar name={name} imageUrl={user.imageUrl} />
+        <div className="min-w-0">
+          <p className="truncate font-body text-sm text-bone">{name}</p>
+          {email ? (
+            <p className="truncate font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
+              {email}
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        {isAdminUser(user) && (
+          <a
+            href={linkTo("/admin")}
+            onClick={onNavigate}
+            data-cursor="hover"
+            className="border border-blood-600/70 bg-blood-600/15 px-4 py-2.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-300 hover:border-blood-500"
+          >
+            Open dashboard
+          </a>
+        )}
+        <UserButton afterSignOutUrl={import.meta.env.BASE_URL} appearance={appearance} />
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Not-configured hints                                                      */
 /* -------------------------------------------------------------------------- */
 
@@ -255,10 +431,10 @@ export function AuthSetupNotice({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
       <a
-        href="#/admin"
+        href={linkTo("/admin")}
         data-cursor="hover"
         title="Sign in to the studio dashboard"
-        className="hidden border border-bone/15 px-4 py-2 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-dim transition-colors hover:border-bone/30 hover:text-bone sm:inline-block"
+        className="inline-block border border-bone/15 px-4 py-2 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-dim transition-colors hover:border-bone/30 hover:text-bone"
       >
         Sign in
       </a>

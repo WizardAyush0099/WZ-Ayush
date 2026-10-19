@@ -32,13 +32,14 @@ export default function AboutSection() {
     <section
       id="about"
       ref={sectionRef}
+      data-tune="sec-about"
       className="relative z-10 overflow-hidden bg-ink-950 py-28 md:py-40 lg:py-48"
       aria-labelledby="about-title"
     >
       <div className="shell">
         <div className="grid gap-14 md:grid-cols-12 md:gap-10">
           {/* Portrait with layered typography */}
-          <div className="relative md:col-span-5">
+          <div data-tune="item-about-portrait" className="relative md:col-span-5">
             <span
               ref={wordRef}
               aria-hidden="true"
@@ -61,7 +62,7 @@ export default function AboutSection() {
           </div>
 
           {/* Copy */}
-          <div className="md:col-span-6 md:col-start-7 md:self-center">
+          <div data-tune="item-about-copy" className="md:col-span-6 md:col-start-7 md:self-center">
             <RevealText stagger className="flex flex-col gap-6">
               <span className="eyebrow">{about.eyebrow}</span>
               <h2 id="about-title" className="display text-[11vw] leading-[0.95] sm:text-5xl lg:text-[3.4rem]">

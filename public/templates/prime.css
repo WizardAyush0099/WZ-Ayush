@@ -1,0 +1,584 @@
+/* ==========================================================================
+   PRIME — the shared premium layer for every template in /templates/
+   ==========================================================================
+   The six templates are complete Tailwind pages, but a Tailwind page alone
+   does not feel commissioned. This file adds the interaction layer the main
+   site has: a short brand preloader, a reading-progress hairline, reveals on
+   scroll, a soft pointer halo, a floating mobile menu, an image lightbox and
+   a back-to-top control.
+
+   It is deliberately plain CSS — no build step, no dependencies, and every
+   colour comes from four custom properties that prime.js writes from the
+   <script> tag's data attributes. That is what lets one file serve a dark
+   Zürich architecture studio and a cream Parisian bakery without either
+   looking like a default theme.
+
+     --prime-accent  the one accent colour (brand action colour)
+     --prime-bg      the page's own background, for the loader and menu
+     --prime-ink     the page's text colour, for controls that sit on --prime-bg
+     --prime-font    the display face used for the menu and loader
+
+   Nothing here is required for the page to work: every element is created by
+   prime.js, so a failed script leaves the plain template exactly as it was.
+   ========================================================================== */
+
+:root {
+  --prime-accent: #e2c399;
+  --prime-accent-soft: rgba(226, 195, 153, 0.16);
+  --prime-on-accent: #111111;
+  --prime-bg: #0d0e11;
+  --prime-ink: #e3e2e6;
+  --prime-muted: rgba(227, 226, 230, 0.6);
+  --prime-line: rgba(227, 226, 230, 0.16);
+  --prime-shadow: rgba(0, 0, 0, 0.45);
+  --prime-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   01. READING PROGRESS — a hairline at the very top of the window
+   -------------------------------------------------------------------------- */
+
+.prime-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 9970;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--prime-accent), var(--prime-accent-soft));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.prime-progress.is-live {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   02. PRELOADER — brand, a measured line, one line of copy
+   -------------------------------------------------------------------------- */
+
+html.prime-booting,
+html.prime-booting body {
+  overflow: hidden;
+}
+
+.prime-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: var(--prime-bg);
+  color: var(--prime-ink);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.7s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.prime-loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-1.5%);
+}
+
+.prime-loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.prime-loader__brand {
+  font-family: var(--prime-font);
+  font-size: clamp(0.7rem, 1.2vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  text-indent: 0.42em;
+}
+
+.prime-loader__track {
+  position: relative;
+  display: block;
+  width: min(15rem, 58vw);
+  height: 1px;
+  overflow: hidden;
+  background: var(--prime-line);
+}
+
+.prime-loader__fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: var(--prime-accent);
+  animation: prime-fill 1.05s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.prime-loader__note {
+  font-family: var(--prime-font);
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--prime-muted);
+  opacity: 0;
+  animation: prime-note 0.8s 0.22s ease forwards;
+}
+
+@keyframes prime-fill {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes prime-note {
+  to {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   03. SCROLL REVEALS — applied by prime.js, never to absolutely positioned
+   overlays, so scrims and floating chrome are left alone
+   -------------------------------------------------------------------------- */
+
+[data-prime-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--prime-delay, 0ms);
+}
+
+[data-prime-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   04. POINTER HALO — a ring that trails the cursor on fine pointers only.
+   The native cursor stays: this is an accent, not a replacement.
+   -------------------------------------------------------------------------- */
+
+.prime-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9994;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid var(--prime-accent);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.35s ease, background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.prime-cursor.is-on {
+  opacity: 0.85;
+}
+
+.prime-cursor.is-active {
+  background: var(--prime-accent-soft);
+  border-color: var(--prime-accent);
+  box-shadow: 0 0 0 6px var(--prime-accent-soft);
+}
+
+.prime-cursor__dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9994;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--prime-accent);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.3s ease;
+}
+
+.prime-cursor__dot.is-on {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   05. FLOATING MENU — appears only when the template's own desktop nav is
+   hidden (prime.js measures the real nav, so every breakpoint is respected)
+   -------------------------------------------------------------------------- */
+
+.prime-fab {
+  position: fixed;
+  -webkit-tap-highlight-color: transparent;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: calc(1.15rem + env(safe-area-inset-bottom));
+  z-index: 9960;
+  display: none;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--prime-accent);
+  color: var(--prime-on-accent);
+  box-shadow: 0 16px 40px -14px var(--prime-shadow);
+  cursor: pointer;
+}
+
+body.prime-nav-hidden .prime-fab {
+  display: grid;
+}
+
+.prime-fab span {
+  position: absolute;
+  width: 1.05rem;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease;
+}
+
+.prime-fab span:nth-child(1) {
+  transform: translateY(-4px);
+}
+
+.prime-fab span:nth-child(2) {
+  transform: translateY(4px);
+}
+
+.prime-fab[aria-expanded="true"] span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.prime-fab[aria-expanded="true"] span:nth-child(2) {
+  transform: rotate(-45deg);
+}
+
+.prime-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 9975;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  padding-top: max(1.25rem, env(safe-area-inset-top));
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  background: var(--prime-bg);
+  background-image: radial-gradient(
+    120% 80% at 100% 0%,
+    var(--prime-accent-soft),
+    transparent 60%
+  );
+  color: var(--prime-ink);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s;
+}
+
+.prime-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.prime-menu__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.prime-menu__brand {
+  font-family: var(--prime-font);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--prime-muted);
+}
+
+.prime-menu__close {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--prime-line);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.4s ease;
+}
+
+.prime-menu__close:hover {
+  border-color: var(--prime-accent);
+  transform: rotate(90deg);
+}
+
+.prime-menu__close svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.prime-menu__links {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.1em;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prime-menu__links a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  padding: 0.12em 0;
+  font-family: var(--prime-font);
+  font-size: clamp(1.9rem, 8.2vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.25s ease;
+}
+
+.prime-menu.is-open .prime-menu__links a {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(110ms + var(--i, 0) * 55ms);
+}
+
+.prime-menu__links a:hover,
+.prime-menu__links a:focus-visible {
+  color: var(--prime-accent);
+}
+
+.prime-menu__num {
+  font-family: ui-monospace, "SFMono-Regular", "Space Mono", monospace;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--prime-accent);
+  opacity: 0.85;
+}
+
+.prime-menu__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--prime-line);
+}
+
+.prime-menu__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: 999px;
+  background: var(--prime-accent);
+  color: var(--prime-on-accent);
+  font-family: var(--prime-font);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.prime-menu__hint {
+  font-family: var(--prime-font);
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--prime-muted);
+}
+
+html.prime-locked,
+html.prime-locked body {
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   06. LIGHTBOX — every large content image can be inspected full size
+   -------------------------------------------------------------------------- */
+
+.prime-zoom {
+  cursor: zoom-in;
+}
+
+.prime-zoom:focus-visible {
+  outline: 2px solid var(--prime-accent);
+  outline-offset: -3px;
+}
+
+.prime-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9985;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(5, 5, 6, 0.94);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.prime-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.prime-lightbox figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+  max-width: min(94vw, 1440px);
+  transform: scale(0.97);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.prime-lightbox.is-open figure {
+  transform: none;
+}
+
+.prime-lightbox img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  box-shadow: 0 50px 140px rgba(0, 0, 0, 0.6);
+}
+
+.prime-lightbox figcaption {
+  font-family: var(--prime-font);
+  font-size: 0.68rem;
+  line-height: 1.6;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 80ch;
+}
+
+.prime-lightbox__close {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.4s ease;
+}
+
+.prime-lightbox__close:hover {
+  border-color: #fff;
+  transform: rotate(90deg);
+}
+
+.prime-lightbox__close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   07. BACK TO TOP
+   -------------------------------------------------------------------------- */
+
+.prime-top {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: calc(1.15rem + env(safe-area-inset-bottom));
+  z-index: 9955;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid var(--prime-line);
+  border-radius: 999px;
+  background: var(--prime-bg);
+  color: var(--prime-ink);
+  box-shadow: 0 14px 34px -18px var(--prime-shadow);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  cursor: pointer;
+  transition: opacity 0.35s ease, visibility 0.35s, transform 0.35s ease,
+    border-color 0.25s ease;
+}
+
+.prime-top.is-on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.prime-top:hover {
+  border-color: var(--prime-accent);
+}
+
+.prime-top svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+body.prime-nav-hidden .prime-top {
+  bottom: calc(1.15rem + 3.4rem + 0.8rem);
+}
+
+/* --------------------------------------------------------------------------
+   08. SHARED FOCUS + REDUCED MOTION
+   -------------------------------------------------------------------------- */
+
+.prime-fab:focus-visible,
+.prime-menu__close:focus-visible,
+.prime-menu__cta:focus-visible,
+.prime-lightbox__close:focus-visible,
+.prime-top:focus-visible {
+  outline: 2px solid var(--prime-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prime-progress,
+  .prime-cursor,
+  .prime-cursor__dot,
+  .prime-fab span,
+  .prime-menu,
+  .prime-menu__links a,
+  .prime-lightbox,
+  .prime-lightbox figure,
+  .prime-top,
+  [data-prime-reveal] {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+
+  [data-prime-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

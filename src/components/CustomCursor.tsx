@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useHasFinePointer, usePrefersReducedMotion } from "../lib/hooks";
+import { useStudio } from "../lib/siteData";
 
 type Variant = "default" | "hover" | "media";
 
@@ -13,12 +14,15 @@ const SIZES: Record<Variant, number> = { default: 12, hover: 46, media: 82 };
 export default function CustomCursor() {
   const fine = useHasFinePointer();
   const reduced = usePrefersReducedMotion();
+  // The dashboard can switch the ring off entirely — it is a strong opinionated
+  // touch, and an owner may simply not want it (Studio → Effects).
+  const on = useStudio().effects.cursor;
   const wrapRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
-  const enabled = fine && !reduced;
+  const enabled = fine && !reduced && on;
 
   useEffect(() => {
     if (!enabled) return;

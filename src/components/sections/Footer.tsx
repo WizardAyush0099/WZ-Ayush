@@ -2,6 +2,8 @@ import { contact, footer, meta, nav } from "../../data/content";
 import { linkTo } from "../../lib/router";
 import { scrollToId } from "../../lib/scroll";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
+import DockText from "../fx/DockText";
+import StudioMark from "../brand/StudioMark";
 
 type FooterLink = {
   label: string;
@@ -39,13 +41,23 @@ function footerColumns(): Array<{ title: string; links: FooterLink[] }> {
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 border-t border-bone/10 bg-ink-950 pt-16" aria-label="Footer">
-      <div className="shell">
+    <footer
+      data-tune="sec-footer"
+      className="relative z-10 border-t border-bone/10 bg-ink-950 pt-16"
+      aria-label="Footer"
+    >
+      <div data-tune="item-footer-note" className="shell">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <span className="display block text-4xl tracking-[0.1em] text-bone sm:text-5xl">
-              {meta.studio}
-            </span>
+            {/* The seal, then the wordmark: light travels through the letters
+                (`.text-shimmer`) and each one swells as the pointer passes it
+                (`DockText`). */}
+            <div className="flex items-center gap-3">
+              <StudioMark className="h-9 w-9 shrink-0 text-bone-muted sm:h-10 sm:w-10" />
+              <span className="display block text-4xl tracking-[0.1em] sm:text-5xl">
+                <DockText text={meta.studio} className="text-shimmer" />
+              </span>
+            </div>
             <span className="mt-3 block font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
               {footer.tagline}
             </span>

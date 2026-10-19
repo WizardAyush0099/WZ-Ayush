@@ -75,6 +75,7 @@ export default function FinalCTA() {
     <section
       id="contact"
       ref={sectionRef}
+      data-tune="sec-cta"
       className="relative z-10 flex min-h-[92svh] items-center overflow-hidden bg-ink-950"
       aria-labelledby="cta-title"
     >
@@ -101,7 +102,7 @@ export default function FinalCTA() {
         }}
       />
 
-      <div className="shell relative z-10 py-24 text-center">
+      <div data-tune="item-cta-panel" className="shell relative z-10 py-24 text-center">
         <RevealText stagger className="flex flex-col items-center gap-7">
           <span className="eyebrow">{cta.eyebrow}</span>
           <h2 id="cta-title" className="display text-[15vw] leading-[0.9] text-bone sm:text-[10vw] lg:text-[8rem]">

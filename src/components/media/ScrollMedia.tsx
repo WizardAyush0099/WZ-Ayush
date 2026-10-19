@@ -42,10 +42,16 @@ type MediaProps = {
    * ref — never as state — so a 400-frame scrub costs zero React renders.
    */
   progressRef?: RefObject<number>;
+  /**
+   * Use a specific run instead of the dashboard-configured one, for a stage
+   * that owns its own render rather than following the Artwork tab.
+   */
+  mediaOverride?: MediaConfig;
 };
 
-export default function ScrollMedia({ className = "", progressRef }: MediaProps) {
-  const media = useMediaConfig();
+export default function ScrollMedia({ className = "", progressRef, mediaOverride }: MediaProps) {
+  const configured = useMediaConfig();
+  const media = mediaOverride ?? configured;
   const [failed, setFailed] = useState(false);
 
   // Reset the failure flag whenever the owner changes the configuration.
@@ -113,6 +119,26 @@ function VideoMedia({
 /* -------------------------------------------------------------------------- */
 
 /**
+ * How much cover-zoom a stage may apply before the fit stops being a fit.
+ *
+ * Filling a stage means cropping, and cropping is only a problem when the
+ * surviving slice has to be magnified past the resolution the frames were
+ * rendered at — that is what reads as pixel mush. The hero's phone layout gives
+ * the film a band across the top (about 2x crop) which still lands as a
+ * *downscale* in the backing store, so it stays sharp; a film asked to cover a
+ * whole portrait screen needs ~3.8x and does not. Past this ratio the frame is
+ * drawn whole (fit inside) over a soft ambient field of the same still, so a
+ * pathological aspect mismatch degrades into a letterbox instead of mush.
+ *
+ * The ceiling is deliberately high: filling the frame is what the owner asked
+ * for on phones, and a soft-but-full picture is the preferred trade over a
+ * sharp letterbox with a blurred field around it. It now only catches a source
+ * so mismatched to its stage that covering it would be absurd (a square render
+ * in a wide banner, say).
+ */
+const MAX_COVER_ZOOM = 4.5;
+
+/**
  * Ceiling on how many frames we are willing to hold. The shipped hero run is
  * 421 stills (scene1 + scene2 merged); the extra headroom is here so an owner
  * can export a longer pass without hitting a silent truncation — the previous
@@ -156,13 +182,18 @@ function SequenceMedia({
   const drawnRef = useRef(-1);
   const readyRef = useRef(false);
   const localProgressRef = useRef(0);
+  /** Tiny offscreen copy of the current frame, blown up as the ambient field. */
+  const softRef = useRef<HTMLCanvasElement | null>(null);
   const [ready, setReady] = useState(false);
   const [showPoster, setShowPoster] = useState(true);
   const reduced = usePrefersReducedMotion();
 
   const count = Math.max(1, Math.min(MAX_FRAMES, media.frameCount));
 
-  /** Paint frame `index`, cover-fitted into the canvas. */
+  /**
+   * Paint frame `index` into the canvas: cover-fitted on wide stages, drawn
+   * whole over an ambient field when covering would mean a heavy zoom.
+   */
   const draw = (index: number, force = false) => {
     const canvas = canvasRef.current;
     const image = framesRef.current[index];
@@ -187,15 +218,57 @@ function SequenceMedia({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
-    const drawWidth = image.naturalWidth * scale;
-    const drawHeight = image.naturalHeight * scale;
-    const offsetX = (width - drawWidth) / 2;
-    const offsetY = (height - drawHeight) / 2;
+    const coverScale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+    const fitScale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
-    ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+
+    if (coverScale > fitScale * MAX_COVER_ZOOM) {
+      /*
+       * Portrait stage, landscape frame (a phone). Fill the letterbox with the
+       * still itself, blown up from a thumbnail: drawing the frame into a ~40px
+       * canvas and then scaling that up is a genuine blur that costs one small
+       * draw per frame, where a canvas filter would cost a full-size pass on
+       * every scrub step. Then the picture itself, whole.
+       */
+      const soft = softRef.current ?? (softRef.current = document.createElement("canvas"));
+      const softWidth = 40;
+      const softHeight = Math.max(8, Math.round((softWidth * height) / width));
+      if (soft.width !== softWidth || soft.height !== softHeight) {
+        soft.width = softWidth;
+        soft.height = softHeight;
+      }
+      const softCtx = soft.getContext("2d");
+      if (softCtx) {
+        const softScale = Math.max(
+          softWidth / image.naturalWidth,
+          softHeight / image.naturalHeight,
+        );
+        softCtx.drawImage(
+          image,
+          (softWidth - image.naturalWidth * softScale) / 2,
+          (softHeight - image.naturalHeight * softScale) / 2,
+          image.naturalWidth * softScale,
+          image.naturalHeight * softScale,
+        );
+        ctx.drawImage(soft, 0, 0, softWidth, softHeight, 0, 0, width, height);
+        // Hold the field well back so the sharp frame is unmistakably the
+        // subject — this is a letterbox, not a double exposure.
+        ctx.fillStyle = "rgba(4,3,4,0.58)";
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      const fitWidth = image.naturalWidth * fitScale;
+      const fitHeight = image.naturalHeight * fitScale;
+      ctx.drawImage(image, (width - fitWidth) / 2, (height - fitHeight) / 2, fitWidth, fitHeight);
+      drawnRef.current = index;
+      return;
+    }
+
+    const drawWidth = image.naturalWidth * coverScale;
+    const drawHeight = image.naturalHeight * coverScale;
+    ctx.drawImage(image, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
     drawnRef.current = index;
   };
 
@@ -381,11 +454,19 @@ function SequenceMedia({
         style={{ opacity: ready ? 1 : 0, transition: "opacity 700ms cubic-bezier(0.16,1,0.3,1)" }}
       />
       {showPoster && media.poster ? (
+        /*
+         * The poster is the first frame, drawn exactly the way the canvas will
+         * draw it: cover, filling the stage edge to edge. It used to be
+         * letterboxed with an ambient field behind it, which meant the visit
+         * opened on a small picture inside a visible border and then visibly
+         * jumped to full size when the canvas took over. The opening frame is
+         * now the final composition from the first paint.
+         */
         <img
           src={media.poster}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover"
           loading="eager"
           decoding="async"
         />

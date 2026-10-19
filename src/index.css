@@ -464,6 +464,327 @@ a:focus:not(:focus-visible) {
   animation: marquee 32s linear infinite;
 }
 
+/* ============================================================
+   MOTION KIT
+   ============================================================
+   The shared primitives the sections below use. Everything CSS can do is
+   done here rather than in JavaScript, so a pointer move writes exactly one
+   custom property and the compositor does the rest:
+
+     .spotlight   a glow that follows the pointer across a card. `--spot-x` /
+                  `--spot-y` are written by `SpotlightCard`; `--spot-o` turns
+                  it on and off. It paints at `z-index:-1` inside an isolated
+                  stacking context, so it sits over the card's own background
+                  and under the card's text — a light, never a wash.
+     .sheen       the chromatic sweep that crosses a frame on hover: a thin
+                  red/cyan light travelling left to right, clipped by the
+                  card, so a video, a canvas and a live iframe all take it the
+                  same way.
+     .marquee     the endless ticker. The track holds its list twice and
+                  travels exactly -50%, which is what makes the loop seamless.
+                  It pauses under the pointer so a long word can be read.
+   ============================================================ */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--spot-o, 0);
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: radial-gradient(
+    320px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgb(var(--accent-rgb) / 0.18),
+    rgb(var(--blood-500-rgb) / 0.08) 42%,
+    transparent 72%
+  );
+}
+
+.sheen {
+  position: relative;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transform: translateX(-16%);
+  transition: opacity 420ms ease, transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(
+    104deg,
+    transparent 40%,
+    rgb(var(--blood-500-rgb) / 0.32) 46%,
+    rgb(255 255 255 / 0.08) 50%,
+    rgb(var(--accent-rgb) / 0.32) 54%,
+    transparent 60%
+  );
+}
+.sheen:hover::after,
+.sheen:focus-within::after {
+  opacity: 1;
+  transform: translateX(16%);
+}
+
+.marquee {
+  overflow: hidden;
+  /* Edge fade, so the ticker has no visible start or end. */
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   MOTION KIT II — tilt, odometer, velocity
+   ============================================================
+   The three primitives the interactive cards and figures use. As above,
+   JavaScript writes one number or one transform and the compositor does the
+   rest; the easing lives here, so leaving a card is a CSS transition rather
+   than another frame loop.
+
+     .tilt         the card's lean. `.tilt-glare` adds the specular light the
+                   pointer drags across the surface; `[data-tilt-layer]`
+                   children slide against the lean to give the frame depth.
+     .odo-col      one column of a rolling counter. The drum is twice 0–9 and
+                   the column clips it to exactly one digit tall.
+     .velocity     the scroll-velocity lean. `--vel` is a number of degrees.
+   ============================================================ */
+.tilt {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tilt [data-tilt-layer] {
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.tilt-glare::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--glare-o, 0);
+  /* Light, not a wash: a narrow highlight that follows the pointer. */
+  background: radial-gradient(
+    260px circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgb(255 255 255 / 0.12),
+    rgb(var(--accent-rgb) / 0.06) 45%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.odo-col {
+  display: inline-block;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1em;
+  font-variant-numeric: tabular-nums;
+  vertical-align: -0.06em;
+}
+
+.odo-drum {
+  display: block;
+  will-change: transform;
+}
+
+.odo-digit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1em;
+  line-height: 1em;
+}
+
+.velocity {
+  transform: skewY(calc(var(--vel, 0) * 1deg));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* One letter of a dock word. Inline-block so a transform can move it without
+   taking the rest of the line with it. */
+.dock-letter {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* The halo rim — a light that circles the frame on hover.
+
+   It is a real element rather than a pseudo-element on purpose: a card here
+   already spends `::before` on the tilt's specular light and `::after` on the
+   spotlight glow, and a third pseudo-element does not exist. The ring is drawn
+   by masking a gradient down to a 1px frame (content-box xor border-box), so
+   the card's own background, picture and text stay untouched underneath. */
+.halo {
+  position: relative;
+}
+
+.halo-rim {
+  position: absolute;
+  inset: -1px;
+  z-index: 2;
+  pointer-events: none;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    100deg,
+    transparent 18%,
+    rgb(var(--accent-rgb) / 0.85) 44%,
+    rgb(255 255 255 / 0.7) 50%,
+    rgb(var(--accent-rgb) / 0.85) 56%,
+    transparent 82%
+  );
+  background-size: 300% 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: halo-travel 5.5s linear infinite;
+}
+
+.halo:hover .halo-rim,
+.halo:focus-within .halo-rim {
+  opacity: 1;
+}
+
+@keyframes halo-travel {
+  from { background-position: 150% 0; }
+  to { background-position: -150% 0; }
+}
+
+/* A slow light travelling through the letters. Both ends of the loop are the
+   same colour, so stopping the animation (reduced motion) leaves the word
+   readable rather than frozen on a dark band. */
+.text-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    rgb(var(--bone-rgb) / 0.62) 26%,
+    rgb(var(--blood-300-rgb) / 0.85) 44%,
+    rgb(255 255 255 / 0.96) 50%,
+    rgb(var(--blood-300-rgb) / 0.85) 56%,
+    rgb(var(--bone-rgb) / 0.62) 74%
+  );
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: text-shimmer 9s linear infinite;
+}
+
+@keyframes text-shimmer {
+  from { background-position: 130% 0; }
+  to { background-position: -130% 0; }
+}
+
 /* Utility: hidden native scrollbar for Lenis-driven pages */
 .no-bar::-webkit-scrollbar { width: 0; height: 0; }
 .no-bar { scrollbar-width: none; }
+
+/* ============================================================
+   TEMPLATE PREVIEW — design width and the phone reflow
+   ============================================================
+   Every concept is drawn at a fixed 1100px design width and then scaled to
+   fit, which is what makes a card read as a real website. On a phone that
+   trick stops working: scaling the whole thing to 390px wide turns 15px body
+   copy into 5px, and clamping the zoom instead (the old behaviour) meant the
+   visitor only ever saw the left-hand third of the design.
+
+   So below 760px the page route stops scaling and starts reflowing. The
+   canvas is laid out at the device's own width, the side padding drops from
+   72px to 22px, and every grid that was set with an inline
+   `grid-template-columns` collapses to a single column — a hero stacks above
+   its photograph instead of being sliced down the middle.
+
+   Tile grids and stat rows that still read well in a pair or a triple opt
+   back in with `tpl-cols-2` / `tpl-cols-3`, and the nav drops its link row the
+   way a real site drops it into a menu.
+   ============================================================ */
+.tpl-canvas {
+  --tp-pad: 72px;
+}
+
+@media (max-width: 760px) {
+  .tpl-canvas {
+    --tp-pad: 22px;
+  }
+
+  .tpl-canvas [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Later rules win at equal specificity — these opt tiles back into a grid. */
+  .tpl-canvas .tpl-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .tpl-canvas .tpl-cols-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .tpl-canvas .tpl-row {
+    flex-wrap: wrap !important;
+  }
+
+  .tpl-canvas .tpl-nav-links {
+    display: none !important;
+  }
+
+  /* The food hero's plate is sized in px; cap it to the phone's width. */
+  .tpl-canvas .tpl-plate-wrap {
+    height: 320px !important;
+  }
+
+  .tpl-canvas .tpl-plate {
+    width: min(66vw, 260px) !important;
+    height: min(66vw, 260px) !important;
+  }
+
+  .tpl-canvas .tpl-plate-thumbs {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  .tpl-canvas .tpl-collage {
+    height: 300px !important;
+  }
+}
+
+/* ============================================================
+   STUDIO PICK MODE
+   ============================================================
+   The dashboard's Studio tab inspects this page inside a frame, with `?pick=1`
+   in the URL (see `src/components/studio/PickMode.tsx`). While it is picking,
+   a crosshair says so and no other cursor state can argue with it. Nothing
+   else changes: the mode adds one overlay and never touches the page's own
+   layout, so what is picked is exactly what renders.
+   ============================================================ */
+html.studio-picking,
+html.studio-picking * {
+  cursor: crosshair !important;
+}

@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { builder, contact, meta } from "../../data/content";
 import {
   templates,
   templatesSection,
   type SiteTemplate,
 } from "../../data/templates";
-import { getThemeById, THEMES, useTheme, type ThemeId } from "../../lib/theme";
+import { getThemeById, useTheme, type ThemeId } from "../../lib/theme";
 import { linkTo } from "../../lib/router";
 import { setSelectedTemplate, useSelectedTemplateId } from "../../lib/builderSelection";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import Footer from "../sections/Footer";
+import LivePreviewFrame from "../media/LivePreviewFrame";
 import ThemeToggle from "../theme/ThemeToggle";
-import TemplatePreview from "../templates/TemplatePreview";
 import OrderForm from "./OrderForm";
 
 /**
@@ -29,24 +29,9 @@ import OrderForm from "./OrderForm";
  */
 export default function BuilderApp() {
   const [theme, setTheme] = useTheme();
-  // Shared with the standalone template route, so choosing a concept there and
+  // Shared with the standalone template route, so choosing a template there and
   // coming back here keeps the choice.
   const templateId = useSelectedTemplateId();
-  const [business, setBusiness] = useState<string>("all");
-
-  /** Business labels present in the library, most-populated first. */
-  const businessFilters = useMemo(() => {
-    const counts = new Map<string, number>();
-    templates.forEach((t) => counts.set(t.business, (counts.get(t.business) ?? 0) + 1));
-    return Array.from(counts.entries())
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([label, count]) => ({ label, count }));
-  }, []);
-
-  const visible = useMemo(
-    () => (business === "all" ? templates : templates.filter((t) => t.business === business)),
-    [business],
-  );
 
   // Make sure we land at the top when the route opens.
   useEffect(() => {
@@ -146,91 +131,15 @@ export default function BuilderApp() {
               </p>
             </div>
 
-            {/* Standing palette picker — the same control the theme step uses. */}
-            <div className="mt-9 flex flex-wrap items-center gap-3 border border-bone/10 bg-ink-950/60 p-4 sm:p-5">
-              <span className="font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
-                Palette
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {THEMES.map((option) => {
-                  const on = option.id === theme;
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => chooseTheme(option.id)}
-                      aria-pressed={on}
-                      title={option.blurb}
-                      className={`flex items-center gap-2 border px-2.5 py-2 transition-colors duration-300 ${
-                        on ? "border-blood-500/70 bg-blood-950/40" : "border-bone/15 hover:border-bone/35"
-                      }`}
-                    >
-                      <span className="flex overflow-hidden rounded-sm border border-bone/15">
-                        {option.swatch.map((colour) => (
-                          <span key={colour} className="block h-3.5 w-3.5" style={{ background: colour }} />
-                        ))}
-                      </span>
-                      <span
-                        className={`font-body text-[10px] uppercase tracking-wide2 ${
-                          on ? "text-bone" : "text-bone-muted"
-                        }`}
-                      >
-                        {option.name}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="w-full font-body text-[11px] text-bone-dim sm:ml-auto sm:w-auto">
-                {templatesSection.note}
-              </span>
-            </div>
-
             {/*
-              Filter by trade. Twenty-six concepts is the point — but nobody
-              wants to read the nineteen that are for someone else's business.
+              Six real sites, each one the shipped HTML page itself, laid out
+              at desktop width and scaled down to the card (`LivePreviewFrame`)
+              — so the preview shows the design rather than one phone-width
+              slice of it. Two up, because three across was too small to judge
+              a template by. The card owns the clicks; the frame is inert.
             */}
-            <div className="mt-9 flex flex-col gap-3 border border-bone/10 bg-ink-950/60 p-4 sm:p-5">
-              <span className="font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
-                {templatesSection.filterLabel}
-              </span>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setBusiness("all")}
-                  aria-pressed={business === "all"}
-                  className={`border px-3 py-2 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
-                    business === "all"
-                      ? "border-blood-500/70 bg-blood-950/40 text-bone"
-                      : "border-bone/15 text-bone-muted hover:border-bone/35 hover:text-bone"
-                  }`}
-                >
-                  {templatesSection.allLabel} · {templates.length}
-                </button>
-                {businessFilters.map((filter) => {
-                  const on = filter.label === business;
-                  return (
-                    <button
-                      key={filter.label}
-                      type="button"
-                      onClick={() => setBusiness(filter.label)}
-                      aria-pressed={on}
-                      className={`border px-3 py-2 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
-                        on
-                          ? "border-blood-500/70 bg-blood-950/40 text-bone"
-                          : "border-bone/15 text-bone-muted hover:border-bone/35 hover:text-bone"
-                      }`}
-                    >
-                      {filter.label} · {filter.count}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Cards */}
-            <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {visible.map((template) => {
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
+              {templates.map((template) => {
                 const on = template.id === templateId;
                 return (
                   <article
@@ -239,11 +148,34 @@ export default function BuilderApp() {
                       on ? "border-blood-500/70 bg-ink-950" : "border-bone/10 bg-ink-950/60 hover:border-bone/30"
                     }`}
                   >
-                    {/* Each preview renders in its OWN palette. */}
-                    <div data-theme={template.theme} className="relative overflow-hidden">
-                      <TemplatePreview template={template} />
+                    <div className="relative overflow-hidden border-b border-bone/10 bg-ink-950">
+                      {/* Browser chrome */}
+                      <div className="flex items-center gap-2 border-b border-bone/10 bg-ink-900/80 px-3 py-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-bone/20" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-bone/20" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-bone/20" />
+                        <span className="mx-auto truncate font-body text-[9px] uppercase tracking-wide2 text-bone-dim">
+                          {template.category}
+                        </span>
+                      </div>
+                      <div className="relative aspect-[16/11] w-full">
+                        <LivePreviewFrame
+                          src={template.href}
+                          title={`${template.name} — live preview`}
+                          className="absolute inset-0"
+                        />
+                        <a
+                          href={linkTo(`/template/${template.id}`)}
+                          className="absolute inset-0 z-10 flex items-end justify-center bg-gradient-to-t from-ink-950/80 via-transparent to-transparent pb-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100 focus-visible:opacity-100"
+                          aria-label={`Open ${template.name} full size`}
+                        >
+                          <span className="border border-bone/30 bg-ink-950/85 px-3 py-1.5 font-body text-[10px] uppercase tracking-wide2 text-bone backdrop-blur-sm">
+                            Open full size ↗
+                          </span>
+                        </a>
+                      </div>
                       {on ? (
-                        <span className="absolute right-3 top-3 z-10 border border-blood-500/70 bg-ink-950/85 px-2 py-1 font-body text-[9px] uppercase tracking-wide2 text-blood-300">
+                        <span className="absolute right-3 top-11 z-10 border border-blood-500/70 bg-ink-950/85 px-2 py-1 font-body text-[9px] uppercase tracking-wide2 text-blood-300">
                           Selected
                         </span>
                       ) : null}
@@ -253,9 +185,6 @@ export default function BuilderApp() {
                       <div className="flex items-baseline justify-between gap-3">
                         <span className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/80">
                           {template.category}
-                        </span>
-                        <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
-                          from {template.startingAt}
                         </span>
                       </div>
 

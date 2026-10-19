@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "../../lib/gsap";
 import { hero as heroContent } from "../../data/content";
-import { useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
+import { useIsPortrait, useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
 import { scrollToId } from "../../lib/scroll";
-import { useSiteData } from "../../lib/siteData";
+import { useImageSlots, useSiteData, useStudio } from "../../lib/siteData";
 import ScrollMedia from "../media/ScrollMedia";
 import FogCanvas from "../fx/FogCanvas";
 
@@ -32,6 +32,17 @@ import FogCanvas from "../fx/FogCanvas";
  *  the first. The only thing over the film is the scroll hint, and it is gone
  *  before the run finishes.
  *
+ *  PORTRAIT — the film fills the screen. It used to be a band across the top
+ *  with copy underneath, then a letterboxed strip with a blurred field around
+ *  it; both left the picture smaller than the screen. It is now full-bleed, held
+ *  still (no tilt, no drift, no push-in) and started just below the header so
+ *  that bar can never cover any of it.
+ *
+ *  The film is also deliberately NOT one of the parallax planes: a tilted or
+ *  drifting full-bleed frame pulls its own edge into view, which reads as a
+ *  border around the picture. Depth now comes entirely from the planes behind
+ *  and in front of it — the backdrop, the haze and the bokeh.
+ *
  *  Every plane shares one perspective on the container, and a single scrubbed
  *  GSAP timeline dollies the film in. At the end of the run the stage fades to
  *  ink, so the pin releases into the (equally dark) intro section as a cut
@@ -52,7 +63,27 @@ export default function Hero({ ready }: { ready: boolean }) {
 
   const reduced = usePrefersReducedMotion();
   const isTouch = useIsTouch();
+  const portrait = useIsPortrait();
   const site = useSiteData();
+  /**
+   * How this film runs and how big its stage is — both owned by the dashboard's
+   * Studio tab (#/admin → Studio → Motion), never by this file.
+   */
+  const studio = useStudio();
+  const { motion, effects } = studio;
+
+  /**
+   * The backdrop plane is image slot 01 of the Hero section in the dashboard
+   * (#/admin → Images), so its path, blur and opacity are editable without
+   * touching this file. Switching the slot off falls back to the artwork path
+   * on the Artwork tab. The plane's scroll choreography stays here: a backdrop
+   * that the owner animates independently of the film is how a hero tears.
+   */
+  const heroSlots = useImageSlots("hero");
+  const backdropSlot = heroSlots.find((slot) => slot.index === 1);
+  const backdropSrc = backdropSlot?.src || site.assets.heroShadow;
+  const backdropBlur = backdropSlot ? backdropSlot.blur : 22;
+  const backdropOpacity = backdropSlot ? backdropSlot.opacity : 0.3;
 
   /**
    * Pinned only when the visitor is happy with motion. Reduced motion keeps a
@@ -95,13 +126,15 @@ export default function Hero({ ready }: { ready: boolean }) {
    * ------------------------------------------------------------------ */
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section || reduced) return;
+    if (!section || reduced || !motion.heroParallax) return;
 
     // `z` places each plane on a real 3D plane inside the stage's perspective.
+    // The film is not among them — see the note at the top of this file. The
+    // depth itself is the owner's (`Studio → Motion → Hero parallax`), so the
+    // whole effect can be turned down or off without touching this file.
     const rawLayers: Array<{ el: HTMLElement | null; depth: number; z: number }> = [
-      { el: backdropRef.current, depth: 5, z: -110 },
-      { el: plateRef.current, depth: 11, z: -40 },
-      { el: orbsRef.current, depth: 60, z: 60 },
+      { el: backdropRef.current, depth: 5 * motion.heroParallax, z: -110 },
+      { el: orbsRef.current, depth: 60 * motion.heroParallax, z: 60 },
     ];
     const layers = rawLayers.filter(
       (l): l is { el: HTMLElement; depth: number; z: number } => l.el !== null,
@@ -113,14 +146,12 @@ export default function Hero({ ready }: { ready: boolean }) {
       depth: l.depth,
       x: gsap.quickTo(l.el, "x", { duration: 1.1, ease: "power3.out" }),
       y: gsap.quickTo(l.el, "y", { duration: 1.1, ease: "power3.out" }),
-      rx: gsap.quickTo(l.el, "rotationY", { duration: 1.3, ease: "power3.out" }),
     }));
 
     const apply = (nx: number, ny: number) => {
       movers.forEach((m) => {
         m.x(nx * m.depth);
         m.y(ny * m.depth);
-        m.rx(nx * m.depth * 0.16);
       });
     };
 
@@ -155,7 +186,7 @@ export default function Hero({ ready }: { ready: boolean }) {
       window.removeEventListener("touchmove", onTouch);
       window.removeEventListener("deviceorientation", onOrientation);
     };
-  }, [reduced, isTouch]);
+  }, [reduced, isTouch, motion.heroParallax]);
 
   /* ------------------------------------------------------------------ *
    * 3. Scroll choreography — the camera move
@@ -168,7 +199,13 @@ export default function Hero({ ready }: { ready: boolean }) {
       const tl = gsap.timeline({
         // A longer scrub makes the film lag gently behind the wheel instead of
         // snapping frame-for-frame — the move lands slower and reads as cinema.
-        scrollTrigger: { trigger: section, start: "top top", end: "bottom top", scrub: 1.5 },
+        // 0 in the dashboard means frame-perfect, which GSAP spells `true`.
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom top",
+          scrub: motion.heroScrub > 0 ? motion.heroScrub : true,
+        },
         defaults: { ease: "none" },
       });
 
@@ -176,8 +213,12 @@ export default function Hero({ ready }: { ready: boolean }) {
       // expose an edge — it just pushes the camera into the scene. Every tween
       // is given an explicit duration so the timeline stays exactly 1 unit
       // long.
-      tl.to(plateRef.current, { scale: 1.16, yPercent: -2, duration: 1 }, 0)
-        .to(backdropRef.current, { scale: 1.1, opacity: 0.35, duration: 1 }, 0)
+      //
+      // On a phone the film is flush with its frame and the framing has to be
+      // final from the first frame, so there is no push-in there at all: the
+      // picture you land on is the picture you keep.
+      if (!portrait) tl.to(plateRef.current, { scale: motion.heroDolly, yPercent: -2, duration: 1 }, 0);
+      tl.to(backdropRef.current, { scale: 1.1, opacity: 0.35, duration: 1 }, 0)
         .to(orbsRef.current, { yPercent: -20, opacity: 0.25, duration: 1 }, 0)
         // The hint has done its job well before the end — it is off screen
         // ahead of the final frames, so the last image is pure footage.
@@ -188,7 +229,7 @@ export default function Hero({ ready }: { ready: boolean }) {
     }, section);
 
     return () => ctx.revert();
-  }, [reduced]);
+  }, [reduced, portrait, motion.heroScrub, motion.heroDolly]);
 
   /* ------------------------------------------------------------------ *
    * 4. Opening — the first frame fades up as the preloader hands over
@@ -207,12 +248,33 @@ export default function Hero({ ready }: { ready: boolean }) {
 
   const goDown = () => scrollToId("intro");
 
+  /**
+   * The film's own stage. Full bleed is the committed framing; the dashboard's
+   * Motion tab can inset it, and the plate is then centred in the leftover
+   * space with the dark stage showing around it — a letterbox the owner asked
+   * for rather than one imposed by an aspect ratio.
+   */
+  const insetStage = motion.heroWidthPct < 100 || motion.heroHeightPct < 100;
+  const plateBox: React.CSSProperties | undefined = insetStage
+    ? {
+        left: `${(100 - motion.heroWidthPct) / 2}%`,
+        right: `${(100 - motion.heroWidthPct) / 2}%`,
+        top: `${(100 - motion.heroHeightPct) / 2}%`,
+        bottom: `${(100 - motion.heroHeightPct) / 2}%`,
+      }
+    : undefined;
+
   return (
     <section
       id="home"
       ref={sectionRef}
+      data-tune="sec-hero"
       className="hero-run relative isolate w-full bg-ink-950"
-      style={pinned ? ({ "--hero-run": site.media.scrollLength } as React.CSSProperties) : undefined}
+      style={
+        pinned
+          ? ({ "--hero-run": `${Math.round(motion.heroScrollVh * 100)}vh` } as React.CSSProperties)
+          : undefined
+      }
       aria-label="Cinematic reel"
     >
       {/* Sticky stage: the film holds while the scroll length plays out. */}
@@ -225,32 +287,43 @@ export default function Hero({ ready }: { ready: boolean }) {
           {/* Far plane — the artwork, pushed back and defocused. */}
           <div
             ref={backdropRef}
-            className="absolute inset-0 z-0 opacity-30"
+            data-tune="item-hero-backdrop"
+            className="absolute inset-0 z-0"
             aria-hidden="true"
-            style={{ willChange: "transform" }}
+            // The opacity is inline rather than a class so the scrubbed
+            // timeline above tweens from the slot's own value.
+            style={{ willChange: "transform", opacity: backdropOpacity }}
           >
             <img
-              src={site.assets.heroShadow}
+              src={backdropSrc}
               alt=""
               aria-hidden="true"
               className="h-full w-full object-cover"
-              style={{ filter: "blur(22px)" }}
+              style={{ filter: `blur(${backdropBlur}px)` }}
               decoding="async"
             />
           </div>
 
-          {/* The film. Full bleed, and 3% overscanned so the dolly never
-              shows an edge. Nothing is drawn over it at any point. */}
+          {/*
+            The film. Full bleed either way, and it never moves: on a landscape
+            screen it overscans by 3% so the dolly can push in without ever
+            showing an edge, and on a tall screen it is flush — starting just
+            below the header bar (72px) so that bar can never cover a frame of
+            it. Nothing is ever drawn over it.
+          */}
           <div
             ref={plateRef}
-            className="absolute inset-[-3%] z-[2] origin-center"
-            style={{ willChange: "transform" }}
+            data-tune="item-hero-plate"
+            className={`absolute z-[2] origin-center ${
+              insetStage ? "" : portrait ? "inset-x-0 bottom-0 top-[72px]" : "inset-[-3%]"
+            }`}
+            style={{ willChange: "transform", ...plateBox }}
           >
             <ScrollMedia progressRef={progressRef} />
           </div>
 
           {/* Mid plane — haze drifting between the film and the lens. */}
-          <FogCanvas className="z-[4] opacity-40" />
+          {effects.fog ? <FogCanvas className="z-[4] opacity-40" /> : null}
 
           {/* Near plane — bokeh that sweeps past fastest of all. */}
           <div
@@ -297,10 +370,11 @@ export default function Hero({ ready }: { ready: boolean }) {
         />
 
         {/* Scroll hint — the rail doubles as the position through the run, so
-            a 360vh pinned section never feels like it has stalled. It leaves
-            before the last frames, so no word ever sits on them. */}
+            a pinned section never feels like it has stalled. It leaves before
+            the last frames, so no word ever sits on them. */}
         <div
           ref={hintRef}
+          data-tune="item-hero-hint"
           className="absolute inset-x-0 bottom-7 z-40 flex justify-center sm:bottom-9"
         >
           <button

@@ -127,6 +127,18 @@ export const THEMES: ThemeDef[] = [
 
 export const DEFAULT_THEME: ThemeId = "crimson";
 
+/**
+ * The two finishes the main site offers. Everything else in `THEMES` still
+ * exists — the template library repaints concepts in them — but the site's own
+ * chrome stopped offering ten palettes: on a phone the row of swatches ate the
+ * header, and the choice was noise.
+ *
+ * `daylight` is the light one. The hero deliberately ignores it and stays
+ * black (see the `data-theme="crimson"` wrapper in `PortfolioApp`), so the
+ * pinned film sequence never loses its contrast.
+ */
+export const SITE_THEMES: ThemeId[] = ["crimson", "daylight"];
+
 /** Must match the key read by the inline bootstrap script in index.html. */
 const STORAGE_KEY = "wz.theme.v1";
 const CHANGE_EVENT = "wz:theme-changed";

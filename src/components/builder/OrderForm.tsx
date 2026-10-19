@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { builder, contact } from "../../data/content";
 import { templateById, templates, type SiteTemplate } from "../../data/templates";
-import { getThemeById, THEMES, type ThemeId } from "../../lib/theme";
+import { getThemeById, SITE_THEMES, type ThemeId } from "../../lib/theme";
 import { ORDER_STATUSES, submitOrder, type Order } from "../../lib/orders";
 import { track } from "../../lib/telemetry";
 import { briefToMessage, buildWhatsAppUrl } from "../../lib/whatsapp";
@@ -455,9 +455,6 @@ export default function OrderForm({ templateId, onSelectTemplate, theme, onSelec
                     <span className="font-body text-[11px] leading-relaxed text-bone-dim">
                       {template.blurb}
                     </span>
-                    <span className="mt-1 font-body text-[10px] uppercase tracking-wide2 text-bone-muted">
-                      from {template.startingAt}
-                    </span>
                   </button>
                 );
               })}
@@ -484,7 +481,8 @@ export default function OrderForm({ templateId, onSelectTemplate, theme, onSelec
           <div>
             <span className={labelClass}>Choose a palette — it applies live</span>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {THEMES.map((option) => {
+              {SITE_THEMES.map((optionId) => {
+                const option = getThemeById(optionId);
                 const on = option.id === theme;
                 return (
                   <button

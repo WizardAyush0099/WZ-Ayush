@@ -238,6 +238,15 @@ export async function registerAccount(input: {
   const email = input.email.trim();
   if (!name) throw new Error("Enter your name.");
   if (email.length < 3 || !email.includes("@")) throw new Error("Enter a valid email address.");
+  // The dashboard belongs to one address (adminAllowlist in src/data/content.ts).
+  // A local account can only ever run in this browser, so an account for any
+  // other address would be a door with nothing behind it — refuse it here
+  // rather than at the gate, where the reason is invisible.
+  if (!isAdminEmail(email)) {
+    throw new Error(
+      "That address cannot open the dashboard. Sign in with the owner address: ayushdanthta@gmail.com.",
+    );
+  }
   if (input.password.length < 8) throw new Error("Use at least 8 characters for the password.");
   if (doc.accounts.some((entry) => entry.email.toLowerCase() === email.toLowerCase())) {
     throw new Error("An account with that email already exists in this browser.");

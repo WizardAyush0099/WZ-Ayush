@@ -15,21 +15,29 @@ import { isRemoteSiteDataEnabled } from "../../lib/siteData";
 import GrowthPanel from "./GrowthPanel";
 import LoginsPanel from "./LoginsPanel";
 import ImageManager from "./ImageManager";
+import StudioPanel from "./StudioPanel";
 import OrdersPanel from "./OrdersPanel";
 import ProjectsPanel from "./ProjectsPanel";
 import MediaPanel from "./MediaPanel";
-import PhotosPanel from "./PhotosPanel";
 
-type Tab = "orders" | "projects" | "photos" | "media" | "overview" | "logins" | "images";
+type Tab = "orders" | "projects" | "media" | "overview" | "logins" | "images" | "studio";
 
 const TABS: Array<{ id: Tab; label: string; hint: string }> = [
   { id: "orders", label: "Orders", hint: "Client briefs from the builder, with notes and status" },
-  { id: "projects", label: "Projects", hint: "The work shown on the homepage" },
-  { id: "photos", label: "Concept photos", hint: "Replace the photograph inside any template concept" },
+  { id: "projects", label: "Projects", hint: "The live projects shown in The Archive" },
   { id: "media", label: "Artwork", hint: "Image paths and the cinematic scroll media" },
   { id: "overview", label: "Growth", hint: "Traffic, reach and engagement" },
   { id: "logins", label: "Logins", hint: "Sessions and authenticated accounts" },
-  { id: "images", label: "Uploads", hint: "Quick images added from this device" },
+  {
+    id: "images",
+    label: "Images",
+    hint: "Every picture on the site, section by section — paths, scroll films, animation, size",
+  },
+  {
+    id: "studio",
+    label: "Studio",
+    hint: "Adjust any point of the page in a live preview — crop, size, 3D runs, speed, effects, layout",
+  },
 ];
 
 export default function AdminApp() {
@@ -185,11 +193,11 @@ export default function AdminApp() {
         <div className="mt-8">
           {tab === "orders" && <OrdersPanel />}
           {tab === "projects" && <ProjectsPanel />}
-          {tab === "photos" && <PhotosPanel />}
           {tab === "media" && <MediaPanel />}
           {tab === "overview" && <GrowthPanel snapshot={snapshot} summary={summary} />}
           {tab === "logins" && <LoginsPanel snapshot={snapshot} summary={summary} />}
           {tab === "images" && <ImageManager />}
+          {tab === "studio" && <StudioPanel onOpenImages={() => setTab("images")} />}
         </div>
 
         {/* Backend authorization diagnostics */}

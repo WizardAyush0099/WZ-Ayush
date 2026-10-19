@@ -27,7 +27,7 @@ function blank(index: number): Project {
     stack: [],
     href: "",
     live: false,
-    showInLiveStrip: false,
+    showInArchive: true,
   };
 }
 
@@ -36,8 +36,10 @@ function blank(index: number): Project {
  *  PROJECTS — the work shown on the homepage
  * ============================================================================
  *  Cards are edited here, saved in this browser, and published to the shared
- *  backend so every visitor sees the same list. A card is only marked "Live"
- *  when it has a URL, because a Live badge on a 404 is worse than no badge.
+ *  backend so every visitor sees the same list. They render in the Live
+ *  Projects section on the homepage (below The Archive). A card is only marked
+ *  "Live" when it has a URL, because a Live badge on a 404 is worse than no
+ *  badge at all.
  * ============================================================================
  */
 export default function ProjectsPanel() {
@@ -83,8 +85,8 @@ export default function ProjectsPanel() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-[70ch] font-body text-xs leading-relaxed text-bone-muted">
           {draft.length} project{draft.length === 1 ? "" : "s"}. Use the four verified URLs already
-          filled in — <code className="text-bone">Live</code> badges and the homepage strip follow
-          whatever you set here.
+          filled in — the <code className="text-bone">Live</code> badge and the homepage's Live
+          Projects section follow whatever you set here.
           {isRemoteSiteDataEnabled ? "" : " (No shared backend is configured for this build.)"}
         </p>
         <div className="flex flex-wrap items-center gap-3">
@@ -329,11 +331,11 @@ export default function ProjectsPanel() {
                   <label className="flex items-center gap-3 font-body text-[11px] uppercase tracking-wide2 text-bone-muted">
                     <input
                       type="checkbox"
-                      checked={project.showInLiveStrip}
-                      onChange={(e) => patch(project.id, { showInLiveStrip: e.target.checked })}
+                      checked={project.showInArchive}
+                      onChange={(e) => patch(project.id, { showInArchive: e.target.checked })}
                       className="h-4 w-4 accent-[rgb(var(--blood-500-rgb))]"
                     />
-                    Show in the “Live on the web” strip
+                    Show in Live Projects
                   </label>
 
                   <div className="flex flex-wrap items-center gap-3 lg:col-span-2">

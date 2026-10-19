@@ -3,6 +3,9 @@ import { linkTo } from "../../lib/router";
 import { scrollToId } from "../../lib/scroll";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
+import SplitReveal from "../fx/SplitReveal";
+import Magnetic from "../fx/Magnetic";
+import DecodeText from "../fx/DecodeText";
 
 /**
  * ============================================================================
@@ -16,12 +19,19 @@ import { RevealText } from "../common/Reveal";
  *
  *  It is also the document's `<h1>`: the reel itself is `aria-label`led as a
  *  film, so assistive technology (and search engines) get the pitch here.
+ *
+ *  The motion here is deliberate and small: the headline rises out of its own
+ *  mask (`SplitReveal`), the hollow wordmark decodes out of noise under the
+ *  pointer (`DecodeText`), and the two calls to action lean towards the cursor
+ *  (`Magnetic`). Nothing on this band loops, and all three stand down under
+ *  reduced motion.
  * ============================================================================
  */
 export default function HeroIntro() {
   return (
     <section
       id="intro"
+      data-tune="sec-intro"
       className="relative z-10 bg-ink-950 pb-20 pt-14 md:pb-28 md:pt-24"
       aria-labelledby="intro-title"
     >
@@ -42,17 +52,21 @@ export default function HeroIntro() {
 
               <span
                 aria-hidden="true"
+                data-tune="item-intro-wordmark"
                 className="display text-hollow block text-[20vw] leading-[0.85] sm:text-[6.5rem] lg:text-[7.5rem]"
               >
-                {heroContent.title}
+                <DecodeText text={heroContent.title} durationS={1.1} />
               </span>
 
-              <h1
+              <SplitReveal
+                as="h1"
                 id="intro-title"
+                tuneId="item-intro-title"
+                text={heroContent.tagline}
+                type="words"
+                stagger={0.045}
                 className="display text-[9vw] leading-[1.02] text-bone sm:text-[2.5rem] lg:text-[3.1rem]"
-              >
-                {heroContent.tagline}
-              </h1>
+              />
             </RevealText>
           </div>
 
@@ -63,26 +77,33 @@ export default function HeroIntro() {
                 {heroContent.lede}
               </p>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <a
-                  href={linkTo("/builder")}
-                  data-cursor="hover"
-                  className="btn border-blood-600/70 bg-blood-600/15 px-6 py-4 text-[11px] sm:text-[12px]"
-                >
-                  {heroContent.primaryCta}
-                  <span aria-hidden="true">→</span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => scrollToId("work")}
-                  data-cursor="hover"
-                  className="group inline-flex items-center gap-2 border border-bone/20 px-6 py-4 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:border-bone/40 hover:text-bone sm:text-[12px]"
-                >
-                  {heroContent.secondaryCta}
-                </button>
+              <div data-tune="item-intro-actions" className="flex flex-wrap items-center gap-3">
+                <Magnetic strength={0.26}>
+                  <a
+                    href={linkTo("/builder")}
+                    data-cursor="hover"
+                    className="btn border-blood-600/70 bg-blood-600/15 px-6 py-4 text-[11px] sm:text-[12px]"
+                  >
+                    {heroContent.primaryCta}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2}>
+                  <button
+                    type="button"
+                    onClick={() => scrollToId("gallery")}
+                    data-cursor="hover"
+                    className="group inline-flex items-center gap-2 border border-bone/20 px-6 py-4 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone-muted transition-colors duration-500 ease-silk hover:border-bone/40 hover:text-bone sm:text-[12px]"
+                  >
+                    {heroContent.secondaryCta}
+                  </button>
+                </Magnetic>
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-bone/10 pt-6">
+              <div
+                data-tune="item-intro-contact"
+                className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-bone/10 pt-6"
+              >
                 <a
                   href={buildWhatsAppUrl(introMessage())}
                   target="_blank"
