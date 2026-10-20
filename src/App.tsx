@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useHashRoute } from "./lib/router";
+import RouteWipe from "./components/fx/RouteWipe";
 import { useUiSounds } from "./lib/sfx";
 import { startSession } from "./lib/telemetry";
 import PortfolioApp from "./PortfolioApp";
@@ -34,22 +35,28 @@ export default function App() {
   // knowing sound exists. Silent unless the visitor switched sound on.
   useUiSounds();
 
+  let page: ReactNode;
   if (route.startsWith("/admin")) {
-    return (
+    page = (
       <AdminGate>
         <AdminApp />
       </AdminGate>
     );
-  }
-
-  if (route.startsWith("/template/")) {
+  } else if (route.startsWith("/template/")) {
     const id = decodeURIComponent(route.slice("/template/".length));
-    return <TemplatePage id={id} />;
+    page = <TemplatePage id={id} />;
+  } else if (route.startsWith("/builder")) {
+    page = <BuilderApp />;
+  } else {
+    page = <PortfolioApp />;
   }
 
-  if (route.startsWith("/builder")) {
-    return <BuilderApp />;
-  }
-
-  return <PortfolioApp />;
+  // The film cut between routes — decorative, above every section, below the
+  // cursor. It listens to `hashchange` itself, so this render does not drive it.
+  return (
+    <>
+      <RouteWipe />
+      {page}
+    </>
+  );
 }

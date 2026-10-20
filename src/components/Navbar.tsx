@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { hero, meta, nav } from "../data/content";
 import { linkTo } from "../lib/router";
 import { getLenis, resumeSmoothScroll, scrollToId } from "../lib/scroll";
+import { useHeroComplete } from "../lib/heroGate";
 import SoundToggle from "./SoundToggle";
 import ThemeToggle from "./theme/ThemeToggle";
 import AuthControls, { MobileAccountBlock } from "./auth/AuthLayer";
@@ -15,6 +16,13 @@ import StudioMark from "./brand/StudioMark";
  * by one list so the mobile menu never diverges from the desktop one.
  */
 export default function Navbar({ ready }: { ready: boolean }) {
+  /**
+   * The opening film owns the whole screen until its last frames. The header is
+   * held back (invisible AND untransitioned up) until `heroGate` says the run
+   * is done, then slides down over its own blurred backdrop. This is what keeps
+   * the nav from clipping the top of the picture.
+   */
+  const heroComplete = useHeroComplete();
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("home");
   const [open, setOpen] = useState(false);
@@ -109,12 +117,16 @@ export default function Navbar({ ready }: { ready: boolean }) {
       */}
       <header
         data-tune="item-navbar"
-        className={`fixed inset-x-0 top-0 z-[90] transition-all duration-700 ease-silk ${
-          scrolled || open
-            ? "border-b border-bone/10 bg-ink-950/70 backdrop-blur-md"
-            : "border-b border-transparent"
-        }`}
-        style={{ opacity: ready ? 1 : 0, transform: ready ? "translateY(0)" : "translateY(-14px)" }}
+        aria-hidden={!heroComplete && !open}
+        className={`fixed inset-x-0 top-0 z-[90] transition-[opacity,transform,visibility,background-color,border-color] duration-700 ease-silk ${
+          heroComplete || open
+            ? "visible translate-y-0 opacity-100"
+            : "invisible -translate-y-full opacity-0"
+        } ${scrolled || open ? "border-b border-bone/10 bg-ink-950/70 backdrop-blur-md" : "border-b border-transparent"}`}
+        style={{
+          opacity: ready && (heroComplete || open) ? 1 : 0,
+          pointerEvents: heroComplete || open ? undefined : "none",
+        }}
       >
         <div className="shell flex h-[72px] items-center justify-between">
           <a

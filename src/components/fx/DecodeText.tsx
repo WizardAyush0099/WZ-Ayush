@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ElementType, type Ref } from "react";
-import { gsap } from "../../lib/gsap";
+import { gsap, ScrollTrigger } from "../../lib/gsap";
 import { useHasFinePointer, usePrefersReducedMotion } from "../../lib/hooks";
 
 /**
@@ -13,6 +13,9 @@ import { useHasFinePointer, usePrefersReducedMotion } from "../../lib/hooks";
  *  transparent, so only the skeleton of the scramble is visible.
  *
  *  It plays on hover, and only where there is a real pointer to hover with.
+ *  With `onView` it also plays once as the element first reaches the viewport
+ *  — the word resolves out of noise the moment a visitor sees it, then stays
+ *  hoverable afterwards.
  *  Under reduced motion it does nothing at all: the word is simply the word,
  *  and the DOM text is never touched, so nothing depends on the effect having
  *  run.
@@ -30,6 +33,8 @@ type DecodeTextProps = {
   durationS?: number;
   /** `upperCase` reads as terminal noise; a character set is literal. */
   chars?: string;
+  /** Also decode once when the element first scrolls into view. */
+  onView?: boolean;
 };
 
 export default function DecodeText({
@@ -39,6 +44,7 @@ export default function DecodeText({
   tuneId,
   durationS = 0.9,
   chars = "upperCase",
+  onView = false,
 }: DecodeTextProps) {
   const ref = useRef<HTMLElement | null>(null);
   const reduced = usePrefersReducedMotion();
@@ -46,9 +52,12 @@ export default function DecodeText({
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced || !fine) return;
+    if (!el || reduced) return;
 
     const decode = () => {
+      // One scramble at a time: a hover arriving while the entry decode is
+      // still running must restart it rather than fight it frame by frame.
+      gsap.killTweensOf(el);
       gsap.to(el, {
         duration: durationS,
         ease: "none",
@@ -56,16 +65,24 @@ export default function DecodeText({
       });
     };
 
-    el.addEventListener("pointerenter", decode);
+    // The entry decode — once, the first time the word is seen.
+    const trigger = onView
+      ? ScrollTrigger.create({ trigger: el, start: "top 88%", once: true, onEnter: decode })
+      : null;
+
+    // The hover decode — a real pointer only.
+    if (fine) el.addEventListener("pointerenter", decode);
+
     return () => {
-      el.removeEventListener("pointerenter", decode);
+      if (fine) el.removeEventListener("pointerenter", decode);
+      trigger?.kill();
       gsap.killTweensOf(el);
       // The scramble rewrites the text node as it plays; putting the word back
       // is what guarantees a half-scrambled word can never survive a route
       // change or a StrictMode remount.
       el.textContent = text;
     };
-  }, [text, durationS, chars, reduced, fine]);
+  }, [text, durationS, chars, reduced, fine, onView]);
 
   return (
     <Tag ref={ref as Ref<never>} data-tune={tuneId} className={className}>

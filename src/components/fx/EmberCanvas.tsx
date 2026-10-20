@@ -32,13 +32,21 @@ export default function EmberCanvas({ density = 1 }: { density?: number }) {
     let dpr = 1;
     let raf = 0;
     let running = true;
+    /**
+     * Phones do less of this. The embers are a full-screen canvas repainted
+     * every frame, and on a phone that frame is spent against the hero film's
+     * own scrub. Half the count, a smaller backing store and a 30fps cap keep
+     * the atmosphere while giving the scroll its budget back.
+     */
+    const phone = window.matchMedia("(max-width: 899px) and (max-aspect-ratio: 1/1)").matches;
+    let lastFrame = 0;
 
     const embers: Ember[] = [];
 
     const targetCount = () => {
       const w = window.innerWidth;
       const base = w < 640 ? 22 : w < 1024 ? 40 : 68;
-      return Math.round(base * density);
+      return Math.round(base * density * (phone ? 0.5 : 1));
     };
 
     const spawn = (initial = false): Ember => {
@@ -56,7 +64,7 @@ export default function EmberCanvas({ density = 1 }: { density?: number }) {
     };
 
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, phone ? 1.25 : 2);
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = Math.floor(width * dpr);
@@ -70,7 +78,12 @@ export default function EmberCanvas({ density = 1 }: { density?: number }) {
       embers.length = count;
     };
 
-    const draw = () => {
+    const draw = (time = 0) => {
+      if (phone && time - lastFrame < 33) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+      lastFrame = time;
       ctx.clearRect(0, 0, width, height);
       for (let i = 0; i < embers.length; i++) {
         const e = embers[i];

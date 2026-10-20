@@ -4,6 +4,7 @@ import {
   contact,
   mediaDefaults,
   mediaLabels,
+  mobileMediaDefaults,
   type AssetKey,
   type MediaConfig,
   type ScrollMediaMode,
@@ -48,6 +49,13 @@ export default function MediaPanel() {
   const site = useSiteData();
   const [assets, setAssets] = useState<Record<AssetKey, string>>(site.assets);
   const [media, setMedia] = useState<MediaConfig>(site.media);
+  const [mobileMedia, setMobileMedia] = useState<MediaConfig>(site.mobileMedia);
+  /**
+   * The two heroes are edited side by side, never mixed: the desktop run and
+   * the phone run are separate films with separate folders, counts and lengths.
+   * This switch chooses which one the controls below write.
+   */
+  const [device, setDevice] = useState<"desktop" | "phone">("desktop");
   const [status, setStatus] = useState<Status>(null);
   const [busy, setBusy] = useState(false);
 
@@ -55,16 +63,23 @@ export default function MediaPanel() {
   useEffect(() => {
     setAssets(site.assets);
     setMedia(site.media);
-  }, [site.assets, site.media]);
+    setMobileMedia(site.mobileMedia);
+  }, [site.assets, site.media, site.mobileMedia]);
+
+  const active = device === "desktop" ? media : mobileMedia;
+  const setActive = (next: MediaConfig) =>
+    device === "desktop" ? setMedia(next) : setMobileMedia(next);
+  const activeDefaults = device === "desktop" ? mediaDefaults : mobileMediaDefaults;
 
   const dirty =
     JSON.stringify(assets) !== JSON.stringify(site.assets) ||
-    JSON.stringify(media) !== JSON.stringify(site.media);
+    JSON.stringify(media) !== JSON.stringify(site.media) ||
+    JSON.stringify(mobileMedia) !== JSON.stringify(site.mobileMedia);
 
   const save = async (publish: boolean) => {
     setBusy(true);
     setStatus(null);
-    updateConfig({ assets, media });
+    updateConfig({ assets, media, mobileMedia });
     /*
      * The hero's run length is one number with two doors onto it: this field,
      * and the Studio tab's Motion panel (which is where the film's own feel
@@ -98,7 +113,8 @@ export default function MediaPanel() {
     }
   };
 
-  const firstFrame = media.frameDir && media.frameCount > 0 ? frameUrl(media, 0) : "";
+  const firstFrame =
+    active.frameDir && active.frameCount > 0 ? frameUrl(active, 0) : "";
 
   return (
     <div className="flex flex-col gap-8">
@@ -160,22 +176,52 @@ export default function MediaPanel() {
             Cinematic scroll media
           </h2>
           <p className="mt-2 max-w-[76ch] font-body text-xs leading-relaxed text-bone-muted">
-            The hero's centrepiece. <span className="text-bone">Sequence</span> is the cinematic
-            option and the lightest on phones — export stills, not a ZIP. If the configured media
-            fails to load the hero silently falls back to the 3D scene.
+            Two films, one per screen: <span className="text-bone">Desktop</span> plays the wide
+            sequence; <span className="text-bone">Phone</span> plays the portrait 3D run built from
+            <code className="mx-1 text-bone">PH Hero/ph1 + ph2 + ph3</code>(240 WebP stills).
+            <span className="text-bone"> Sequence</span> is the lightest option on phones — export
+            stills, not a ZIP. If a configured film fails the hero falls back to the 3D scene.
           </p>
+          <div className="mt-4 flex gap-2" role="tablist" aria-label="Hero screen">
+            {(
+              [
+                ["desktop", "Desktop hero", media.mode, media.frameCount],
+                ["phone", "Phone hero · 3D", mobileMedia.mode, mobileMedia.frameCount],
+              ] as const
+            ).map(([id, label, mode, count]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={device === id}
+                onClick={() => setDevice(id)}
+                className={`border px-4 py-2.5 text-left transition-colors duration-300 ${
+                  device === id
+                    ? "border-blood-500/70 bg-blood-950/30"
+                    : "border-bone/15 hover:border-bone/35"
+                }`}
+              >
+                <span className="block font-body text-[11px] uppercase tracking-wide2 text-bone">
+                  {label}
+                </span>
+                <span className="mt-0.5 block font-mono text-[10px] text-bone-dim">
+                  {mode} · {count} frames
+                </span>
+              </button>
+            ))}
+          </div>
         </header>
 
         <div className="flex flex-col gap-6 p-5">
           <div className="grid gap-3 sm:grid-cols-3">
             {MODES.map((mode) => {
-              const on = media.mode === mode;
+              const on = active.mode === mode;
               return (
                 <button
                   key={mode}
                   type="button"
                   aria-pressed={on}
-                  onClick={() => setMedia({ ...media, mode })}
+                  onClick={() => setActive({ ...active, mode })}
                   className={`border p-4 text-left transition-colors duration-300 ${
                     on ? "border-blood-500/70 bg-blood-950/30" : "border-bone/15 hover:border-bone/35"
                   }`}
@@ -191,30 +237,30 @@ export default function MediaPanel() {
             })}
           </div>
 
-          {media.mode === "video" ? (
+          {active.mode === "video" ? (
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
-                <label className={labelClass} htmlFor="media-video">
+                <label className={labelClass} htmlFor={`${device}-media-video`}>
                   Video file (.mp4 or .webm)
                 </label>
                 <input
-                  id="media-video"
+                  id={`${device}-media-video`}
                   className={fieldClass}
-                  value={media.videoSrc}
-                  onChange={(e) => setMedia({ ...media, videoSrc: e.target.value })}
+                  value={active.videoSrc}
+                  onChange={(e) => setActive({ ...active, videoSrc: e.target.value })}
                   placeholder="assets/media/hero.mp4"
                   spellCheck={false}
                 />
               </div>
               <div>
-                <label className={labelClass} htmlFor="media-video-poster">
+                <label className={labelClass} htmlFor={`${device}-media-video-poster`}>
                   Poster image (shown while it loads)
                 </label>
                 <input
-                  id="media-video-poster"
+                  id={`${device}-media-video-poster`}
                   className={fieldClass}
-                  value={media.poster}
-                  onChange={(e) => setMedia({ ...media, poster: e.target.value })}
+                  value={active.poster}
+                  onChange={(e) => setActive({ ...active, poster: e.target.value })}
                   placeholder="assets/media/hero-poster.webp"
                   spellCheck={false}
                 />
@@ -222,46 +268,46 @@ export default function MediaPanel() {
             </div>
           ) : null}
 
-          {media.mode === "sequence" ? (
+          {active.mode === "sequence" ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               <div className="sm:col-span-2">
-                <label className={labelClass} htmlFor="media-frames">
+                <label className={labelClass} htmlFor={`${device}-media-frames`}>
                   Frame folder
                 </label>
                 <input
-                  id="media-frames"
+                  id={`${device}-media-frames`}
                   className={fieldClass}
-                  value={media.frameDir}
-                  onChange={(e) => setMedia({ ...media, frameDir: e.target.value })}
-                  placeholder="assets/sequence"
+                  value={active.frameDir}
+                  onChange={(e) => setActive({ ...active, frameDir: e.target.value })}
+                  placeholder={activeDefaults.frameDir || "assets/sequence"}
                   spellCheck={false}
                 />
               </div>
               <div>
-                <label className={labelClass} htmlFor="media-count">
+                <label className={labelClass} htmlFor={`${device}-media-count`}>
                   Frame count
                 </label>
                 <input
-                  id="media-count"
+                  id={`${device}-media-count`}
                   type="number"
                   min={1}
-                  max={240}
+                  max={600}
                   className={fieldClass}
-                  value={media.frameCount || ""}
-                  onChange={(e) => setMedia({ ...media, frameCount: Number(e.target.value) })}
-                  placeholder="120"
+                  value={active.frameCount || ""}
+                  onChange={(e) => setActive({ ...active, frameCount: Number(e.target.value) })}
+                  placeholder={String(activeDefaults.frameCount)}
                 />
               </div>
               <div>
-                <label className={labelClass} htmlFor="media-ext">
+                <label className={labelClass} htmlFor={`${device}-media-ext`}>
                   Extension
                 </label>
                 <select
-                  id="media-ext"
+                  id={`${device}-media-ext`}
                   className={fieldClass}
-                  value={media.frameExt}
+                  value={active.frameExt}
                   onChange={(e) =>
-                    setMedia({ ...media, frameExt: e.target.value as MediaConfig["frameExt"] })
+                    setActive({ ...active, frameExt: e.target.value as MediaConfig["frameExt"] })
                   }
                 >
                   <option value="webp">webp</option>
@@ -271,10 +317,23 @@ export default function MediaPanel() {
                 </select>
               </div>
               <div className="sm:col-span-2 lg:col-span-4">
+                <label className={labelClass} htmlFor={`${device}-media-poster`}>
+                  Poster (shown before the first frame decodes)
+                </label>
+                <input
+                  id={`${device}-media-poster`}
+                  className={fieldClass}
+                  value={active.poster}
+                  onChange={(e) => setActive({ ...active, poster: e.target.value })}
+                  placeholder={activeDefaults.poster}
+                  spellCheck={false}
+                />
+              </div>
+              <div className="sm:col-span-2 lg:col-span-4">
                 <p className="font-body text-[11px] leading-relaxed text-bone-dim">
                   Frames are read as{" "}
-                  <code className="text-bone-muted">{media.frameDir || "assets/sequence"}/000.{media.frameExt}</code>{" "}
-                  → {String(Math.max(0, media.frameCount - 1)).padStart(3, "0")}.
+                  <code className="text-bone-muted">{active.frameDir || "assets/sequence"}/000.{active.frameExt}</code>{" "}
+                  → {String(Math.max(0, active.frameCount - 1)).padStart(3, "0")}.
                   {firstFrame ? " First frame:" : ""}
                 </p>
                 {firstFrame ? (
@@ -290,28 +349,40 @@ export default function MediaPanel() {
           ) : null}
 
           <div className="grid gap-5 sm:grid-cols-2">
+            {device === "desktop" ? (
+              <div>
+                <label className={labelClass} htmlFor="media-length">
+                  Scroll length (how long the effect lasts)
+                </label>
+                <input
+                  id="media-length"
+                  className={fieldClass}
+                  value={active.scrollLength}
+                  onChange={(e) => setActive({ ...active, scrollLength: e.target.value })}
+                  placeholder={activeDefaults.scrollLength}
+                  spellCheck={false}
+                />
+              </div>
+            ) : (
+              <div className="border border-bone/10 bg-ink-950 px-4 py-3">
+                <p className="font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
+                  Run length
+                </p>
+                <p className="mt-1 font-body text-xs leading-relaxed text-bone-muted">
+                  {site.studio.mobile.scrollVh.toFixed(1)} screens — set it, with the phone's dolly,
+                  parallax and stage height, in <span className="text-bone">Studio → Motion</span>.
+                </p>
+              </div>
+            )}
             <div>
-              <label className={labelClass} htmlFor="media-length">
-                Scroll length (how long the effect lasts)
-              </label>
-              <input
-                id="media-length"
-                className={fieldClass}
-                value={media.scrollLength}
-                onChange={(e) => setMedia({ ...media, scrollLength: e.target.value })}
-                placeholder={mediaDefaults.scrollLength}
-                spellCheck={false}
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="media-note">
+              <label className={labelClass} htmlFor={`${device}-media-note`}>
                 Source note (for your own records)
               </label>
               <input
-                id="media-note"
+                id={`${device}-media-note`}
                 className={fieldClass}
-                value={media.sourceNote}
-                onChange={(e) => setMedia({ ...media, sourceNote: e.target.value })}
+                value={active.sourceNote}
+                onChange={(e) => setActive({ ...active, sourceNote: e.target.value })}
                 placeholder="e.g. Blender render, 120 frames, CC0 source"
               />
             </div>

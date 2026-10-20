@@ -206,6 +206,7 @@ export default function BuilderApp() {
                         <button
                           type="button"
                           onClick={() => selectTemplate(template)}
+                          data-sfx="select"
                           aria-pressed={on}
                           className={`border px-4 py-2.5 font-body text-[10px] uppercase tracking-wide2 transition-colors duration-300 ${
                             on
@@ -222,6 +223,7 @@ export default function BuilderApp() {
                         */}
                         <a
                           href={linkTo(`/template/${template.id}`)}
+                          data-sfx="open"
                           className="border border-bone/15 px-4 py-2.5 font-body text-[10px] uppercase tracking-wide2 text-bone-dim transition-colors duration-300 hover:border-bone/35 hover:text-bone"
                         >
                           Open full page ↗

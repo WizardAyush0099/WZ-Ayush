@@ -8,7 +8,8 @@ type Blob = {
   vx: number;
   vy: number;
   alpha: number;
-  tint: [number, number, number];
+  /** Index into the pre-rendered sprites — one per tint. */
+  tint: number;
 };
 
 /**
@@ -32,15 +33,46 @@ export default function FogCanvas({ className = "" }: { className?: string }) {
     let raf = 0;
     let running = true;
     let blobs: Blob[] = [];
+    /** Last paint timestamp — the haze drifts, so 30fps is indistinguishable. */
+    let lastFrame = 0;
+
+    const TINTS: Array<[number, number, number]> = [
+      [140, 20, 24],
+      [90, 14, 18],
+      [120, 108, 104],
+      [60, 8, 10],
+      [168, 132, 126],
+    ];
+
+    /**
+     * One 128px radial-gradient sprite per tint, made once.
+     *
+     * The haze used to call `createRadialGradient` six times per frame — a
+     * gradient object plus a full-canvas path fill, every 16ms, on top of the
+     * hero's own frame draw. On a laptop that showed up as scroll jitter. Now
+     * the soft blob is a bitmap and painting it is one `drawImage`.
+     */
+    let sprites: HTMLCanvasElement[] = [];
+
+    const makeSprites = () => {
+      sprites = TINTS.map(([r, g, b]) => {
+        const size = 128;
+        const sprite = document.createElement("canvas");
+        sprite.width = size;
+        sprite.height = size;
+        const sctx = sprite.getContext("2d");
+        if (!sctx) return sprite;
+        const grad = sctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        grad.addColorStop(0, `rgba(${r},${g},${b},1)`);
+        grad.addColorStop(0.55, `rgba(${r},${g},${b},0.45)`);
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        sctx.fillStyle = grad;
+        sctx.fillRect(0, 0, size, size);
+        return sprite;
+      });
+    };
 
     const build = () => {
-      const tints: Array<[number, number, number]> = [
-        [140, 20, 24],
-        [90, 14, 18],
-        [120, 108, 104],
-        [60, 8, 10],
-        [168, 132, 126],
-      ];
       const count = window.innerWidth < 768 ? 4 : 6;
       blobs = Array.from({ length: count }, (_, i) => ({
         x: Math.random() * width,
@@ -49,7 +81,7 @@ export default function FogCanvas({ className = "" }: { className?: string }) {
         vx: (Math.random() - 0.5) * 0.18,
         vy: -0.05 - Math.random() * 0.16,
         alpha: 0.05 + Math.random() * 0.06,
-        tint: tints[i % tints.length],
+        tint: i % TINTS.length,
       }));
     };
 
@@ -66,7 +98,13 @@ export default function FogCanvas({ className = "" }: { className?: string }) {
       build();
     };
 
-    const draw = () => {
+    const draw = (time = 0) => {
+      if (time - lastFrame < 32) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+      lastFrame = time;
+
       ctx.clearRect(0, 0, width, height);
       ctx.globalCompositeOperation = "lighter";
       for (const b of blobs) {
@@ -76,16 +114,12 @@ export default function FogCanvas({ className = "" }: { className?: string }) {
         if (b.x + b.r < -40) b.x = width + b.r;
         if (b.x - b.r > width + 40) b.x = -b.r;
 
-        const [r, g, bl] = b.tint;
-        const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-        grad.addColorStop(0, `rgba(${r},${g},${bl},${b.alpha})`);
-        grad.addColorStop(0.55, `rgba(${r},${g},${bl},${b.alpha * 0.45})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-        ctx.fill();
+        const sprite = sprites[b.tint];
+        if (!sprite) continue;
+        ctx.globalAlpha = b.alpha;
+        ctx.drawImage(sprite, b.x - b.r, b.y - b.r, b.r * 2, b.r * 2);
       }
+      ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = "source-over";
       if (running) raf = requestAnimationFrame(draw);
     };
@@ -100,6 +134,7 @@ export default function FogCanvas({ className = "" }: { className?: string }) {
       }
     };
 
+    makeSprites();
     resize();
     raf = requestAnimationFrame(draw);
     window.addEventListener("resize", resize);

@@ -1,21 +1,23 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "../../lib/gsap";
 import { hero as heroContent } from "../../data/content";
-import { useIsPortrait, useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
+import { useIsPhoneView, useIsPortrait, useIsTouch, usePrefersReducedMotion } from "../../lib/hooks";
+import { reportHeroRun, releaseHeroGate } from "../../lib/heroGate";
 import { scrollToId } from "../../lib/scroll";
 import { useImageSlots, useSiteData, useStudio } from "../../lib/siteData";
 import ScrollMedia from "../media/ScrollMedia";
 import FogCanvas from "../fx/FogCanvas";
+import MobileHero from "./MobileHero";
 
 /**
  * ============================================================================
  *  HERO — the film, and nothing else
  * ============================================================================
- *  The centrepiece is the 300-frame cinematic run supplied in `Images.zip`
- *  (see `mediaDefaults` in src/data/content.ts). The section is deliberately
- *  tall — one screen of content spread over several screens of scroll — and
- *  the stage inside it is `sticky`, so the visitor scrubs through the whole
- *  sequence without the page appearing to move at all:
+ *  The centrepiece is the 421-frame cinematic run supplied in `scene1.zip` +
+ *  `scene2.zip` (see `mediaDefaults` in src/data/content.ts). The section is
+ *  deliberately tall — one screen of content spread over several screens of
+ *  scroll — and the stage inside it is `sticky`, so the visitor scrubs through
+ *  the whole sequence without the page appearing to move at all:
  *
  *    the frame sequence     canvas, one still per scroll step, held by
  *                           `ScrollMedia` (progress arrives as a ref, so a
@@ -34,9 +36,13 @@ import FogCanvas from "../fx/FogCanvas";
  *
  *  PORTRAIT — the film fills the screen. It used to be a band across the top
  *  with copy underneath, then a letterboxed strip with a blurred field around
- *  it; both left the picture smaller than the screen. It is now full-bleed, held
- *  still (no tilt, no drift, no push-in) and started just below the header so
- *  that bar can never cover any of it.
+ *  it; both left the picture smaller than the screen. It is now full-bleed and
+ *  held still (no tilt, no drift, no push-in). The header is not drawn over it
+ *  at all: `heroGate` holds the bar back until the run is finished, so the top
+ *  of the picture is never clipped by a nav.
+ *
+ *  PHONES — see `MobileHero`. They get the separate portrait run built from
+ *  `PH Hero/`, and this desktop film is never fetched there.
  *
  *  The film is also deliberately NOT one of the parallax planes: a tilted or
  *  drifting full-bleed frame pulls its own edge into view, which reads as a
@@ -49,7 +55,23 @@ import FogCanvas from "../fx/FogCanvas";
  *  rather than a jolt.
  * ============================================================================
  */
+/**
+ * Which film a visitor gets.
+ *
+ * Phones get `MobileHero` — the portrait PH Hero run — whenever it is switched
+ * on in the dashboard. Everything else (desktop, tablets in landscape, and
+ * phones with the phone hero deliberately turned off) gets the original film
+ * below, unchanged. The wrapper holds both hooks so the choice can never break
+ * the rules of hooks.
+ */
 export default function Hero({ ready }: { ready: boolean }) {
+  const phone = useIsPhoneView();
+  const { mobile } = useStudio();
+  if (phone && mobile.enabled) return <MobileHero ready={ready} />;
+  return <DesktopHero ready={ready} />;
+}
+
+function DesktopHero({ ready }: { ready: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const plateRef = useRef<HTMLDivElement>(null);
@@ -82,7 +104,11 @@ export default function Hero({ ready }: { ready: boolean }) {
   const heroSlots = useImageSlots("hero");
   const backdropSlot = heroSlots.find((slot) => slot.index === 1);
   const backdropSrc = backdropSlot?.src || site.assets.heroShadow;
+  // A full-screen 22px blur is one of the most expensive things a compositor
+  // can be asked to do. On touch hardware it is softened (the plane is already
+  // diffuse); desktop keeps the committed value.
   const backdropBlur = backdropSlot ? backdropSlot.blur : 22;
+  const safeBackdropBlur = isTouch ? Math.min(8, backdropBlur) : backdropBlur;
   const backdropOpacity = backdropSlot ? backdropSlot.opacity : 0.3;
 
   /**
@@ -96,7 +122,14 @@ export default function Hero({ ready }: { ready: boolean }) {
    * ------------------------------------------------------------------ */
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section || reduced) return;
+    if (!section) return;
+
+    // No pinned run (reduced motion): there is nothing to wait for, so the
+    // header is available immediately.
+    if (reduced) {
+      reportHeroRun(false, 1);
+      return releaseHeroGate;
+    }
 
     let raf = 0;
     const update = () => {
@@ -106,6 +139,9 @@ export default function Hero({ ready }: { ready: boolean }) {
       const progress = Math.max(0, Math.min(1, -rect.top / travel));
       progressRef.current = progress;
       if (barRef.current) barRef.current.style.transform = `scaleY(${progress.toFixed(4)})`;
+      // The header stays out of the picture until the run is finished — this is
+      // what keeps the top of the film uncovered.
+      reportHeroRun(true, progress);
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -118,6 +154,7 @@ export default function Hero({ ready }: { ready: boolean }) {
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      releaseHeroGate();
     };
   }, [reduced]);
 
@@ -299,7 +336,7 @@ export default function Hero({ ready }: { ready: boolean }) {
               alt=""
               aria-hidden="true"
               className="h-full w-full object-cover"
-              style={{ filter: `blur(${backdropBlur}px)` }}
+              style={{ filter: `blur(${safeBackdropBlur}px)` }}
               decoding="async"
             />
           </div>
@@ -307,23 +344,26 @@ export default function Hero({ ready }: { ready: boolean }) {
           {/*
             The film. Full bleed either way, and it never moves: on a landscape
             screen it overscans by 3% so the dolly can push in without ever
-            showing an edge, and on a tall screen it is flush — starting just
-            below the header bar (72px) so that bar can never cover a frame of
-            it. Nothing is ever drawn over it.
+            showing an edge, and on a tall screen it is flush to all four edges
+            — the header is now held back below (`heroGate`), so there is no bar
+            to leave room for and no cropped top frame. Nothing is ever drawn
+            over it.
           */}
           <div
             ref={plateRef}
             data-tune="item-hero-plate"
             className={`absolute z-[2] origin-center ${
-              insetStage ? "" : portrait ? "inset-x-0 bottom-0 top-[72px]" : "inset-[-3%]"
+              insetStage ? "" : portrait ? "inset-0" : "inset-[-3%]"
             }`}
             style={{ willChange: "transform", ...plateBox }}
           >
             <ScrollMedia progressRef={progressRef} />
           </div>
 
-          {/* Mid plane — haze drifting between the film and the lens. */}
-          {effects.fog ? <FogCanvas className="z-[4] opacity-40" /> : null}
+          {/* Mid plane — haze drifting between the film and the lens. It is
+              skipped on touch hardware: it is a second full-screen animated
+              canvas, and the frames are the thing worth the budget there. */}
+          {effects.fog && !isTouch ? <FogCanvas className="z-[4] opacity-40" /> : null}
 
           {/* Near plane — bokeh that sweeps past fastest of all. */}
           <div

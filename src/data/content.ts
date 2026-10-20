@@ -132,6 +132,35 @@ export const mediaDefaults: MediaConfig = {
   sourceNote: "scene1.zip + scene2.zip — 421-frame merged render",
 };
 
+/**
+ * The PHONE hero's run — a separate film, not a crop of the desktop one.
+ *
+ * `PH Hero/ph1.zip`, `ph2.zip` and `ph3.zip` hold 240 + 240 + 205 frames of a
+ * portrait 3D render (2160 × 2704). All 685 were merged in archive order.
+ * ph1 → ph2 is already continuous (mean frame difference 0.47); ph2 → ph3 is a
+ * hard cut (23.05), so six cross-dissolve frames carry one into the other — the
+ * same treatment the desktop run got at its own seam. The merged move is then
+ * re-sampled to 246 stills at 640px wide WebP, written to
+ * `public/assets/hero-mobile/000.webp` … `245.webp`. The subsample keeps the
+ * whole three-part move while holding the download near 3.6 MB — the desktop
+ * run is 15 MB and is still fetched on desktop only.
+ */
+export const heroMobileDir = `${base}assets/hero-mobile`;
+export const heroMobileFrames = 246;
+
+export const mobileMediaDefaults: MediaConfig = {
+  mode: "sequence",
+  videoSrc: "",
+  frameDir: heroMobileDir,
+  frameCount: heroMobileFrames,
+  frameExt: "webp",
+  poster: `${heroMobileDir}/000.webp`,
+  // Shorter than the desktop run: a phone scroll is shorter and faster, so
+  // 3.2 screens keeps the same unhurried feel without a second of dead travel.
+  scrollLength: "320vh",
+  sourceNote: "PH Hero/ph1 + ph2 + ph3 — 685 frames merged, 246-frame phone pass",
+};
+
 /*
  * The Archive's own 240-frame run used to live here — 240 stills of a sharingan
  * render that shipped as an archive at the repository root — and the six grid

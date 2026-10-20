@@ -34,7 +34,8 @@ public/assets/
 ├── cta.svg                final CTA backdrop
 ├── featured/              project previews
 ├── archive/               the Archive's three big frames (WebP stills)
-├── hero-sequence/         the shipped hero run — 000.jpg … 420.jpg
+├── hero-sequence/         the desktop hero run — 000.jpg … 420.jpg
+├── hero-mobile/           the phone hero run — 000.webp … 245.webp
 ├── sequence/              (optional) 000.webp, 001.webp, …
 └── media/                 (optional) hero.mp4 / hero-poster.webp
 ```
@@ -134,6 +135,14 @@ The two archives were separate takes, not one continuous camera move, so their j
 jump. Frames `209` … `216` are eight generated cross-dissolve stills that carry scene 1 into
 scene 2; every frame from the archives is otherwise byte-identical, at its original 1920x1080.
 
+**Phones play a second, portrait run.** `PH Hero/ph1.zip` (240 frames), `ph2.zip` (240) and
+`ph3.zip` (205) are a 2160×2704 render. ph1 → ph2 is continuous; ph2 → ph3 was a hard cut, so six
+cross-dissolve frames join them. The merged move was re-sampled to **246 stills at 640px wide WebP**
+in `public/assets/hero-mobile/` (~3.6 MB) and wired up as `mobileMediaDefaults` — it is fetched only
+on phones (≤ 899px wide, portrait), and the desktop run is never fetched there. Edit its folder,
+count and extension from `#/admin → Artwork → Phone hero · 3D`; its run length, dolly, parallax and
+stage height from `#/admin → Studio → Motion → Phone view`.
+
 To swap in your own run:
 
 1. Rename frames to three digits: `000.webp`, `001.webp`, … `119.webp`.
@@ -209,8 +218,8 @@ The sub-tabs:
 | Tab | What it edits |
 | --- | --- |
 | **Points** | Crop/enlarge (`zoom`, crop across, crop down), size, width, height, nudge, tilt, opacity, blur, corner radius, stacking, and an on/off switch per point. |
-| **3D runs** | The hero's own run, and any number of additional runs (below). |
-| **Motion** | The hero's run length, scrub, dolly, stage size and parallax; the mark's spin; the pinned shelf's scrub and reveal; and a global run-speed trim. |
+| **3D runs** | Both hero runs — desktop and phone, on their own tabs — and any number of additional runs (below). |
+| **Motion** | The desktop hero's run length, scrub, dolly, stage size and parallax; a separate phone block (on/off, run length, dolly, parallax, stage height); the mark's spin; the pinned shelf's scrub and reveal; and a global run-speed trim. |
 | **Effects** | Film grain, vignette, embers, hero haze, custom cursor, opening counter, scroll-wound mark, sound, smooth scrolling. |
 | **Layout** | The order of the page's sections, and which are hidden. A hidden section renders nothing at all. |
 | **Document** | Copy the whole document, paste one back, restore the committed defaults. |

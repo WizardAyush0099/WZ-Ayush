@@ -32,7 +32,7 @@ export default function HeroIntro() {
     <section
       id="intro"
       data-tune="sec-intro"
-      className="relative z-10 bg-ink-950 pb-20 pt-14 md:pb-28 md:pt-24"
+      className="relative z-10 bg-ink-950 pb-20 pt-[88px] md:pb-28 md:pt-24"
       aria-labelledby="intro-title"
     >
       <div className="shell">
@@ -55,7 +55,7 @@ export default function HeroIntro() {
                 data-tune="item-intro-wordmark"
                 className="display text-hollow block text-[20vw] leading-[0.85] sm:text-[6.5rem] lg:text-[7.5rem]"
               >
-                <DecodeText text={heroContent.title} durationS={1.1} />
+                <DecodeText text={heroContent.title} durationS={1.1} onView />
               </span>
 
               <SplitReveal

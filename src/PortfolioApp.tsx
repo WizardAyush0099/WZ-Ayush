@@ -2,7 +2,7 @@ import { Fragment, useCallback, useEffect, useState, type ReactNode } from "reac
 import { setSelectedTemplate, useSelectedTemplateId } from "./lib/builderSelection";
 import { ScrollTrigger } from "./lib/gsap";
 import { initSmoothScroll, scrollToId } from "./lib/scroll";
-import { usePrefersReducedMotion } from "./lib/hooks";
+import { useIsPhoneView, usePrefersReducedMotion } from "./lib/hooks";
 import { useTheme } from "./lib/theme";
 import { useSiteData } from "./lib/siteData";
 import { isSectionHidden, stagesIn } from "./lib/studio";
@@ -70,6 +70,13 @@ import PickMode from "./components/studio/PickMode";
 export default function PortfolioApp() {
   const [ready, setReady] = useState(false);
   const reduced = usePrefersReducedMotion();
+  /**
+   * Phones keep the browser's own scrolling. Lenis already leaves touch input
+   * native (`syncTouch: false`), so on a phone it was a second animation loop
+   * ticking every frame for no effect — the one thing the hero's scrub was
+   * competing with. Desktop is unchanged.
+   */
+  const phone = useIsPhoneView();
   const site = useSiteData();
   const studio = site.studio;
 
@@ -90,8 +97,8 @@ export default function PortfolioApp() {
   // Smooth scrolling (skipped entirely for reduced-motion users — and off when
   // the owner switches it off in the dashboard).
   useEffect(
-    () => initSmoothScroll(!reduced && studio.effects.smoothScroll),
-    [reduced, studio.effects.smoothScroll],
+    () => initSmoothScroll(!reduced && studio.effects.smoothScroll && !phone),
+    [reduced, studio.effects.smoothScroll, phone],
   );
 
   // The opening counter can be switched off from the dashboard; without it the

@@ -13,6 +13,7 @@ import { PAGE_SECTIONS, parseSlotPoint, pointsByGroup } from "../../data/tunePoi
 import {
   BOX_FIELDS,
   EFFECT_FIELDS,
+  MOBILE_MOTION_FIELDS,
   MOTION_FIELDS,
   normaliseStudio,
   boxOf,
@@ -435,6 +436,67 @@ export default function StudioPanel({ onOpenImages }: { onOpenImages: () => void
               </div>
             ))}
           </div>
+
+          {/*
+            The phone hero's own numbers. Deliberately a separate block rather
+            than a breakpoint hidden inside the desktop sliders: the owner can
+            give the phone a shorter, calmer run without touching the desktop
+            film, and switch the phone hero back to the desktop one entirely.
+          */}
+          <header className="border-y border-bone/10 px-5 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/80">
+                  Phone view · separate hero
+                </p>
+                <p className="mt-2 max-w-[76ch] font-body text-xs leading-relaxed text-bone-muted">
+                  Phones play the portrait 3D run built from{" "}
+                  <code className="text-bone">PH Hero/ph1 + ph2 + ph3</code>. These numbers only
+                  affect that run; the desktop film above is untouched. The film's folder and frames
+                  live on the Artwork tab's <span className="text-bone">Phone hero</span> tab.
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-pressed={doc.mobile.enabled}
+                onClick={() => updateStudio({ mobile: { ...doc.mobile, enabled: !doc.mobile.enabled } })}
+                className={`border px-4 py-2.5 font-body text-[10px] uppercase tracking-wide2 transition-colors ${
+                  doc.mobile.enabled
+                    ? "border-emerald-400/40 text-emerald-200/90"
+                    : "border-bone/20 text-bone-dim"
+                }`}
+              >
+                {doc.mobile.enabled ? "Phone 3D hero · On" : "Phone 3D hero · Off"}
+              </button>
+            </div>
+          </header>
+          <div className="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-4">
+            {MOBILE_MOTION_FIELDS.map((cfg) => (
+              <div key={cfg.key}>
+                <label className={label} htmlFor={`mobile-motion-${cfg.key}`}>
+                  {cfg.label} ·{" "}
+                  <span className="text-bone-muted">
+                    {Number(doc.mobile[cfg.key]).toFixed(cfg.step < 1 ? 2 : 0)}
+                  </span>
+                </label>
+                <input
+                  id={`mobile-motion-${cfg.key}`}
+                  type="range"
+                  min={cfg.min}
+                  max={cfg.max}
+                  step={cfg.step}
+                  value={doc.mobile[cfg.key]}
+                  className="w-full accent-[#d61f26]"
+                  onChange={(event) =>
+                    updateStudio({
+                      mobile: { ...doc.mobile, [cfg.key]: Number(event.target.value) },
+                    })
+                  }
+                />
+                <p className="mt-1.5 font-body text-[11px] leading-relaxed text-bone-dim">{cfg.hint}</p>
+              </div>
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -575,62 +637,94 @@ export default function StudioPanel({ onOpenImages }: { onOpenImages: () => void
  */
 function HeroFilm() {
   const site = useSiteData();
-  const media = site.media;
+  /** Desktop and phone are two different films — edit one at a time. */
+  const [device, setDevice] = useState<"desktop" | "phone">("desktop");
+  const media = device === "desktop" ? site.media : site.mobileMedia;
   const frames = media.mode === "sequence";
+  const setMedia = (next: typeof media) =>
+    device === "desktop"
+      ? updateConfig({ media: next })
+      : updateConfig({ mobileMedia: next });
 
   return (
     <section className="border border-bone/10 bg-ink-900">
       <header className="border-b border-bone/10 px-5 py-4">
         <h2 className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
-          The hero's own run
+          The hero's own runs
         </h2>
         <p className="mt-2 max-w-[76ch] font-body text-xs leading-relaxed text-bone-muted">
           {frames
-            ? "The opening film, as a folder of frames scrubbed by the scroll. Its length, scrub, push-in and parallax are on the Motion tab."
-            : "The hero is not currently a frame run — it is set to the procedural scene or a video. Switch it back from the Artwork tab, or from the button below."}
+            ? "The film for the screen selected below, as a folder of frames scrubbed by the scroll. Its length, scrub, push-in and parallax are on the Motion tab."
+            : "This screen's hero is not currently a frame run — it is set to the procedural scene or a video. Switch it back from the Artwork tab, or from the button below."}
         </p>
+        <div className="mt-4 flex gap-2" role="tablist" aria-label="Hero screen">
+          {(
+            [
+              ["desktop", "Desktop film", site.media.frameCount],
+              ["phone", "Phone film · 3D", site.mobileMedia.frameCount],
+            ] as const
+          ).map(([id, label, count]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={device === id}
+              onClick={() => setDevice(id)}
+              className={`border px-4 py-2.5 text-left transition-colors duration-300 ${
+                device === id
+                  ? "border-blood-500/70 bg-blood-950/30"
+                  : "border-bone/15 hover:border-bone/35"
+              }`}
+            >
+              <span className="block font-body text-[11px] uppercase tracking-wide2 text-bone">
+                {label}
+              </span>
+              <span className="mt-0.5 block font-mono text-[10px] text-bone-dim">{count} frames</span>
+            </button>
+          ))}
+        </div>
       </header>
       <div className="flex flex-col gap-4 p-5">
         {frames ? (
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="sm:col-span-2">
-              <label className={label} htmlFor="hero-dir">
+              <label className={label} htmlFor={`${device}-hero-dir`}>
                 Frame folder
               </label>
               <input
-                id="hero-dir"
+                id={`${device}-hero-dir`}
                 className={field}
                 value={media.frameDir}
                 spellCheck={false}
-                onChange={(event) => updateConfig({ media: { ...media, frameDir: event.target.value } })}
+                onChange={(event) => setMedia({ ...media, frameDir: event.target.value })}
               />
             </div>
             <div>
-              <label className={label} htmlFor="hero-count">
+              <label className={label} htmlFor={`${device}-hero-count`}>
                 Frames
               </label>
               <input
-                id="hero-count"
+                id={`${device}-hero-count`}
                 type="number"
                 min={1}
                 max={600}
                 className={field}
                 value={media.frameCount}
                 onChange={(event) =>
-                  updateConfig({ media: { ...media, frameCount: Number(event.target.value) } })
+                  setMedia({ ...media, frameCount: Number(event.target.value) })
                 }
               />
             </div>
             <div>
-              <label className={label} htmlFor="hero-ext">
+              <label className={label} htmlFor={`${device}-hero-ext`}>
                 Extension
               </label>
               <select
-                id="hero-ext"
+                id={`${device}-hero-ext`}
                 className={field}
                 value={media.frameExt}
                 onChange={(event) =>
-                  updateConfig({ media: { ...media, frameExt: event.target.value as typeof media.frameExt } })
+                  setMedia({ ...media, frameExt: event.target.value as typeof media.frameExt })
                 }
               >
                 {["jpg", "webp", "png", "avif"].map((ext) => (
@@ -652,10 +746,10 @@ function HeroFilm() {
         ) : (
           <button
             type="button"
-            onClick={() => updateConfig({ media: { ...media, mode: "sequence" } })}
+            onClick={() => setMedia({ ...media, mode: "sequence" })}
             className="w-fit border border-blood-600/70 bg-blood-600/10 px-5 py-3 font-body text-[11px] uppercase tracking-wide2 text-bone transition-colors hover:border-blood-500 hover:bg-blood-600/20"
           >
-            Make the hero a frame run
+            Make this screen's hero a frame run
           </button>
         )}
       </div>

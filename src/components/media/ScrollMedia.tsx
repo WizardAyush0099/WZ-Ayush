@@ -199,7 +199,14 @@ function SequenceMedia({
     const image = framesRef.current[index];
     if (!canvas || !image || !image.complete || !image.naturalWidth) return;
 
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    /*
+     * A phone backs a full-screen canvas at 1.5× instead of 2×. The portrait
+     * frames are 640px wide, so the extra backing pixels were being invented
+     * by the scaler anyway — and a 780 × 1688 fill per scrubbed frame was a
+     * large part of what made the phone hero stutter.
+     */
+    const phone = window.innerWidth < 900;
+    const dpr = Math.min(phone ? 1.5 : 2, window.devicePixelRatio || 1);
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
     if (!width || !height) return;
@@ -369,7 +376,10 @@ function SequenceMedia({
 
       const rest: number[] = [];
       for (let i = 0; i < count; i++) if (!ladder.includes(i) && i !== 0) rest.push(i);
-      await runQueue(rest, STREAM_CONCURRENCY);
+      // Phones stream four at a time rather than six: the run is shorter, and
+      // leaving a little bandwidth for the rest of the page is what keeps the
+      // scroll smooth while frames are still arriving.
+      await runQueue(rest, window.innerWidth < 900 ? 4 : STREAM_CONCURRENCY);
     })();
 
     return () => {

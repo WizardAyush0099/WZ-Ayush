@@ -436,6 +436,21 @@ a:focus:not(:focus-visible) {
   100% { transform: translate3d(0, 0, 0); }
 }
 
+/*
+ * Phones hold the grain still. The texture is the same; the animation was a
+ * full-screen blended layer repainting five times a second on top of the
+ * hero's own canvas, which the phone could not afford.
+ */
+@media (max-width: 899px) and (max-aspect-ratio: 1/1) {
+  .grain {
+    animation: none;
+    /* Normal blending keeps it a texture rather than a composited blend group
+       that has to be re-resolved every time the hero canvas repaints. */
+    mix-blend-mode: normal;
+    opacity: 0.035;
+  }
+}
+
 /* Token-driven so it stays correct in the light theme too. */
 .vignette {
   z-index: 59;

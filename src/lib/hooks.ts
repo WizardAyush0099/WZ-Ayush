@@ -162,6 +162,18 @@ export function useIsPortrait(): boolean {
   return useMediaQuery("(max-aspect-ratio: 5/4)");
 }
 
+/**
+ * True when the visitor is on a phone-sized portrait screen.
+ *
+ * Width-based on purpose: the studio's Phone preview is a 390px iframe on a
+ * desktop, and it has to show the phone hero for the owner to edit it. A wide
+ * desktop window — and a phone held sideways — keep the desktop hero, which is
+ * the framing that film was made for.
+ */
+export function useIsPhoneView(): boolean {
+  return useMediaQuery("(max-width: 899px) and (max-aspect-ratio: 1/1)");
+}
+
 /** True when a precise pointer is available (desktop). */
 export function useHasFinePointer(): boolean {
   return useMediaQuery("(hover: hover) and (pointer: fine)");

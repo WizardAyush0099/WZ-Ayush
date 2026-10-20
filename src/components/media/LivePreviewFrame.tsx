@@ -46,6 +46,15 @@ export default function LivePreviewFrame({
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
+  /**
+   * A framed site is a whole second page — six of them on the homepage shelf
+   * are six pages' worth of requests and layout. The frame is therefore mounted
+   * only once its card is near the viewport, and stays mounted after that so a
+   * scroll back does not reload it. `loading="lazy"` alone was not enough: the
+   * shelf lays the blocks out side by side, so browsers fetched them long
+   * before the visitor had scrolled to them.
+   */
+  const [nearView, setNearView] = useState(false);
 
   // Measure the box the frame has to fill. A ResizeObserver (rather than a
   // window listener) also catches the pinned shelf resizing its blocks.
@@ -72,6 +81,30 @@ export default function LivePreviewFrame({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (nearView) return;
+    const el = wrapRef.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setNearView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setNearView(true);
+          observer.disconnect();
+        }
+      },
+      // Start a little before it is visible — including sideways, because the
+      // shelf slides horizontally — so the frame has painted by the time the
+      // card is on screen.
+      { rootMargin: "480px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [nearView]);
+
   const scaled = size.width >= minDesignWidth;
   const scale = scaled && size.width ? size.width / designWidth : 1;
   // The iframe is laid out larger than its box on purpose — the transform is
@@ -84,21 +117,23 @@ export default function LivePreviewFrame({
     // flow block or an absolutely-placed overlay, and the iframe inside stays
     // in normal flow with an explicit width/height so the transform is the only
     // thing scaling it.
-    <div ref={wrapRef} className={`overflow-hidden bg-white ${className}`}>
-      <iframe
-        src={src}
-        title={title}
-        loading="lazy"
-        tabIndex={-1}
-        aria-hidden="true"
-        style={{
-          width: frameWidth ? `${frameWidth}px` : "100%",
-          height: frameHeight ? `${frameHeight}px` : "100%",
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-        }}
-        className="pointer-events-none block border-0"
-      />
+    <div ref={wrapRef} className={`overflow-hidden bg-ink-950 ${className}`}>
+      {nearView ? (
+        <iframe
+          src={src}
+          title={title}
+          loading="lazy"
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{
+            width: frameWidth ? `${frameWidth}px` : "100%",
+            height: frameHeight ? `${frameHeight}px` : "100%",
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+          className="pointer-events-none block border-0"
+        />
+      ) : null}
     </div>
   );
 }

@@ -101,6 +101,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
             ref={closeRef}
             type="button"
             onClick={close}
+            data-sfx="close"
             aria-label="Close image viewer"
             className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-bone/20 text-bone transition-colors duration-300 hover:border-blood-500/70 sm:right-8 sm:top-8"
           >
@@ -135,6 +136,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => step(-1)}
+                data-sfx="select"
                 aria-label="Previous image"
                 className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-bone/20 text-bone transition-colors duration-300 hover:border-blood-500/70 sm:left-8"
               >
@@ -143,6 +145,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => step(1)}
+                data-sfx="select"
                 aria-label="Next image"
                 className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-bone/20 text-bone transition-colors duration-300 hover:border-blood-500/70 sm:right-8"
               >

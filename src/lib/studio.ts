@@ -283,6 +283,54 @@ export const MOTION_FIELDS: Array<{
   { key: "runSpeed", label: "Run speed", min: 0.6, max: 1.4, step: 0.01, hint: "Global trim on every scroll-driven run: 1.2 plays them 20% faster." },
 ];
 
+/**
+ * ============================================================================
+ *  THE PHONE HERO — its own film, its own numbers
+ * ============================================================================
+ *  The homepage has two heroes: the desktop run (421 wide frames) and the
+ *  portrait run built from `PH Hero/ph1 + ph2 + ph3` (240 stills, 640px wide).
+ *  They are deliberately NOT one config with a breakpoint baked in: a phone
+ *  needs a shorter run, no slow scrub (it fights touch scrolling) and no
+ *  pointer depth, and the owner should be able to tune the phone without
+ *  touching the desktop film. The media itself is `site.mobileMedia` on the
+ *  Artwork tab; these are the numbers that decide how it plays.
+ * ============================================================================
+ */
+export type StudioMobileHero = {
+  /** Off falls back to the desktop hero on phones. */
+  enabled: boolean;
+  /** 1 … 10 — screens of scroll the phone run takes. */
+  scrollVh: number;
+  /** 1 … 1.4 — how far the camera pushes into the frame (none at 1). */
+  dolly: number;
+  /** 0 … 3 — gyro/touch depth. 0 keeps the phone perfectly flat. */
+  parallax: number;
+  /** 70 … 100 — the stage's height as a percentage of the screen. */
+  heightPct: number;
+};
+
+export const DEFAULT_MOBILE_HERO: StudioMobileHero = {
+  enabled: true,
+  scrollVh: 3.2,
+  dolly: 1.06,
+  parallax: 0.6,
+  heightPct: 100,
+};
+
+export const MOBILE_MOTION_FIELDS: Array<{
+  key: Exclude<keyof StudioMobileHero, "enabled">;
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  hint: string;
+}> = [
+  { key: "scrollVh", label: "Phone run length", min: 1, max: 10, step: 0.1, hint: "Screens of scroll the phone's 3D run takes before the page releases." },
+  { key: "dolly", label: "Phone dolly", min: 1, max: 1.4, step: 0.01, hint: "How far the camera pushes into the phone's film. 1 is a still frame." },
+  { key: "parallax", label: "Phone parallax", min: 0, max: 3, step: 0.05, hint: "Gyro and touch depth on the phone's film. 0 keeps it perfectly flat." },
+  { key: "heightPct", label: "Phone stage height", min: 70, max: 100, step: 1, hint: "How much of the screen the phone's film fills. Under 100 leaves a dark band." },
+];
+
 export type StudioEffects = {
   /** The site's atmosphere: film grain, vignette, embers and hero haze. */
   grain: boolean;
@@ -338,6 +386,8 @@ export type StudioDoc = {
   order: string[];
   stages: Stage[];
   motion: StudioMotion;
+  /** The phone hero's own run — independent of the desktop `motion` numbers. */
+  mobile: StudioMobileHero;
   effects: StudioEffects;
 };
 
@@ -355,6 +405,7 @@ function emptyStudio(): StudioDoc {
     order: defaultOrder(),
     stages: [],
     motion: { ...DEFAULT_MOTION },
+    mobile: { ...DEFAULT_MOBILE_HERO },
     effects: { ...DEFAULT_EFFECTS },
   };
 }
@@ -505,13 +556,22 @@ export function normaliseStudio(input: unknown): StudioDoc {
     motion[field.key] = number(motionRaw[field.key], field.min, field.max, DEFAULT_MOTION[field.key]);
   });
 
+  const mobileRaw = (raw.mobile ?? {}) as Record<string, unknown>;
+  const mobile: StudioMobileHero = {
+    enabled: bool(mobileRaw.enabled, DEFAULT_MOBILE_HERO.enabled),
+    scrollVh: number(mobileRaw.scrollVh, 1, 10, DEFAULT_MOBILE_HERO.scrollVh),
+    dolly: number(mobileRaw.dolly, 1, 1.4, DEFAULT_MOBILE_HERO.dolly),
+    parallax: number(mobileRaw.parallax, 0, 3, DEFAULT_MOBILE_HERO.parallax),
+    heightPct: number(mobileRaw.heightPct, 70, 100, DEFAULT_MOBILE_HERO.heightPct),
+  };
+
   const effectsRaw = (raw.effects ?? {}) as Record<string, unknown>;
   const effects = {} as StudioEffects;
   EFFECT_FIELDS.forEach((field) => {
     effects[field.key] = bool(effectsRaw[field.key], DEFAULT_EFFECTS[field.key]);
   });
 
-  return { boxes, hidden, order, stages, motion, effects };
+  return { boxes, hidden, order, stages, motion, mobile, effects };
 }
 
 /* -------------------------------------------------------------------------- */

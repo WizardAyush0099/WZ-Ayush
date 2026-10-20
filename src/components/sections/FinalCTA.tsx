@@ -6,6 +6,7 @@ import { linkTo } from "../../lib/router";
 import { useSiteData } from "../../lib/siteData";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
+import DrawCrest from "../fx/DrawCrest";
 
 export default function FinalCTA() {
   const site = useSiteData();
@@ -101,6 +102,16 @@ export default function FinalCTA() {
           opacity: hover ? 1 : 0.35,
         }}
       />
+
+      {/* The crest is summoned stroke by stroke as the section arrives, then
+          turns with the page's scroll behind the copy. The outer box does the
+          centering; the crest owns its own transform for the spin. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[min(96vw,44rem)] w-[min(96vw,44rem)] -translate-x-1/2 -translate-y-1/2"
+      >
+        <DrawCrest className="h-full w-full opacity-[0.26]" delay={0.1} />
+      </div>
 
       <div data-tune="item-cta-panel" className="shell relative z-10 py-24 text-center">
         <RevealText stagger className="flex flex-col items-center gap-7">

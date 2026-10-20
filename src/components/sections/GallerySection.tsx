@@ -150,6 +150,7 @@ export default function GallerySection() {
                 type="button"
                 data-trail-frame={i}
                 onClick={() => open(stills, i)}
+                data-sfx="open"
                 data-cursor="media"
                 data-cursor-label="View"
                 aria-label={`Open ${slot.caption || "this frame"} full-screen`}
@@ -215,6 +216,7 @@ export default function GallerySection() {
                   <button
                     type="button"
                     onClick={() => open(stills, wide.length + i)}
+                    data-sfx="open"
                     data-cursor="media"
                     data-cursor-label="View"
                     className="absolute inset-0 z-10"
@@ -243,6 +245,7 @@ export default function GallerySection() {
                   <button
                     type="button"
                     onClick={() => open(stills, wide.length + uploaded.length + i)}
+                    data-sfx="open"
                     data-cursor="media"
                     data-cursor-label="View"
                     className="absolute inset-0 z-10"

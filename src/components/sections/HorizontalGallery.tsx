@@ -190,6 +190,7 @@ export default function HorizontalGallery() {
                     />
                     <a
                       href={linkTo(`/template/${template.id}`)}
+                      data-sfx="open"
                       className="absolute inset-0 z-10 flex items-end justify-center pb-5 opacity-0 transition-opacity duration-500 focus-visible:opacity-100 group-hover:opacity-100"
                       aria-label={`Open the ${template.name} template full size`}
                     >

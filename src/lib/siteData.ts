@@ -2,6 +2,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import {
   assetDefaults,
   mediaDefaults,
+  mobileMediaDefaults,
   projects as defaultProjects,
   type AssetKey,
   type MediaConfig,
@@ -58,7 +59,10 @@ import { dataApiUrl, getVisitorId } from "./telemetry";
 
 export type SiteConfig = {
   assets: Record<AssetKey, string>;
+  /** The desktop hero's film. */
   media: MediaConfig;
+  /** The phone hero's own film — see `mobileMediaDefaults` in content.ts. */
+  mobileMedia: MediaConfig;
 };
 
 export type SiteData = SiteConfig & {
@@ -70,6 +74,7 @@ export type SiteData = SiteConfig & {
 export const DEFAULT_SITE_DATA: SiteData = {
   assets: { ...assetDefaults },
   media: { ...mediaDefaults },
+  mobileMedia: { ...mobileMediaDefaults },
   projects: defaultProjects.map((p) => ({ ...p })),
   slots: imageSlotDefaults.map((s) => ({ ...s, film: s.film ? { ...s.film } : null })),
   studio: cloneDefaultStudio(),
@@ -105,8 +110,13 @@ export const DEFAULT_SITE_DATA: SiteData = {
  * be read right after the hero would sit above the footer for every returning
  * visitor. The key moves so the committed order (and the band's place in it)
  * reaches them. Dashboard edits made from here on persist normally.
+ *
+ * v7: the phone hero — a separate portrait film plus its own motion numbers.
+ * A v6 document has no `mobileMedia` and no `studio.mobile`, so a returning
+ * visitor's cached copy would keep the phone on the desktop run. The key moves
+ * so the committed phone film reaches them.
  */
-const STORAGE_KEY = "wz.site.v6";
+const STORAGE_KEY = "wz.site.v7";
 const CHANGE_EVENT = "wz:site-changed";
 
 type Listener = () => void;
@@ -147,15 +157,27 @@ export function normaliseMedia(input: unknown, base: MediaConfig): MediaConfig {
 
   const count = Number(source.frameCount);
 
+  /*
+   * A missing field falls back to the committed value; an explicit empty
+   * string clears it. The distinction matters: an old shared document (or a
+   * partial local document) has no `media.frameDir` at all, and treating that
+   * as "cleared" left the hero with mode "sequence" and no folder — it fell
+   * through to the heavy procedural scene instead of the shipped film. The
+   * phone's `mobileMedia` would hit exactly that on every deployment whose
+   * stored config predates it.
+   */
+  const text = (value: unknown, fallback: string): string =>
+    typeof value === "string" ? value : fallback;
+
   return {
     mode,
-    videoSrc: source.videoSrc ? normaliseAssetPath(source.videoSrc, "") : "",
-    frameDir: source.frameDir ? normaliseAssetPath(source.frameDir, "") : "",
+    videoSrc: source.videoSrc == null ? base.videoSrc : normaliseAssetPath(source.videoSrc, ""),
+    frameDir: source.frameDir == null ? base.frameDir : normaliseAssetPath(source.frameDir, ""),
     frameCount: Number.isFinite(count) ? Math.max(0, Math.min(1200, Math.round(count))) : base.frameCount,
     frameExt,
-    poster: source.poster ? normaliseAssetPath(source.poster, "") : "",
-    scrollLength: asString(source.scrollLength, base.scrollLength).trim() || base.scrollLength,
-    sourceNote: asString(source.sourceNote, base.sourceNote),
+    poster: source.poster == null ? base.poster : normaliseAssetPath(source.poster, ""),
+    scrollLength: text(source.scrollLength, base.scrollLength).trim() || base.scrollLength,
+    sourceNote: text(source.sourceNote, base.sourceNote),
   };
 }
 
@@ -311,6 +333,7 @@ function applyDocument(doc: Partial<SiteData> | null): void {
   data = {
     assets: normaliseAssets(doc.assets, DEFAULT_SITE_DATA.assets),
     media: normaliseMedia(doc.media, DEFAULT_SITE_DATA.media),
+    mobileMedia: normaliseMedia(doc.mobileMedia, DEFAULT_SITE_DATA.mobileMedia),
     projects: normaliseProjects(doc.projects, DEFAULT_SITE_DATA.projects),
     slots: normaliseSlots(doc.slots, DEFAULT_SITE_DATA.slots),
     studio: normaliseStudio(doc.studio),
@@ -364,6 +387,7 @@ function broadcast(): void {
     channel.postMessage({
       assets: data.assets,
       media: data.media,
+      mobileMedia: data.mobileMedia,
       projects: data.projects,
       slots: data.slots,
       studio: data.studio,
@@ -421,6 +445,7 @@ export async function pullRemote(): Promise<void> {
     const next: SiteData = {
       assets: normaliseAssets(raw.config?.assets, data.assets),
       media: normaliseMedia(raw.config?.media, data.media),
+      mobileMedia: normaliseMedia(raw.config?.mobileMedia, data.mobileMedia),
       projects: normaliseProjects(raw.projects, data.projects),
       slots: normaliseSlots(raw.config?.slots, data.slots),
       studio: normaliseStudio(raw.config?.studio ?? data.studio),
@@ -447,6 +472,7 @@ async function pushRemote(): Promise<boolean> {
         config: {
           assets: data.assets,
           media: data.media,
+          mobileMedia: data.mobileMedia,
           slots: data.slots,
           studio: data.studio,
         },
@@ -508,6 +534,7 @@ export function updateConfig(patch: Partial<SiteConfig>): void {
     ...data,
     assets: normaliseAssets({ ...data.assets, ...patch.assets }, DEFAULT_SITE_DATA.assets),
     media: normaliseMedia({ ...data.media, ...patch.media }, data.media),
+    mobileMedia: normaliseMedia({ ...data.mobileMedia, ...patch.mobileMedia }, data.mobileMedia),
   });
 }
 
@@ -586,6 +613,7 @@ export function resetSiteData(): void {
   commit({
     assets: { ...DEFAULT_SITE_DATA.assets },
     media: { ...DEFAULT_SITE_DATA.media },
+    mobileMedia: { ...DEFAULT_SITE_DATA.mobileMedia },
     projects: DEFAULT_SITE_DATA.projects.map((p) => ({ ...p })),
     slots: DEFAULT_SITE_DATA.slots.map((s) => ({ ...s, film: s.film ? { ...s.film } : null })),
     studio: cloneDefaultStudio(),
@@ -604,6 +632,7 @@ export function exportSiteDataJson(): string {
     {
       assetDefaults: current.assets,
       mediaDefaults: current.media,
+      mobileMediaDefaults: current.mobileMedia,
       projects: current.projects,
       imageSlotDefaults: current.slots,
       studioDefaults: current.studio,
@@ -649,6 +678,12 @@ export function useSectionSlots(section: ImageSectionId): ImageSlot[] {
 export function useMediaConfig(): MediaConfig {
   const site = useSiteData();
   return useMemo(() => site.media, [site.media]);
+}
+
+/** React helper — the phone hero's film. */
+export function useMobileMediaConfig(): MediaConfig {
+  const site = useSiteData();
+  return useMemo(() => site.mobileMedia, [site.mobileMedia]);
 }
 
 export type { AssetKey, ImageSectionId, ImageSlot, MediaConfig, Project, SlotAnimation, SlotFilm };

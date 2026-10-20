@@ -4,6 +4,7 @@ import { templateById, templates, type SiteTemplate } from "../../data/templates
 import { getThemeById, SITE_THEMES, type ThemeId } from "../../lib/theme";
 import { ORDER_STATUSES, submitOrder, type Order } from "../../lib/orders";
 import { track } from "../../lib/telemetry";
+import { playSfx } from "../../lib/sfx";
 import { briefToMessage, buildWhatsAppUrl } from "../../lib/whatsapp";
 
 const fieldClass =
@@ -191,6 +192,8 @@ export default function OrderForm({ templateId, onSelectTemplate, theme, onSelec
 
     track("note", `Brief submitted — ${order.websiteType || "untyped"} / ${order.templateName}`);
     setPlaced(order);
+    // The receipt deserves its own moment: taiko, bell and a rising run.
+    playSfx("success");
   };
 
   const reset = () => {
