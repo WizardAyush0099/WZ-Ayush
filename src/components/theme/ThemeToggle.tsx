@@ -72,7 +72,7 @@ export default function ThemeToggle({ align = "right" }: { align?: "left" | "rig
         <div
           role="menu"
           aria-label="Choose a theme"
-          className={`absolute top-[calc(100%+12px)] z-50 w-[190px] border border-bone/15 bg-ink-950/95 p-1.5 backdrop-blur-xl ${
+          className={`pop-in absolute top-[calc(100%+12px)] z-50 w-[190px] border border-bone/15 bg-ink-950/95 p-1.5 backdrop-blur-xl ${
             align === "right" ? "right-0" : "left-0"
           }`}
         >
@@ -80,7 +80,7 @@ export default function ThemeToggle({ align = "right" }: { align?: "left" | "rig
             Appearance
           </p>
           <ul className="flex flex-col">
-            {SITE_THEMES.map((id) => {
+            {SITE_THEMES.map((id, i) => {
               const option = themeDef(id);
               const active = option.id === theme;
               return (
@@ -93,7 +93,9 @@ export default function ThemeToggle({ align = "right" }: { align?: "left" | "rig
                       setTheme(option.id);
                       setOpen(false);
                     }}
-                    className={`flex w-full items-center gap-2.5 px-2 py-2 text-left transition-colors duration-200 ${
+                    /* The rows arrive one after the other, on the same spring. */
+                    style={{ animationDelay: `${80 + i * 45}ms` }}
+                    className={`pop-in flex w-full items-center gap-2.5 px-2 py-2 text-left transition-colors duration-200 ${
                       active ? "bg-blood-950/40" : "hover:bg-bone/5"
                     }`}
                   >

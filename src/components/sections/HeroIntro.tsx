@@ -82,7 +82,7 @@ export default function HeroIntro() {
                   <a
                     href={linkTo("/builder")}
                     data-cursor="hover"
-                    className="btn border-blood-600/70 bg-blood-600/15 px-6 py-4 text-[11px] sm:text-[12px]"
+                    className="btn glow border-blood-600/70 bg-blood-600/15 px-6 py-4 text-[11px] sm:text-[12px]"
                   >
                     {heroContent.primaryCta}
                     <span aria-hidden="true">→</span>

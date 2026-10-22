@@ -4,6 +4,7 @@ import { useSiteData } from "../../lib/siteData";
 import { gsap } from "../../lib/gsap";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 import { RevealImage, RevealText } from "../common/Reveal";
+import RippleSurface from "../fx/RippleSurface";
 
 export default function AboutSection() {
   const site = useSiteData();
@@ -36,7 +37,10 @@ export default function AboutSection() {
       className="relative z-10 overflow-hidden bg-ink-950 py-28 md:py-40 lg:py-48"
       aria-labelledby="about-title"
     >
-      <div className="shell">
+      {/* A press anywhere on this band blooms where it landed. */}
+      <RippleSurface />
+
+      <div className="shell relative z-10">
         <div className="grid gap-14 md:grid-cols-12 md:gap-10">
           {/* Portrait with layered typography */}
           <div data-tune="item-about-portrait" className="relative md:col-span-5">

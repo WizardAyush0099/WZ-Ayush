@@ -7,6 +7,7 @@ import { useSiteData } from "../../lib/siteData";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
 import DrawCrest from "../fx/DrawCrest";
+import RippleSurface from "../fx/RippleSurface";
 
 export default function FinalCTA() {
   const site = useSiteData();
@@ -92,6 +93,9 @@ export default function FinalCTA() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-ink-950/85 via-ink-950/60 to-ink-950" />
 
+      {/* Every press inside this band blooms where it landed. */}
+      <RippleSurface />
+
       {/* Cursor-following red light */}
       <div
         ref={lightRef}
@@ -129,7 +133,7 @@ export default function FinalCTA() {
             data-cursor="hover"
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            className="group relative inline-flex items-center gap-4 overflow-hidden border border-bone/25 px-10 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-all duration-500 ease-silk hover:border-blood-500/80 hover:px-14"
+            className="glow group relative inline-flex items-center gap-4 overflow-hidden border border-bone/25 px-10 py-5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-all duration-500 ease-silk hover:border-blood-500/80 hover:px-14"
           >
             <span
               className="absolute inset-0 -z-10 origin-left scale-x-0 bg-blood-700/40 transition-transform duration-700 ease-silk group-hover:scale-x-100"

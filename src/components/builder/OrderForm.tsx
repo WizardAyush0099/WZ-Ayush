@@ -278,7 +278,11 @@ export default function OrderForm({ templateId, onSelectTemplate, theme, onSelec
       <div className="border-b border-bone/10 px-5 py-5 sm:px-7">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <span className="font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
-            Step {step + 1} of {builder.steps.length}
+            Step{" "}
+            <span key={step} className="count-pop inline-block tabular-nums text-bone">
+              {step + 1}
+            </span>{" "}
+            of {builder.steps.length}
           </span>
           <span className="font-body text-[11px] text-bone-muted">
             {builder.steps[step].title}
@@ -724,7 +728,11 @@ export default function OrderForm({ templateId, onSelectTemplate, theme, onSelec
 
         <div className="flex flex-wrap items-center gap-4">
           <span className="font-body text-[11px] text-bone-dim">
-            Step {step + 1} / {builder.steps.length}
+            Step{" "}
+            <span key={step} className="count-pop inline-block tabular-nums text-bone-muted">
+              {step + 1}
+            </span>{" "}
+            / {builder.steps.length}
           </span>
           {step < builder.steps.length - 1 ? (
             <button
@@ -744,7 +752,7 @@ export default function OrderForm({ templateId, onSelectTemplate, theme, onSelec
           ) : (
             <button
               type="submit"
-              className="group relative inline-flex items-center gap-3 overflow-hidden border border-blood-600/70 bg-blood-600/15 px-7 py-3.5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-500 ease-silk hover:border-blood-500"
+              className="group relative inline-flex items-center gap-3 overflow-hidden border border-blood-600/70 bg-blood-600/15 px-7 py-3.5 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-all duration-500 ease-silk hover:border-blood-500 glow"
             >
               Send the brief
               <span aria-hidden="true" className="transition-transform duration-500 ease-silk group-hover:translate-x-1">

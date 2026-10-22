@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { hero } from "../data/content";
 import { gsap } from "../lib/gsap";
 import { usePrefersReducedMotion } from "../lib/hooks";
+import WZLogo from "./brand/WZLogo";
 
 /**
  * ============================================================================
@@ -167,9 +168,9 @@ export default function Preloader({ onDone }: { onDone: () => void }) {
         ref={contentRef}
         className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 px-6"
       >
-        <span className="font-accent text-[13px] tracking-[0.5em] text-blood-500/80">
-          {hero.accent}
-        </span>
+        {/* The seal leads the card: the tab icon, the header mark and this
+            are one drawing, so the site introduces itself before it speaks. */}
+        <WZLogo className="h-20 w-20 drop-shadow-[0_0_28px_rgba(0,0,0,0.55)] sm:h-24 sm:w-24" />
         {/* Not a heading: this overlay is `aria-hidden`, and the page already
             has exactly one <h1> — the headline in the intro section. The
             wrapper is the mask the characters rise out of. */}

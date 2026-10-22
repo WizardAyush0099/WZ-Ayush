@@ -3,7 +3,7 @@ import { linkTo } from "../../lib/router";
 import { scrollToId } from "../../lib/scroll";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import DockText from "../fx/DockText";
-import StudioMark from "../brand/StudioMark";
+import WZLogo from "../brand/WZLogo";
 
 type FooterLink = {
   label: string;
@@ -53,7 +53,7 @@ export default function Footer() {
                 (`.text-shimmer`) and each one swells as the pointer passes it
                 (`DockText`). */}
             <div className="flex items-center gap-3">
-              <StudioMark className="h-9 w-9 shrink-0 text-bone-muted sm:h-10 sm:w-10" />
+              <WZLogo className="h-14 w-14 shrink-0 sm:h-16 sm:w-16" />
               <span className="display block text-4xl tracking-[0.1em] sm:text-5xl">
                 <DockText text={meta.studio} className="text-shimmer" />
               </span>

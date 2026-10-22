@@ -1,18 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- The tab icon is the seal, cropped to what survives at 16px: the disc,
+       the monogram and the blade. The wordmark is left to the full logo. -->
   <defs>
-    <radialGradient id="f" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ff5a5a"/>
-      <stop offset="55%" stop-color="#b31115"/>
-      <stop offset="100%" stop-color="#2a0406"/>
-    </radialGradient>
+    <linearGradient id="f-blade" x1="0" y1="1" x2="0.9" y2="0">
+      <stop offset="0%" stop-color="#4d0509"/>
+      <stop offset="38%" stop-color="#a50d17"/>
+      <stop offset="72%" stop-color="#d92a33"/>
+      <stop offset="100%" stop-color="#6d0810"/>
+    </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#050304"/>
-  <circle cx="32" cy="32" r="20" fill="none" stroke="url(#f)" stroke-width="2"/>
-  <circle cx="32" cy="32" r="6" fill="#e0171c"/>
-  <circle cx="32" cy="32" r="12" fill="none" stroke="#8c0b10" stroke-width="1.5"/>
-  <g stroke="#e0171c" stroke-width="3" stroke-linecap="round">
-    <line x1="32" y1="32" x2="32" y2="16"/>
-    <line x1="32" y1="32" x2="46" y2="40"/>
-    <line x1="32" y1="32" x2="18" y2="40"/>
-  </g>
+  <circle cx="200" cy="200" r="200" fill="#fbf9f5"/>
+  <text x="148" y="250" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="215" fill="#12100e">W</text>
+  <text x="268" y="250" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="215" fill="#12100e">Z</text>
+  <path d="M 84 278 C 92 270 100 270 108 266 L 336 108 C 346 102 352 110 346 118 L 116 288 C 106 294 94 294 88 286 C 84 282 82 282 84 278 Z" fill="url(#f-blade)"/>
 </svg>

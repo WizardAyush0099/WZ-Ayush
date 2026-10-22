@@ -1,28 +1,30 @@
-import { useLayoutEffect, useRef } from "react";
-import { gsap } from "../../lib/gsap";
+import { useEffect, useRef } from "react";
 import { usePrefersReducedMotion } from "../../lib/hooks";
 
 /**
  * ============================================================================
  *  ODOMETER — a figure that rolls into place
  * ============================================================================
- *  "06" does not fade in here; each column spins upward like the drum in a
- *  mechanical counter and stops on its digit. It is the smallest possible
- *  premium effect and it costs almost nothing: ten spans per column, one
- *  transform each, played once when the figure first enters the viewport.
+ *  "04" does not fade in; each digit drops into its slot from one place above
+ *  the line, staggered column by column, like the drums of a mechanical
+ *  counter. It is the smallest possible premium effect and it costs almost
+ *  nothing: one span per digit, one transform each, played once when the
+ *  figure first enters the viewport.
  *
- *  Three details:
+ *  The important part is what it looks like when nothing happens. The correct
+ *  digit is *rendered* in the slot — the animation only ever moves it and lets
+ *  go — so reduced motion, no JavaScript, a broken observer and a scroll
+ *  position below the fold all show the right number. There is no "parked
+ *  position" to compute and therefore no parked position to get wrong: the
+ *  resting state of the markup is the answer, and the motion is a round trip
+ *  away from it and back.
  *
- *    no layout shift   every column is exactly one line tall and clips its
- *                      drum, so the figure occupies its final width and height
- *                      from the first paint — nothing jumps as it settles.
- *    static fallback   the drum is *rendered* already parked on its digit, so
- *                      reduced motion, no JavaScript and a scroll position
- *                      below the fold all show the correct number. The tween
- *                      only ever replays that journey.
- *    the suffix        only the digits roll. Anything around them (the "D" in
- *                      "3D", a "+", a unit) is rendered as ordinary text, so a
- *                      stat never has to be rewritten just to be countable.
+ *  The roll is CSS (`.odo-col.is-rolling` in index.css), triggered once by an
+ *  IntersectionObserver. No GSAP, no ScrollTrigger, no timers left running.
+ *
+ *  The suffix: only the digits roll. Anything around them (the "D" in "3D", a
+ *  "+", a unit) is rendered as ordinary text, so a stat never has to be
+ *  rewritten just to be countable.
  * ============================================================================
  */
 
@@ -30,16 +32,11 @@ type OdometerProps = {
   /** The figure as written on the page: "04", "3D", "128+". */
   value: string;
   className?: string;
-  /** Seconds for one column. */
+  /** Seconds for one column's roll. */
   durationS?: number;
 };
 
-/** Two cycles of 0–9, so a column can travel a full turn and land on its digit. */
-const DRUM = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-/** Percent of the drum's own height that one digit occupies. */
-const STEP = 100 / DRUM.length;
-
-export default function Odometer({ value, className, durationS = 1.15 }: OdometerProps) {
+export default function Odometer({ value, className, durationS = 1.1 }: OdometerProps) {
   const rootRef = useRef<HTMLSpanElement>(null);
   const reduced = usePrefersReducedMotion();
 
@@ -49,33 +46,29 @@ export default function Odometer({ value, className, durationS = 1.15 }: Odomete
   const digits = match?.[2] ?? "";
   const suffix = match?.[3] ?? "";
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = rootRef.current;
     if (!root || reduced || !digits) return;
 
-    const drums = Array.from(root.querySelectorAll<HTMLElement>("[data-drum]"));
-    if (!drums.length) return;
+    const columns = Array.from(root.querySelectorAll<HTMLElement>("[data-roll]"));
+    if (!columns.length) return;
 
-    const ctx = gsap.context(() => {
-      drums.forEach((drum, i) => {
-        const digit = Number(drum.dataset.digit ?? "0");
-        gsap.fromTo(
-          drum,
-          // Start one full turn earlier on the drum: the same digit, ten
-          // digits away, so every column visibly travels before it stops.
-          { yPercent: -(STEP * digit) },
-          {
-            yPercent: -(STEP * digit) - 100 / 2,
-            duration: durationS,
-            ease: "power4.out",
-            delay: i * 0.075,
-            scrollTrigger: { trigger: root, start: "top 92%", once: true },
-          },
-        );
-      });
-    }, root);
-
-    return () => ctx.revert();
+    let fired = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (fired || !entries.some((entry) => entry.isIntersecting)) return;
+        fired = true;
+        observer.disconnect();
+        columns.forEach((column, i) => {
+          column.style.setProperty("--roll-duration", `${durationS}s`);
+          column.style.setProperty("--roll-delay", `${i * 0.08}s`);
+          column.classList.add("is-rolling");
+        });
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
   }, [digits, durationS, reduced]);
 
   if (!digits) {
@@ -84,28 +77,13 @@ export default function Odometer({ value, className, durationS = 1.15 }: Odomete
 
   return (
     <span ref={rootRef} className={className}>
-      {/* The drum is decoration; the figure itself is read from here. */}
+      {/* The figure is read from here, whole — never digit by digit. */}
       <span className="sr-only">{value}</span>
       <span aria-hidden="true">
         {prefix}
         {Array.from(digits).map((digit, i) => (
-          <span key={`${digit}-${i}`} className="odo-col">
-            <span
-              className="odo-drum"
-              data-drum=""
-              data-digit={digit}
-              /*
-               * Parked on the landing digit before any animation runs, so the
-               * correct figure is what the browser paints first.
-               */
-              style={{ transform: `translateY(${-STEP * (10 + Number(digit))}%)` }}
-            >
-              {DRUM.map((n, j) => (
-                <span key={j} className="odo-digit">
-                  {n}
-                </span>
-              ))}
-            </span>
+          <span key={`${digit}-${i}`} data-roll="" className="odo-col">
+            <span className="odo-digit">{digit}</span>
           </span>
         ))}
         {suffix}

@@ -579,8 +579,9 @@ a:focus:not(:focus-visible) {
      .tilt         the card's lean. `.tilt-glare` adds the specular light the
                    pointer drags across the surface; `[data-tilt-layer]`
                    children slide against the lean to give the frame depth.
-     .odo-col      one column of a rolling counter. The drum is twice 0–9 and
-                   the column clips it to exactly one digit tall.
+     .odo-col      one slot of a rolling counter, clipping its digit to exactly
+                   one line tall. The digit is painted in place; the roll is a
+                   round trip away from that position and back.
      .velocity     the scroll-velocity lean. `--vel` is a number of degrees.
    ============================================================ */
 .tilt {
@@ -613,6 +614,7 @@ a:focus:not(:focus-visible) {
 }
 
 .odo-col {
+  position: relative;
   display: inline-block;
   overflow: hidden;
   height: 1em;
@@ -621,17 +623,31 @@ a:focus:not(:focus-visible) {
   vertical-align: -0.06em;
 }
 
-.odo-drum {
-  display: block;
-  will-change: transform;
-}
-
 .odo-digit {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 1em;
   line-height: 1em;
+}
+
+/*
+ * The roll. The correct digit is already painted in the slot — this only
+ * lifts it in from one place above and lets go, so the resting state of the
+ * markup is the right number and the animation is a round trip away from it.
+ * `both` keeps each column hidden until its own delay elapses, which is what
+ * makes the columns read as a stagger rather than a single block arriving.
+ */
+.odo-col.is-rolling .odo-digit {
+  animation: odo-roll var(--roll-duration, 1.1s) cubic-bezier(0.22, 1, 0.36, 1)
+    var(--roll-delay, 0s) both;
+  will-change: transform;
+}
+
+@keyframes odo-roll {
+  from { transform: translateY(-100%); opacity: 0; }
+  25% { opacity: 1; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .velocity {
@@ -802,4 +818,154 @@ a:focus:not(:focus-visible) {
 html.studio-picking,
 html.studio-picking * {
   cursor: crosshair !important;
+}
+
+/* ============================================================
+   MICRO-INTERACTION KIT — glow, roll, morph, ripple, spring
+   ============================================================
+   The small interactions the real page carries: the breathing halo on its
+   primary calls to action, the figure that rolls when the brief advances a
+   step, the glyph that morphs as the menu opens, the ring that blooms where a
+   band is pressed, and the spring every control gives under the finger. All
+   one easing language, all transform / opacity / colour only, so nothing here
+   ever asks the browser to re-lay-out the page around it.
+
+   `--ease-spring` is intentionally an overshooting curve: a button press should
+   arrive a fraction late and settle, which is what makes a control feel
+   physical rather than merely faded. `--ease-ui` is the calm curve for
+   anything the eye has to read while it moves.
+   ============================================================ */
+:root {
+  --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Every control on the site gives under the finger and springs back. The scale
+   is tiny on purpose — 0.975 reads as give, 0.9 reads as a broken hit target.
+   The element selector sits below any class-level transition a component sets,
+   so a control that declares its own never loses it; inline transforms (GSAP's
+   magnetic buttons) also win, as they should. */
+button:not(:disabled) {
+  transition: transform 260ms var(--ease-spring);
+  /* No grey flash on a tap — this is a dark site and the highlight was white. */
+  -webkit-tap-highlight-color: transparent;
+}
+button:not(:disabled):active,
+.btn:active,
+.glow:active {
+  transform: scale(0.975);
+}
+
+.btn {
+  transition:
+    color 320ms var(--ease-ui),
+    background-color 320ms var(--ease-ui),
+    border-color 320ms var(--ease-ui),
+    box-shadow 320ms var(--ease-ui),
+    transform 260ms var(--ease-spring);
+}
+
+/* --- the glow -------------------------------------------------------------
+   Attention without reflow. A breathing drop-shadow on hover/focus, sized in
+   the theme's own accent, so the control is the same size lit or not — it
+   reads as energy under the button rather than the button inflating.
+   It deliberately declares no `transition` of its own: the control it sits on
+   already owns one (`.btn` carries box-shadow, the closing call carries
+   `transition-all`), and re-declaring it here would quietly take those away. */
+.glow:hover,
+.glow:focus-visible {
+  border-color: rgb(var(--blood-400-rgb) / 0.85);
+  box-shadow:
+    0 14px 44px -16px rgb(var(--blood-500-rgb) / 0.9),
+    0 0 22px -6px rgb(var(--blood-500-rgb) / 0.45);
+  animation: glow-breathe 2s ease-in-out infinite;
+}
+
+@keyframes glow-breathe {
+  0%, 100% { box-shadow: 0 14px 44px -16px rgb(var(--blood-500-rgb) / 0.85), 0 0 18px -8px rgb(var(--blood-500-rgb) / 0.4); }
+  50% { box-shadow: 0 18px 54px -14px rgb(var(--blood-500-rgb) / 1), 0 0 30px -4px rgb(var(--blood-500-rgb) / 0.6); }
+}
+
+/* --- the roll ------------------------------------------------------------- */
+.count-pop {
+  animation: count-pop 360ms var(--ease-spring) both;
+}
+
+@keyframes count-pop {
+  from { opacity: 0; transform: translateY(42%) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- the morph ------------------------------------------------------------
+   One control, two shapes: the header's menu glyph converging into a close
+   mark, so the state of the overlay is never a guess. The lines keep the same
+   centre they will land on, which is why the middle one collapses rather than
+   joining the cross. */
+.morph-icon {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 16px;
+}
+
+.morph-icon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  transition:
+    transform 320ms var(--ease-spring),
+    width 320ms var(--ease-ui),
+    opacity 200ms var(--ease-ui);
+}
+.morph-icon span:nth-child(1) { top: 1.5px; }
+.morph-icon span:nth-child(2) { top: 7.25px; width: 65%; }
+.morph-icon span:nth-child(3) { top: 13px; }
+
+.morph-icon[data-open="true"] span:nth-child(1) {
+  transform: translateY(5.75px) rotate(45deg);
+}
+.morph-icon[data-open="true"] span:nth-child(2) {
+  width: 0;
+  opacity: 0;
+}
+.morph-icon[data-open="true"] span:nth-child(3) {
+  transform: translateY(-5.75px) rotate(-45deg);
+}
+
+/* --- the ripple ----------------------------------------------------------
+   A ring blooming from the point a band was pressed (see RippleSurface). */
+.ripple-ring {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--blood-300-rgb) / 0.9);
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--blood-400-rgb) / 0.35),
+    transparent 78%
+  );
+  pointer-events: none;
+  animation: ripple-bloom 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes ripple-bloom {
+  from { opacity: 0.95; transform: scale(0.35); }
+  to { opacity: 0; transform: scale(16); }
+}
+
+/* --- the spring entrance -------------------------------------------------
+   Panels that belong to a control arrive with the same overshoot the switch
+   uses — the appearance menu and any popover that opens on a press. */
+.pop-in {
+  transform-origin: var(--pop-origin, top center);
+  animation: pop-in 340ms var(--ease-spring) both;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }

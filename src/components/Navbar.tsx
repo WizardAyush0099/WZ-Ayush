@@ -6,7 +6,7 @@ import { useHeroComplete } from "../lib/heroGate";
 import SoundToggle from "./SoundToggle";
 import ThemeToggle from "./theme/ThemeToggle";
 import AuthControls, { MobileAccountBlock } from "./auth/AuthLayer";
-import StudioMark from "./brand/StudioMark";
+import { WZMark } from "./brand/WZLogo";
 
 /**
  * The header.
@@ -138,8 +138,8 @@ export default function Navbar({ ready }: { ready: boolean }) {
             className="group relative z-10 flex items-center gap-2.5"
             aria-label={`${hero.title} — home`}
           >
-            {/* The house seal — the same drawing as the tab icon. */}
-            <StudioMark className="h-6 w-6 shrink-0 text-bone-muted transition-colors duration-500 group-hover:text-bone" />
+            {/* The monogram and its blade, in the page's own ink. */}
+            <WZMark className="h-6 w-10 shrink-0 text-bone-muted transition-[color,transform] duration-500 ease-silk group-hover:-rotate-6 group-hover:text-bone sm:h-7 sm:w-12" title="" />
             <span className="display text-[15px] tracking-[0.28em] text-bone transition-colors duration-300 group-hover:text-blood-400 sm:text-lg">
               {hero.title}
             </span>
@@ -179,7 +179,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
             <a
               href={linkTo("/builder")}
               data-cursor="hover"
-              className="hidden border border-blood-600/70 bg-blood-600/10 px-4 py-2.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-colors duration-300 hover:border-blood-500 hover:bg-blood-600/20 md:inline-block"
+              className="glow hidden border border-blood-600/70 bg-blood-600/10 px-4 py-2.5 font-body text-[11px] font-medium uppercase tracking-wide2 text-bone transition-all duration-300 hover:border-blood-500 hover:bg-blood-600/20 md:inline-block"
             >
               Start a Project
             </a>
@@ -198,17 +198,14 @@ export default function Navbar({ ready }: { ready: boolean }) {
               aria-controls="mobile-menu"
               className="flex h-11 w-11 items-center justify-center xl:hidden"
             >
-              <span className="relative block h-4 w-6">
-                <span
-                  className={`absolute left-0 block h-px w-6 bg-bone transition-all duration-300 ease-silk ${
-                    open ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"
-                  }`}
-                />
-                <span
-                  className={`absolute left-0 block h-px w-6 bg-bone transition-all duration-300 ease-silk ${
-                    open ? "top-1/2 -translate-y-1/2 -rotate-45" : "bottom-0"
-                  }`}
-                />
+              <span
+                className="morph-icon"
+                data-open={open}
+                aria-hidden="true"
+              >
+                <span />
+                <span />
+                <span />
               </span>
             </button>
           </div>
@@ -292,7 +289,7 @@ export default function Navbar({ ready }: { ready: boolean }) {
             href={linkTo("/builder")}
             tabIndex={open ? 0 : -1}
             onClick={() => setOpen(false)}
-            className="pointer-events-auto mt-8 inline-flex items-center justify-center gap-3 border border-blood-600/70 bg-blood-600/15 px-6 py-4 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone"
+            className="pointer-events-auto mt-8 inline-flex items-center justify-center gap-3 border border-blood-600/70 bg-blood-600/15 px-6 py-4 font-body text-[12px] font-medium uppercase tracking-wide2 text-bone transition-[color,border-color,box-shadow] duration-300 glow"
           >
             Start a Project
             <span aria-hidden="true">→</span>
