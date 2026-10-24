@@ -17,7 +17,7 @@ import TiltCard from "../fx/TiltCard";
  *  the six template blocks through the frame one after another — the pages
  *  change with scroll, then release the page when the sixth is reached.
  *
- *  What the blocks hold are the six real templates, each one the shipped HTML
+ *  What the blocks hold are the real templates, each one the shipped HTML
  *  site running live inside its frame, laid out at desktop width and scaled to
  *  the block (see `LivePreviewFrame`). Sized this way, the whole design is on
  *  screen instead of a narrow slice of it, and the frame is inert, so the page
@@ -134,8 +134,8 @@ export default function HorizontalGallery() {
           />
         </div>
         <p className="hidden max-w-[36ch] font-body text-sm text-bone-dim sm:block">
-          Six complete sites, each running live in its frame — scroll through them, then tap
-          any block to open it full size.
+          Seven complete sites, each running live in its frame — scroll through them, then
+          tap any block to open it full size.
         </p>
       </div>
 

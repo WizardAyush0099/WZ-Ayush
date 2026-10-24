@@ -6,6 +6,7 @@ import { RevealText } from "../common/Reveal";
 import SplitReveal from "../fx/SplitReveal";
 import Magnetic from "../fx/Magnetic";
 import DecodeText from "../fx/DecodeText";
+import RotatingText from "../fx/RotatingText";
 
 /**
  * ============================================================================
@@ -73,6 +74,16 @@ export default function HeroIntro() {
           {/* Pitch + actions */}
           <div className="lg:col-span-5 lg:pb-2">
             <RevealText stagger className="flex flex-col gap-7">
+              {/* The one line on the page that keeps changing: the trades the
+                  template shelf is drawn for, handed over word by word. */}
+              <p className="flex flex-wrap items-baseline gap-x-2 font-body text-[10px] uppercase tracking-cinematic text-bone-dim">
+                <span>Sites built for</span>
+                <RotatingText
+                  items={["restaurants", "cafés", "studios", "labels", "founders"]}
+                  className="text-blood-400"
+                />
+              </p>
+
               <p className="max-w-[48ch] font-body text-[15px] leading-relaxed text-bone-muted sm:text-base">
                 {heroContent.lede}
               </p>

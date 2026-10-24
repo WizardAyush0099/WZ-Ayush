@@ -339,8 +339,6 @@ export type StudioEffects = {
   fog: boolean;
   /** The interpolated cursor (desktop only). */
   cursor: boolean;
-  /** The title-card counter before the homepage. */
-  preloader: boolean;
   /** The scroll-wound mark in the header and the Archive statement. */
   scrollSpin: boolean;
   /** The sound control, and whether interface sound starts switched on. */
@@ -355,7 +353,6 @@ export const DEFAULT_EFFECTS: StudioEffects = {
   embers: true,
   fog: true,
   cursor: true,
-  preloader: true,
   scrollSpin: true,
   sound: true,
   smoothScroll: true,
@@ -367,7 +364,6 @@ export const EFFECT_FIELDS: Array<{ key: keyof StudioEffects; label: string; hin
   { key: "embers", label: "Embers", hint: "The drifting embers, heaviest on desktop." },
   { key: "fog", label: "Hero haze", hint: "The volumetric haze over the opening film." },
   { key: "cursor", label: "Custom cursor", hint: "The interpolated ring that follows the pointer on desktop." },
-  { key: "preloader", label: "Opening counter", hint: "The title card shown once before the homepage." },
   { key: "scrollSpin", label: "Scroll-wound mark", hint: "The house mark that turns as the page scrolls." },
   { key: "sound", label: "Sound control", hint: "Whether interface sound is offered — and starts on." },
   { key: "smoothScroll", label: "Smooth scrolling", hint: "Inertial scrolling. Off is the plain, native feel." },

@@ -934,6 +934,37 @@ button:not(:disabled):active,
   transform: translateY(-5.75px) rotate(-45deg);
 }
 
+/* --- the phone stage -----------------------------------------------------
+   The phone hero is one screen tall and pinned. `svh` is the height with the
+   browser's toolbars open, `dvh` the height it actually has right now — using
+   the live one is what keeps the film's edge on the screen's edge instead of
+   leaving a dark strip under it every time the toolbar collapses. `--stage-h`
+   is the percentage the owner sets in the dashboard. */
+.hero-stage {
+  height: calc(var(--stage-h, 100) * 1svh);
+  height: calc(var(--stage-h, 100) * 1dvh);
+}
+
+/* --- the living phrase ---------------------------------------------------
+   One word of a sentence hands over to the next on a beat: the outgoing word
+   leaves the mask upward and the incoming one rises into it. See
+   `components/fx/RotatingText.tsx`; nothing animates under reduced motion. */
+.live-word {
+  display: inline-block;
+  animation: live-word 620ms var(--ease-spring) both;
+}
+
+@keyframes live-word {
+  from {
+    opacity: 0;
+    transform: translateY(105%) skewY(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) skewY(0);
+  }
+}
+
 /* --- the ripple ----------------------------------------------------------
    A ring blooming from the point a band was pressed (see RippleSurface). */
 .ripple-ring {

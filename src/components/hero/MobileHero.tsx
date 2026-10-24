@@ -122,8 +122,11 @@ export default function MobileHero({ ready }: { ready: boolean }) {
       aria-label="Cinematic 3D reel"
     >
       <div
-        className="sticky top-0 w-full overflow-hidden bg-ink-950"
-        style={{ height: `${stageHeight}svh` }}
+        /* `hero-stage` sizes off the *visible* viewport (svh fallback, then
+           dvh), so a collapsing phone toolbar can never leave a strip of empty
+           stage under the film while the run is pinned. */
+        className="hero-stage sticky top-0 w-full overflow-hidden bg-ink-950"
+        style={{ "--stage-h": stageHeight } as React.CSSProperties}
       >
         {/* A quiet field behind the film — gradients only, so there is no
             second full-screen canvas competing with the frames on a phone. */}
@@ -146,7 +149,11 @@ export default function MobileHero({ ready }: { ready: boolean }) {
             transition: "opacity 900ms cubic-bezier(0.16,1,0.3,1)",
           }}
         >
-          <ScrollMedia progressRef={progressRef} mediaOverride={media} />
+          {/* `contain`: the portrait render is 4:5, so covering a full-screen
+              phone stage would cut roughly a third of the frame away — the
+              outermost edge of every camera move. Drawn whole instead, over a
+              soft bed of itself. */}
+          <ScrollMedia progressRef={progressRef} mediaOverride={media} fit="contain" />
         </div>
 
         {/* Grade: enough for the wordmark, the hint and the hand-off into the

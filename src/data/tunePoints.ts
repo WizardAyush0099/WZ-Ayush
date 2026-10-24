@@ -60,7 +60,7 @@ export const PAGE_SECTIONS: PageSection[] = [
   { id: "intro", label: "Intro — headline", anchor: "intro", hint: "The words the hero does not carry: wordmark, headline, calls to action." },
   { id: "story", label: "Studio — How I Work", anchor: "story", hint: "The approach copy, the figures and the picture beside it." },
   { id: "statement", label: "Statement — the kinetic line", anchor: "statement", hint: "The sentence that assembles word by word, and the ticker under it." },
-  { id: "templates", label: "Templates — the shelf", anchor: "templates", hint: "The pinned sideways shelf of six live template sites." },
+  { id: "templates", label: "Templates — the shelf", anchor: "templates", hint: "The pinned sideways shelf of seven live template sites." },
   { id: "archive", label: "The Archive", anchor: "gallery", hint: "The frames: the statement, the three wide stills and the tiles." },
   { id: "projects", label: "Live Projects", anchor: "projects", hint: "The deployed sites, each opening the real thing." },
   { id: "capability", label: "Capability", anchor: "capability", hint: "What the studio does, as a list of services." },

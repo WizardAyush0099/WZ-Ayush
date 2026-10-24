@@ -132,7 +132,7 @@ export default function BuilderApp() {
             </div>
 
             {/*
-              Six real sites, each one the shipped HTML page itself, laid out
+              Seven real sites, each one the shipped HTML page itself, laid out
               at desktop width and scaled down to the card (`LivePreviewFrame`)
               — so the preview shows the design rather than one phone-width
               slice of it. Two up, because three across was too small to judge

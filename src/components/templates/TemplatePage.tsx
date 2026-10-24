@@ -13,7 +13,7 @@ import LivePreviewFrame from "../media/LivePreviewFrame";
  * ============================================================================
  *  The real template, at full size, on its own route.
  *
- *  Every template is a complete HTML site shipped in `public/templates/`, so
+ *  Every template is a complete HTML site shipped in `Templates/`, so
  *  this page hosts it in a full-viewport iframe: the visitor scrolls the
  *  website itself — its own type, photography and section rhythm — not a
  *  miniature of it. The bar above keeps the two ways out (start from this one,
@@ -50,7 +50,7 @@ export default function TemplatePage({ id }: { id: string }) {
           The link may be out of date. The whole library is one click away.
         </p>
         <a href={linkTo("/builder")} className="btn border-blood-600/70 bg-blood-600/15 px-7 py-4">
-          See all six templates <span aria-hidden="true">→</span>
+          See all {templates.length} templates <span aria-hidden="true">→</span>
         </a>
       </div>
     );

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, type ReactNode } from "react";
 import { setSelectedTemplate, useSelectedTemplateId } from "./lib/builderSelection";
 import { ScrollTrigger } from "./lib/gsap";
 import { initSmoothScroll, scrollToId } from "./lib/scroll";
@@ -14,7 +14,6 @@ import { RevealText } from "./components/common/Reveal";
 import Atmosphere from "./components/fx/Atmosphere";
 import ScrollProgress from "./components/fx/ScrollProgress";
 import CustomCursor from "./components/CustomCursor";
-import Preloader from "./components/Preloader";
 import Navbar from "./components/Navbar";
 import Hero from "./components/hero/Hero";
 import HeroIntro from "./components/sections/HeroIntro";
@@ -68,7 +67,12 @@ import PickMode from "./components/studio/PickMode";
  * ============================================================================
  */
 export default function PortfolioApp() {
-  const [ready, setReady] = useState(false);
+  /**
+   * The page has nothing left to wait for. The title card that used to hold it
+   * back is gone, so the film is the first thing on screen — `ready` stays as
+   * a named value because the hero and the header both read it.
+   */
+  const ready = true;
   const reduced = usePrefersReducedMotion();
   /**
    * Phones keep the browser's own scrolling. Lenis already leaves touch input
@@ -100,12 +104,6 @@ export default function PortfolioApp() {
     () => initSmoothScroll(!reduced && studio.effects.smoothScroll && !phone),
     [reduced, studio.effects.smoothScroll, phone],
   );
-
-  // The opening counter can be switched off from the dashboard; without it the
-  // page has nothing to wait for, so it is simply ready.
-  useEffect(() => {
-    if (!studio.effects.preloader) setReady(true);
-  }, [studio.effects.preloader]);
 
   // Recalculate scroll positions once the hero has been revealed, and again
   // after all imagery has loaded (image heights affect pinning).
@@ -191,7 +189,6 @@ export default function PortfolioApp() {
       <StudioLayer doc={studio} />
       <PickMode />
 
-      {studio.effects.preloader ? <Preloader onDone={() => setReady(true)} /> : null}
       <Atmosphere />
       <ScrollProgress />
       <CustomCursor />

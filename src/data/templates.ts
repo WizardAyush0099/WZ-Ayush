@@ -2,20 +2,26 @@ import type { ThemeId } from "../lib/theme";
 
 /**
  * ============================================================================
- *  TEMPLATE LIBRARY — six complete websites, written as real HTML
+ *  TEMPLATE LIBRARY — seven complete websites, written as real HTML
  * ============================================================================
  *  These are not generated miniatures. Each entry points at a full,
  *  self-contained page the visitor can open and actually browse:
  *
- *      public/templates/architect.html   →  /templates/architect.html
- *      public/templates/bakery.html      →  /templates/bakery.html
- *      … (burger, cafe, cleaning, clothing)
+ *      Templates/architect.html   →  /templates/architect.html
+ *      Templates/bakery.html      →  /templates/bakery.html
+ *      … (burger, cafe, cleaning, clothing, pizza)
  *
- *  The pages live in `public/` so they ship as static files — the same build
- *  works at the domain root, under a GitHub Pages sub-path and in the preview.
- *  To add a seventh template, drop the HTML file in `public/templates/` and
- *  add one entry below; every surface (homepage reel, builder library, brief
- *  step 3, full-page route) picks it up from here.
+ *  The pages live in `Templates/` at the repository root — one shelf of complete
+ *  sites, kept out of the build plumbing so they stay readable and editable as
+ *  what they are. `templateShelf()` in `vite.config.ts` mounts that folder at
+ *  `/templates/` in dev and emits it to `dist/templates/` on build, so the same
+ *  URLs work at the domain root, under a GitHub Pages sub-path and in the
+ *  preview.
+ *
+ *  To add an eighth template, drop the HTML file (and anything it references,
+ *  like the shared `prime.css`) into `Templates/` and add one entry below; every
+ *  surface (homepage reel, builder library, brief step 3, full-page route)
+ *  picks it up from here.
  *
  *  Opening one: every block and card links to `/#/template/<id>`, which hosts
  *  the page full-screen in an iframe with the commission actions above it.
@@ -25,7 +31,7 @@ import type { ThemeId } from "../lib/theme";
 const base = import.meta.env.BASE_URL;
 
 export type SiteTemplate = {
-  /** File stem in `public/templates/` — also the route id. */
+  /** File stem in `Templates/` — also the route id. */
   id: string;
   /** Brand name shown on the card, as the template itself spells it. */
   name: string;
@@ -107,14 +113,25 @@ export const templates: SiteTemplate[] = [
     features: ["Lookbook grid", "Collections", "Drop launch", "Scroll motion", "Lightbox lookbook"],
     href: `${base}templates/clothing.html`,
   },
+  {
+    id: "pizza",
+    name: "Pizza Town",
+    category: "Wood-Fired Pizzeria",
+    business: "Restaurant",
+    blurb:
+      "A paper-warm pizzeria — signature pies with prices, the hearth story, guest words and a visit card with map, built so a hungry visitor can order in one tap.",
+    theme: "daylight",
+    features: ["Signature menu", "Hearth story", "Guest quotes", "Visit & map", "Order flow"],
+    href: `${base}templates/pizza.html`,
+  },
 ];
 
 /** Copy for the library section on /#/builder. */
 export const templatesSection = {
   eyebrow: "Build My Website",
-  title: "Six Starting Points",
+  title: "Seven Starting Points",
   lede:
-    "Six complete websites — an architecture studio, an artisan bakery, a woodfire grill, a café, a cleaning company and a fashion label. Open any one full size, pick the closest, and I'll build yours from it.",
+    "Seven complete websites — an architecture studio, an artisan bakery, a woodfire grill, a café, a cleaning company, a fashion label and a wood-fired pizzeria. Open any one full size, pick the closest, and I'll build yours from it.",
 } as const;
 
 export function templateById(id: string): SiteTemplate | undefined {

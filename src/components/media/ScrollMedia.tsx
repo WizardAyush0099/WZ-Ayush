@@ -47,9 +47,23 @@ type MediaProps = {
    * that owns its own render rather than following the Artwork tab.
    */
   mediaOverride?: MediaConfig;
+  /**
+   * How the film meets its stage. `cover` fills the stage edge to edge and
+   * crops whatever falls outside it — right for a wide desktop stage. `contain`
+   * draws the whole frame over a soft bed of itself, which is what a portrait
+   * film in a full-screen portrait stage needs: a 640 × 801 render covering a
+   * phone would lose more than a third of its width, and the perimeter of the
+   * camera move with it.
+   */
+  fit?: "cover" | "contain";
 };
 
-export default function ScrollMedia({ className = "", progressRef, mediaOverride }: MediaProps) {
+export default function ScrollMedia({
+  className = "",
+  progressRef,
+  mediaOverride,
+  fit = "cover",
+}: MediaProps) {
   const configured = useMediaConfig();
   const media = mediaOverride ?? configured;
   const [failed, setFailed] = useState(false);
@@ -67,6 +81,7 @@ export default function ScrollMedia({ className = "", progressRef, mediaOverride
         media={media}
         className={className}
         progressRef={progressRef}
+        fit={fit}
         onFail={() => setFailed(true)}
       />
     );
@@ -167,11 +182,13 @@ function SequenceMedia({
   media,
   className,
   progressRef,
+  fit,
   onFail,
 }: {
   media: MediaConfig;
   className: string;
   progressRef?: RefObject<number>;
+  fit: "cover" | "contain";
   onFail: () => void;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -231,16 +248,20 @@ function SequenceMedia({
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
-    if (coverScale > fitScale * MAX_COVER_ZOOM) {
+    /*
+     * `contain` (the phone hero) or a frame so mismatched that covering it
+     * would be mush: the whole picture, kept off the stage's perimeter, with
+     * the same still blown up behind it so the edges never read as a crop.
+     */
+    if (fit === "contain" || coverScale > fitScale * MAX_COVER_ZOOM) {
       /*
        * Portrait stage, landscape frame (a phone). Fill the letterbox with the
        * still itself, blown up from a thumbnail: drawing the frame into a ~40px
        * canvas and then scaling that up is a genuine blur that costs one small
        * draw per frame, where a canvas filter would cost a full-size pass on
        * every scrub step. Then the picture itself, whole.
-       */
-      const soft = softRef.current ?? (softRef.current = document.createElement("canvas"));
-      const softWidth = 40;
+       */        const soft = softRef.current ?? (softRef.current = document.createElement("canvas"));
+        const softWidth = fit === "contain" ? 64 : 40;
       const softHeight = Math.max(8, Math.round((softWidth * height) / width));
       if (soft.width !== softWidth || soft.height !== softHeight) {
         soft.width = softWidth;
@@ -463,7 +484,32 @@ function SequenceMedia({
         aria-hidden="true"
         style={{ opacity: ready ? 1 : 0, transition: "opacity 700ms cubic-bezier(0.16,1,0.3,1)" }}
       />
-      {showPoster && media.poster ? (
+      {showPoster && media.poster && fit === "contain" ? (
+        /*
+         * The opening frame for a contained stage: the still itself, blurred
+         * and oversized behind the sharp picture, so the first paint is the
+         * same composition the canvas will draw.
+         */
+        <>
+          <img
+            src={media.poster}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl"
+            loading="eager"
+            decoding="async"
+          />
+          <img
+            src={media.poster}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-contain"
+            loading="eager"
+            decoding="async"
+          />
+        </>
+      ) : null}
+      {showPoster && media.poster && fit !== "contain" ? (
         /*
          * The poster is the first frame, drawn exactly the way the canvas will
          * draw it: cover, filling the stage edge to edge. It used to be

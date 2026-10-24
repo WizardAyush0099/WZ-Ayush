@@ -3,7 +3,7 @@
  *  SITE CONTENT — single source of truth
  * ============================================================================
  *  Everything editable lives here: identity, contact, nav, projects, gallery
- *  and the builder questionnaire. The six website templates are in
+ *  and the builder questionnaire. The website templates are in
  *  `src/data/templates.ts` because each one points at a full HTML site.
  *
  *  Asset paths are prefixed with `import.meta.env.BASE_URL`, so the same build
@@ -188,7 +188,7 @@ export type NavItem = { label: string; id?: string; route?: string };
 export const nav: NavItem[] = [
   { label: "Home", id: "home" },
   { label: "Studio", id: "story" },
-  // The six templates, as the pinned shelf — now the first thing past Studio.
+  // The template shelf — now the first thing past Studio.
   { label: "Templates", id: "templates" },
   // The Archive itself: the sequence frame and the stills.
   { label: "Archive", id: "gallery" },
@@ -233,7 +233,7 @@ export const story = {
   ],
   stats: [
     { value: "04", label: "Live Products" },
-    { value: "06", label: "Ready Templates" },
+    { value: "07", label: "Ready Templates" },
     { value: "3D", label: "Real-time Web" },
   ],
   /**
@@ -526,14 +526,14 @@ export const about = {
 /* ==========================================================================
  *  THE BRIEF BAND — the pointer from the page to the commission flow
  * ==========================================================================
- *  The six templates live on the homepage as the pinned shelf. This band is
+ *  The seven templates live on the homepage as the pinned shelf. This band is
  *  the bridge to /#/builder, where a choice becomes a brief — so "how do I get
  *  one?" has an answer on the page people actually land on.
  * ========================================================================== */
 
 export const themesCta = {
   eyebrow: "The Brief",
-  title: "Six Starting Points, One Brief",
+  title: "Seven Starting Points, One Brief",
   body:
     "Every template on this page is a complete site you can open full size — pick the closest, then tell me what to build from it. Nothing here is charged, and the brief takes a few minutes.",
   action: "Start Building",
@@ -552,7 +552,7 @@ export const order = {
     {
       key: "01",
       title: "Pick a template",
-      body: "Pick the closest of the six in the templates section, or in step 3 of the brief below. It repaints this page in its palette first, so you can see it before you commit.",
+      body: "Pick the closest of the seven in the templates section, or in step 3 of the brief below. It repaints this page in its palette first, so you can see it before you commit.",
     },
     {
       key: "02",
