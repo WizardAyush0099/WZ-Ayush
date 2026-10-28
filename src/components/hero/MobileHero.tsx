@@ -5,6 +5,7 @@ import { reportHeroRun, releaseHeroGate } from "../../lib/heroGate";
 import { scrollToId } from "../../lib/scroll";
 import { useMobileMediaConfig, useStudio } from "../../lib/siteData";
 import ScrollMedia from "../media/ScrollMedia";
+import RotatingText from "../fx/RotatingText";
 
 /**
  * ============================================================================
@@ -30,6 +31,7 @@ export default function MobileHero({ ready }: { ready: boolean }) {
   const hintRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
+  const hudRef = useRef<HTMLSpanElement>(null);
   const darkRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
 
@@ -64,6 +66,13 @@ export default function MobileHero({ ready }: { ready: boolean }) {
       }
       if (topRef.current) {
         topRef.current.style.opacity = String(Math.max(0, Math.min(1, (0.9 - progress) / 0.2)));
+        // The wordmark lifts and settles as the film starts to move, so the
+        // opening screen has a little depth instead of a static plate.
+        topRef.current.style.transform = `translate3d(0, ${(-progress * 26).toFixed(2)}px, 0)`;
+      }
+      if (hudRef.current) {
+        const frame = Math.round(progress * (media.frameCount - 1));
+        hudRef.current.textContent = `FRAME ${String(frame).padStart(3, "0")} / ${media.frameCount}`;
       }
       if (darkRef.current) {
         darkRef.current.style.opacity = String(Math.max(0, (progress - 0.86) / 0.14) * 0.72);
@@ -151,8 +160,8 @@ export default function MobileHero({ ready }: { ready: boolean }) {
         >
           {/* `contain`: the portrait render is 4:5, so covering a full-screen
               phone stage would cut roughly a third of the frame away — the
-              outermost edge of every camera move. Drawn whole instead, over a
-              soft bed of itself. */}
+              outermost edge of every camera move. It is drawn whole, at exactly
+              the width the phone gives it, on the stage's own field. */}
           <ScrollMedia progressRef={progressRef} mediaOverride={media} fit="contain" />
         </div>
 
@@ -174,18 +183,47 @@ export default function MobileHero({ ready }: { ready: boolean }) {
             so the last frame is pure picture. */}
         <div
           ref={topRef}
-          className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5"
-          style={{ paddingTop: "max(18px, env(safe-area-inset-top))" }}
+          className="absolute inset-x-0 top-0 z-20 flex flex-col px-5"
+          style={{
+            paddingTop: "max(18px, env(safe-area-inset-top))",
+            willChange: "transform",
+          }}
         >
-          <div className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-blood-500" aria-hidden="true" />
-            <span className="font-body text-[10px] uppercase tracking-cinematic text-bone/80">
-              {heroContent.title}
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-blood-500" aria-hidden="true" />
+              <span className="font-body text-[10px] uppercase tracking-cinematic text-bone/80">
+                {heroContent.title}
+              </span>
+            </div>
+            <span
+              ref={hudRef}
+              className="font-body text-[9px] uppercase tracking-cinematic text-bone-dim tabular-nums"
+            >
+              FRAME 000 / {media.frameCount}
             </span>
           </div>
-          <span className="font-body text-[9px] uppercase tracking-cinematic text-bone-dim">
-            3D · 01
-          </span>
+
+          {/*
+            The living line. It only appears when the letterbox above the
+            picture is genuinely tall enough to hold it (short phones keep the
+            bare wordmark row), so nothing here can ever land on the film.
+          */}
+          <div className="mt-4 hidden w-full [@media(min-height:720px)]:block">
+            <p
+              className="display text-[10.5vw] leading-[0.94] text-bone"
+              style={{
+                opacity: ready ? 1 : 0,
+                transform: ready ? "translateY(0)" : "translateY(14px)",
+                transition: "opacity 900ms cubic-bezier(0.16,1,0.3,1) 180ms, transform 900ms cubic-bezier(0.16,1,0.3,1) 180ms",
+              }}
+            >
+              <span className="block text-bone/45">Sites that</span>
+              <span className="block text-blood-400">
+                <RotatingText items={["CONVERT", "MOVE", "LAST", "SELL", "STICK"]} />
+              </span>
+            </p>
+          </div>
         </div>
 
         {/* End-of-run floor: the pin releases into the intro as a cut. */}
@@ -194,6 +232,46 @@ export default function MobileHero({ ready }: { ready: boolean }) {
           className="pointer-events-none absolute inset-0 z-30 bg-ink-950 opacity-0"
           aria-hidden="true"
         />
+
+        {/* Corner slugs — the small technical print that fills the lower
+            letterbox the way a title card does. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 z-20 flex items-end justify-between px-5"
+          style={{ bottom: "calc(env(safe-area-inset-bottom) + 74px)" }}
+        >
+          {/* The hallmark: a slowly turning stamp, the one bit of the opening
+              screen that keeps moving after the scroll has stopped. Hidden on
+              short phones so it can never crowd the scroll hint. */}
+          <span className="hidden [@media(min-height:720px)]:block">
+            <svg
+              viewBox="0 0 100 100"
+              className="spin-slow h-[62px] w-[62px] text-bone/45"
+              aria-hidden="true"
+            >
+              <defs>
+                <path
+                  id="hero-stamp"
+                  d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0"
+                />
+              </defs>
+              <text
+                fill="currentColor"
+                fontSize="8.5"
+                letterSpacing="2.6"
+                style={{ fontFamily: "inherit", textTransform: "uppercase" }}
+              >
+                <textPath href="#hero-stamp" startOffset="0">
+                  {`${heroContent.accent} STUDIO · DESIGN · MOTION · 3D · `}
+                </textPath>
+              </text>
+              <circle cx="50" cy="50" r="1.6" fill="currentColor" />
+            </svg>
+          </span>
+          <span className="font-body text-[8px] uppercase tracking-cinematic text-bone-dim/80">
+            3D · 2026
+          </span>
+        </div>
 
         {/* Scroll hint — a rail that doubles as the run's own progress. */}
         <div

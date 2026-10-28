@@ -50,10 +50,10 @@ type MediaProps = {
   /**
    * How the film meets its stage. `cover` fills the stage edge to edge and
    * crops whatever falls outside it — right for a wide desktop stage. `contain`
-   * draws the whole frame over a soft bed of itself, which is what a portrait
-   * film in a full-screen portrait stage needs: a 640 × 801 render covering a
-   * phone would lose more than a third of its width, and the perimeter of the
-   * camera move with it.
+   * draws the whole frame at the width the stage gives it, feathered at its top
+   * and bottom edges — which is what a portrait film in a full-screen portrait
+   * stage needs: a 640 × 801 render covering a phone would lose more than a
+   * third of its width, and the perimeter of the camera move with it.
    */
   fit?: "cover" | "contain";
 };
@@ -199,10 +199,14 @@ function SequenceMedia({
   const drawnRef = useRef(-1);
   const readyRef = useRef(false);
   const localProgressRef = useRef(0);
-  /** Tiny offscreen copy of the current frame, blown up as the ambient field. */
-  const softRef = useRef<HTMLCanvasElement | null>(null);
   const [ready, setReady] = useState(false);
   const [showPoster, setShowPoster] = useState(true);
+  /**
+   * Where the contained poster's own top and bottom edges sit, as a percentage
+   * of the stage — measured once from the still's real pixel size, so the
+   * opening paint is feathered exactly where the canvas will feather it.
+   */
+  const [posterEdges, setPosterEdges] = useState<{ top: number; bottom: number } | null>(null);
   const reduced = usePrefersReducedMotion();
 
   const count = Math.max(1, Math.min(MAX_FRAMES, media.frameCount));
@@ -250,46 +254,45 @@ function SequenceMedia({
 
     /*
      * `contain` (the phone hero) or a frame so mismatched that covering it
-     * would be mush: the whole picture, kept off the stage's perimeter, with
-     * the same still blown up behind it so the edges never read as a crop.
+     * would be mush: the whole picture, at the size it actually needs.
+     *
+     * The letterbox used to be filled with a blown-up copy of the frame, then
+     * dimmed — and on a phone that read as a second, blurry hero: the run's own
+     * wordmark duplicated above the fold, a hard black band where the sharp
+     * frame started, and a visible rectangle around the picture. The stage's
+     * own field is already behind this canvas, so the honest fix is to draw
+     * nothing there at all and let that field show through. Only the picture's
+     * own top and bottom edges are feathered into it, so the frame reads as
+     * light on the page rather than as a photo pasted onto it.
      */
     if (fit === "contain" || coverScale > fitScale * MAX_COVER_ZOOM) {
-      /*
-       * Portrait stage, landscape frame (a phone). Fill the letterbox with the
-       * still itself, blown up from a thumbnail: drawing the frame into a ~40px
-       * canvas and then scaling that up is a genuine blur that costs one small
-       * draw per frame, where a canvas filter would cost a full-size pass on
-       * every scrub step. Then the picture itself, whole.
-       */        const soft = softRef.current ?? (softRef.current = document.createElement("canvas"));
-        const softWidth = fit === "contain" ? 64 : 40;
-      const softHeight = Math.max(8, Math.round((softWidth * height) / width));
-      if (soft.width !== softWidth || soft.height !== softHeight) {
-        soft.width = softWidth;
-        soft.height = softHeight;
-      }
-      const softCtx = soft.getContext("2d");
-      if (softCtx) {
-        const softScale = Math.max(
-          softWidth / image.naturalWidth,
-          softHeight / image.naturalHeight,
-        );
-        softCtx.drawImage(
-          image,
-          (softWidth - image.naturalWidth * softScale) / 2,
-          (softHeight - image.naturalHeight * softScale) / 2,
-          image.naturalWidth * softScale,
-          image.naturalHeight * softScale,
-        );
-        ctx.drawImage(soft, 0, 0, softWidth, softHeight, 0, 0, width, height);
-        // Hold the field well back so the sharp frame is unmistakably the
-        // subject — this is a letterbox, not a double exposure.
-        ctx.fillStyle = "rgba(4,3,4,0.58)";
-        ctx.fillRect(0, 0, width, height);
-      }
-
       const fitWidth = image.naturalWidth * fitScale;
       const fitHeight = image.naturalHeight * fitScale;
-      ctx.drawImage(image, (width - fitWidth) / 2, (height - fitHeight) / 2, fitWidth, fitHeight);
+      const top = (height - fitHeight) / 2;
+      ctx.drawImage(image, (width - fitWidth) / 2, top, fitWidth, fitHeight);
+
+      /*
+       * Feather: erase the picture's first and last few dozen pixels with a
+       * gradient, using `destination-out` so it subtracts coverage instead of
+       * painting over it. One gradient fill per edge is cheap enough to run
+       * inside the scrub, and it is what removes the seam the owner kept
+       * seeing between the film and the page.
+       */
+      const band = Math.max(8, Math.min(Math.round(fitHeight * 0.04), 26));
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      const topFade = ctx.createLinearGradient(0, top, 0, top + band);
+      topFade.addColorStop(0, "rgba(0,0,0,1)");
+      topFade.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = topFade;
+      ctx.fillRect(0, top, width, band);
+      const bottomFade = ctx.createLinearGradient(0, top + fitHeight - band, 0, top + fitHeight);
+      bottomFade.addColorStop(0, "rgba(0,0,0,0)");
+      bottomFade.addColorStop(1, "rgba(0,0,0,1)");
+      ctx.fillStyle = bottomFade;
+      ctx.fillRect(0, top + fitHeight - band, width, band);
+      ctx.restore();
+
       drawnRef.current = index;
       return;
     }
@@ -468,6 +471,18 @@ function SequenceMedia({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, count, progressRef, reduced]);
 
+  /** Feather the contained poster at the same margins its frame will have. */
+  const measurePoster = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const image = event.currentTarget;
+    const stageRatio = image.clientWidth / Math.max(1, image.clientHeight);
+    if (!image.naturalWidth || !image.naturalHeight) return;
+    const pictureRatio = image.naturalWidth / image.naturalHeight;
+    // The still is `contain`-fitted, so the shorter axis is the one that fills.
+    const drawn = pictureRatio > stageRatio ? stageRatio / pictureRatio : 1;
+    const margin = ((1 - drawn) / 2) * 100;
+    setPosterEdges({ top: margin, bottom: 100 - margin });
+  };
+
   // Reduced motion: hold a single mid-sequence frame instead of scrubbing.
   useEffect(() => {
     if (!reduced || !ready) return;
@@ -486,28 +501,34 @@ function SequenceMedia({
       />
       {showPoster && media.poster && fit === "contain" ? (
         /*
-         * The opening frame for a contained stage: the still itself, blurred
-         * and oversized behind the sharp picture, so the first paint is the
-         * same composition the canvas will draw.
+         * The opening frame for a contained stage: the still itself, drawn
+         * whole, with the same feathered edges the canvas uses — no blurred
+         * copy behind it, because that copy is exactly the second ghost of the
+         * hero the owner was seeing above and below the picture.
          */
-        <>
-          <img
-            src={media.poster}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-2xl"
-            loading="eager"
-            decoding="async"
-          />
-          <img
-            src={media.poster}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-contain"
-            loading="eager"
-            decoding="async"
-          />
-        </>
+        <img
+          src={media.poster}
+          alt=""
+          aria-hidden="true"
+          onLoad={measurePoster}
+          className="absolute inset-0 h-full w-full object-contain"
+          style={
+            posterEdges
+              ? (() => {
+                  // The ramp crosses each edge, so the still's own first and
+                  // last rows are faded exactly as the canvas fades them.
+                  const band = 2.2;
+                  const stops = `transparent ${Math.max(0, posterEdges.top - band).toFixed(1)}%, #000 ${(posterEdges.top + band).toFixed(1)}%, #000 ${(posterEdges.bottom - band).toFixed(1)}%, transparent ${Math.min(100, posterEdges.bottom + band).toFixed(1)}%`;
+                  return {
+                    maskImage: `linear-gradient(to bottom, ${stops})`,
+                    WebkitMaskImage: `linear-gradient(to bottom, ${stops})`,
+                  };
+                })()
+              : undefined
+          }
+          loading="eager"
+          decoding="async"
+        />
       ) : null}
       {showPoster && media.poster && fit !== "contain" ? (
         /*
