@@ -7,6 +7,8 @@ import { useSiteData } from "../../lib/siteData";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
 import DrawCrest from "../fx/DrawCrest";
+import StickerBadge from "../fx/StickerBadge";
+import SplitReveal from "../fx/SplitReveal";
 import RippleSurface from "../fx/RippleSurface";
 
 export default function FinalCTA() {
@@ -119,11 +121,26 @@ export default function FinalCTA() {
 
       <div data-tune="item-cta-panel" className="shell relative z-10 py-24 text-center">
         <RevealText stagger className="flex flex-col items-center gap-7">
+          {/* The closing seal: the same stamp as the corner, inviting the press. */}
+          <StickerBadge
+            text="LET'S BUILD · WZ STUDIO · AVAILABLE FOR WORK · "
+            size={98}
+            durationS={24}
+            className="text-blood-300/70"
+          >
+            <span className="display text-[15px] tracking-[0.06em] text-bone">WZ</span>
+          </StickerBadge>
           <span className="eyebrow">{cta.eyebrow}</span>
-          <h2 id="cta-title" className="display text-[15vw] leading-[0.9] text-bone sm:text-[10vw] lg:text-[8rem]">
-            {cta.title}
-          </h2>
-          <span className="font-accent text-sm tracking-[0.5em] text-blood-500/70">{cta.accent}</span>
+          <SplitReveal
+            as="h2"
+            id="cta-title"
+            text={cta.title}
+            type="words"
+            stagger={0.09}
+            className="display text-[15vw] leading-[0.9] text-bone sm:text-[10vw] lg:text-[8rem]"
+          />
+          {/* A slow light travelling through the small accent line. */}
+          <span className="text-shimmer font-accent text-sm tracking-[0.5em]">{cta.accent}</span>
           <p className="max-w-[42ch] font-body text-base leading-relaxed text-bone-muted">{cta.body}</p>
         </RevealText>
 

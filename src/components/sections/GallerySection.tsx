@@ -6,8 +6,11 @@ import { useStoredImages } from "../../lib/imageStore";
 import { RevealText } from "../common/Reveal";
 import { useLightbox } from "../common/Lightbox";
 import SharinganMark from "../theme/SharinganMark";
+import StickerBadge from "../fx/StickerBadge";
 import SlotMedia from "../media/SlotMedia";
 import CursorTrail from "../fx/CursorTrail";
+import TiltCard from "../fx/TiltCard";
+import SplitReveal from "../fx/SplitReveal";
 import { frameUrlIn } from "../media/frameRun";
 
 /**
@@ -42,7 +45,7 @@ function stillOf(slot: ImageSlot): { src: string; alt: string; caption: string }
   return {
     src: slot.src || (slot.film ? frameUrlIn(slot.film, 0) : ""),
     alt: slot.alt || slot.caption,
-    caption: slot.caption || `Slot ${String(slot.index).padStart(2, "0")}`,
+    caption: slot.caption || `Frame ${String(slot.index).padStart(2, "0")}`,
   };
 }
 
@@ -96,9 +99,15 @@ export default function GallerySection() {
         <div data-tune="item-archive-head">
         <RevealText stagger className="flex flex-col gap-5">
           <span className="eyebrow">{archiveSection.eyebrow}</span>
-          <h2 id="gallery-title" className="display text-[12vw] leading-[0.9] sm:text-6xl lg:text-7xl">
-            {archiveSection.title}
-          </h2>
+          {/* Words rise out of their own mask rather than fading in. */}
+          <SplitReveal
+            as="h2"
+            id="gallery-title"
+            text={archiveSection.title}
+            type="words"
+            stagger={0.08}
+            className="display text-[12vw] leading-[0.9] sm:text-6xl lg:text-7xl"
+          />
           <p className="max-w-[54ch] font-body text-base text-bone-muted">
             {archiveSection.lede}
           </p>
@@ -108,7 +117,7 @@ export default function GallerySection() {
         {/* — Tier 1: the statement, the mark turning with the page. — */}
         <div
           data-tune="item-archive-statement"
-          className="mt-14 border-t border-bone/10 pt-8 md:mt-20"
+          className="relative mt-14 border-t border-bone/10 pt-8 md:mt-20"
         >
           <div className="flex items-center gap-4">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-bone/15 bg-ink-900">
@@ -117,6 +126,16 @@ export default function GallerySection() {
             <span className="font-body text-[10px] uppercase tracking-cinematic text-blood-400/80">
               {archiveSection.sequenceLabel}
             </span>
+            {/* A hairline closing the row, with the seal hanging on its end. */}
+            <span aria-hidden="true" className="hidden h-px flex-1 bg-gradient-to-r from-bone/15 to-transparent sm:block" />
+            <StickerBadge
+              text="THE ARCHIVE · WZ · FRAMES IN MOTION · "
+              size={78}
+              durationS={28}
+              className="ml-auto sm:ml-2"
+            >
+              <SharinganMark className="h-5 w-5" />
+            </StickerBadge>
           </div>
           <h3 className="display mt-5 text-3xl leading-tight text-bone sm:text-4xl">
             {archiveSection.sequenceTitle}
@@ -145,7 +164,16 @@ export default function GallerySection() {
           <CursorTrail frames={trailFrames} />
 
           {wide.map((slot, i) => (
-            <figure key={slot.id} className="group col-span-12 sm:col-span-4">
+            /* The wide frames lean into the pointer and the picture inside them
+               travels against the lean, so the frame reads as glass over a
+               print rather than as a flat image. */
+            <TiltCard
+              key={slot.id}
+              as="figure"
+              max={5}
+              depth={9}
+              className="group col-span-12 sm:col-span-4"
+            >
               <button
                 type="button"
                 data-trail-frame={i}
@@ -156,12 +184,14 @@ export default function GallerySection() {
                 aria-label={`Open ${slot.caption || "this frame"} full-screen`}
                 className="relative block w-full text-left"
               >
-                <SlotMedia
-                  slot={slot}
-                  aspect="aspect-[16/9]"
-                  className="border border-bone/10"
-                  mediaClassName="transition-transform duration-[1400ms] ease-silk group-hover:scale-[1.04]"
-                />
+                <div data-tilt-layer={9}>
+                  <SlotMedia
+                    slot={slot}
+                    aspect="aspect-[16/9]"
+                    className="border border-bone/10"
+                    mediaClassName="transition-transform duration-[1400ms] ease-silk group-hover:scale-[1.04]"
+                  />
+                </div>
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/55 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -169,34 +199,31 @@ export default function GallerySection() {
               </button>
               <figcaption className="mt-3 flex items-baseline justify-between gap-3 font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
                 <span className="truncate text-bone-muted transition-colors duration-500 group-hover:text-bone">
-                  {slot.caption || `Slot ${String(slot.index).padStart(2, "0")}`}
+                  {slot.caption || `Frame ${String(slot.index).padStart(2, "0")}`}
                 </span>
                 <span className="shrink-0 text-blood-500/70">
                   {String(slot.index).padStart(2, "0")}
                 </span>
               </figcaption>
-            </figure>
+            </TiltCard>
           ))}
         </div>
 
-        {/* — Tier 3: whatever else is switched on, tiles of one size. — */}
-        <div className="mt-16 flex flex-wrap items-baseline justify-between gap-3 border-t border-bone/10 pt-6 md:mt-24">
-          <span className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/80">
-            {archiveSection.stillsLabel} · {String(gridCount).padStart(2, "0")}
-          </span>
-          <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
-            {archiveSection.framesNote}
-          </span>
-        </div>
+        {/* — Tier 3: whatever else is switched on, tiles of one size. The whole
+            band is skipped while it is empty: an owner-facing note about slots
+            and the dashboard used to sit here, and a visitor read it. Nothing
+            that describes how the site is administered belongs on the site. — */}
+        {gridCount === 0 ? null : (
+          <>
+            <div className="mt-16 flex flex-wrap items-baseline justify-between gap-3 border-t border-bone/10 pt-6 md:mt-24">
+              <span className="font-body text-[10px] uppercase tracking-cinematic text-blood-500/80">
+                {archiveSection.stillsLabel} · {String(gridCount).padStart(2, "0")}
+              </span>
+              <span className="font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
+                {archiveSection.framesNote}
+              </span>
+            </div>
 
-        {gridCount === 0 ? (
-          <p className="mt-8 border border-bone/10 bg-ink-900 px-5 py-6 font-body text-sm leading-relaxed text-bone-muted">
-            Slots 04–09 are ready and empty. Open{" "}
-            <span className="text-bone">#/admin</span> → <span className="text-bone">Images</span> →{" "}
-            <span className="text-bone">The Archive</span>, paste a picture's path — or point a slot
-            at a folder of frames to have it play as a scroll film — and it appears here.
-          </p>
-        ) : (
           <div
             data-tune="item-archive-grid"
             className="mt-8 grid grid-cols-12 gap-4 sm:gap-6 md:gap-x-8 md:gap-y-10"
@@ -254,13 +281,14 @@ export default function GallerySection() {
                 </div>
                 <span className="mt-3 flex items-center justify-between font-body text-[10px] uppercase tracking-wide2 text-bone-dim">
                   <span className="truncate transition-colors duration-500 group-hover:text-bone">
-                    {slot.caption || `Slot ${String(slot.index).padStart(2, "0")}`}
+                    {slot.caption || `Frame ${String(slot.index).padStart(2, "0")}`}
                   </span>
                   <span className="text-blood-500/70">{String(slot.index).padStart(2, "0")}</span>
                 </span>
               </div>
             ))}
           </div>
+          </>
         )}
       </div>
     </section>

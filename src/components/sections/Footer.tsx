@@ -135,14 +135,6 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
-              <li>
-                <a
-                  href={linkTo("/admin")}
-                  className="font-body text-sm text-bone-dim transition-colors duration-300 hover:text-bone"
-                >
-                  Dashboard
-                </a>
-              </li>
             </ul>
           </nav>
         </div>

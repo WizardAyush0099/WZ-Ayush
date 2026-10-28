@@ -13,6 +13,7 @@ import { LightboxProvider } from "./components/common/Lightbox";
 import { RevealText } from "./components/common/Reveal";
 import Atmosphere from "./components/fx/Atmosphere";
 import ScrollProgress from "./components/fx/ScrollProgress";
+import StickySticker from "./components/fx/StickySticker";
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import Hero from "./components/hero/Hero";
@@ -191,6 +192,7 @@ export default function PortfolioApp() {
 
       <Atmosphere />
       <ScrollProgress />
+      <StickySticker />
       <CustomCursor />
       <Navbar ready={ready} />
 
