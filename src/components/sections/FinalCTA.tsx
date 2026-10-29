@@ -7,6 +7,7 @@ import { useSiteData } from "../../lib/siteData";
 import { buildWhatsAppUrl, introMessage } from "../../lib/whatsapp";
 import { RevealText } from "../common/Reveal";
 import DrawCrest from "../fx/DrawCrest";
+import VenomHand from "../fx/VenomHand";
 import StickerBadge from "../fx/StickerBadge";
 import SplitReveal from "../fx/SplitReveal";
 import RippleSurface from "../fx/RippleSurface";
@@ -16,6 +17,7 @@ export default function FinalCTA() {
   const sectionRef = useRef<HTMLElement>(null);
   const lightRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLImageElement>(null);
+  const ctaRef = useRef<HTMLAnchorElement>(null);
   const [hover, setHover] = useState(false);
   const reduced = usePrefersReducedMotion();
 
@@ -98,6 +100,11 @@ export default function FinalCTA() {
       {/* Every press inside this band blooms where it landed. */}
       <RippleSurface />
 
+      {/* The signature: a symbiote hand that comes out of the dark to grip the
+          closing button. Behind the copy, and click-through, so the label stays
+          readable and the link stays pressable. */}
+      <VenomHand targetRef={ctaRef} />
+
       {/* Cursor-following red light */}
       <div
         ref={lightRef}
@@ -146,6 +153,7 @@ export default function FinalCTA() {
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-5">
           <a
+            ref={ctaRef}
             href={linkTo("/builder")}
             data-cursor="hover"
             onMouseEnter={() => setHover(true)}

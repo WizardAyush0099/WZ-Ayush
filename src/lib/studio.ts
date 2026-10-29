@@ -345,6 +345,8 @@ export type StudioEffects = {
   sound: boolean;
   /** Smooth (inertial) scrolling. */
   smoothScroll: boolean;
+  /** The symbiote hand that grips the closing call to action. */
+  venom: boolean;
 };
 
 export const DEFAULT_EFFECTS: StudioEffects = {
@@ -356,6 +358,7 @@ export const DEFAULT_EFFECTS: StudioEffects = {
   scrollSpin: true,
   sound: true,
   smoothScroll: true,
+  venom: true,
 };
 
 export const EFFECT_FIELDS: Array<{ key: keyof StudioEffects; label: string; hint: string }> = [
@@ -367,6 +370,7 @@ export const EFFECT_FIELDS: Array<{ key: keyof StudioEffects; label: string; hin
   { key: "scrollSpin", label: "Scroll-wound mark", hint: "The house mark that turns as the page scrolls." },
   { key: "sound", label: "Sound control", hint: "Whether interface sound is offered — and starts on." },
   { key: "smoothScroll", label: "Smooth scrolling", hint: "Inertial scrolling. Off is the plain, native feel." },
+  { key: "venom", label: "Venom hand", hint: "The symbiote hand that rises out of the dark to grip the closing call to action." },
 ];
 
 /* -------------------------------------------------------------------------- */
